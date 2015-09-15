@@ -20,5 +20,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"
+    },
+    "suggest": {
+        "twig/twig": "To use the twig extension"
     }
 }

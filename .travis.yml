@@ -19,6 +19,7 @@ before_install:
 
 install:
   - composer --prefer-source update
+  - composer require twig/twig
 
 script:
     - vendor/bin/phpunit

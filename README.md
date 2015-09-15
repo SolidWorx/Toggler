@@ -90,6 +90,52 @@ You can also use the `toggle` function as a conditional
     }
 ```
 
+## Twig Integration
+
+Toggler comes with an optional Twig extension, which allows you to toggle elements from Twig templates.
+
+To use the extension, register it with Twig
+
+``` php
+use Toggler\Twig\Extension\ToggleExtension;
+
+$twig = new Twig_Environment($loader);
+$twig->addExtension(new ToggleExtension());
+```
+
+or if you use symfony, register it as a service
+
+``` yaml
+toggle.twig.extension:
+    class: Toggler\Twig\Extension\ToggleExtension
+    tags:
+        - { name: twig.extension }
+```
+
+Then you can use the `toggle` tag in twig templates:
+
+``` twig
+{% toggle 'foo' %}
+    Some content that will only display if foo is truthy
+{% endtoggle %}
+```
+
+To add an alternaltive if a feature is not available, use the `else` tag
+
+``` twig
+{% toggle 'foo' %}
+    Some content that will only display if foo is truthy
+{% else %}
+    Some content that will only display if foo is not enabled
+{% endtoggle %}
+```
+
+You can also use the `toggle()` function for conditions
+
+``` twig
+{{ toggle('foo') ? 'Foo is enabled' : 'Foo is NOT enabled' }}
+```
+
 ## Testing
 
 To run the unit tests, execute the following command
