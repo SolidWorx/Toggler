@@ -63,4 +63,30 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $instance->get('non-foobar');
     }
+
+    public function testClear()
+    {
+        $features = [
+            'foo' => true,
+            'bar' => true,
+            'baz' => false,
+            'foobar' => false
+        ];
+
+        $instance = Config::instance();
+
+        $instance->setConfig($features);
+
+        $this->assertSame($features, $this->readAttribute($instance, 'config'));
+
+        $instance->clear();
+
+        $this->assertSame([], $this->readAttribute($instance, 'config'));
+    }
+
+    protected function tearDown()
+    {
+        Config::instance()->clear();
+    }
+
 }

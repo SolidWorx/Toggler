@@ -11,16 +11,11 @@ Toggler requires PHP 5.4+
 
 ## Installation
 
-Composer
+### Composer
 
-``` json
-{
-    "require": {
-        "pierredup/toggler": "~1.0"
-    }
-}
+``` bash
+$ composer require pierredup/toggler:~1.0
 ```
-
 
 ## Usage
 
@@ -35,6 +30,20 @@ $features = [
 ];
 
 toggleConfig($features);
+```
+
+You can also pass through a path to a PHP file, which should return an array with the confg:
+
+``` php
+// config.php
+return [
+    'foo' => true,
+    'bar' => false
+];
+```
+
+``` php
+toggleConfig('/path/to/config.php');
 ```
 
 To enable a feature, any of the following truthy values are accepted:

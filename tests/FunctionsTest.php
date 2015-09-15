@@ -20,9 +20,23 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'bar' => true,
             'baz' => false,
             'foobar' => false
-         ];
+        ];
 
         toggleConfig($features);
+
+        $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
+    }
+
+    public function testToggleConfigWithFile()
+    {
+        toggleConfig(__DIR__.'/stubs/config.php');
+
+        $features = [
+            'foo' => true,
+            'bar' => true,
+            'baz' => false,
+            'foobar' => false
+        ];
 
         $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
     }
@@ -117,5 +131,10 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             [[]],
             [new \StdClass],
         ];
+    }
+
+    protected function tearDown()
+    {
+        Config::instance()->clear();
     }
 }

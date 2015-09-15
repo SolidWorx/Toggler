@@ -4,10 +4,22 @@ use Toggler\Config;
 
 /**
  * @param array $features
+ *
+ * @return Config
  */
-function toggleConfig(array $features)
+function toggleConfig($features)
 {
-    Config::instance()->setConfig($features);
+    $config = Config::instance();
+
+    if (is_array($features)) {
+        return $config->setConfig($features);
+    }
+
+    if (is_file($file = realpath($features))) {
+        $values = require_once $file;
+
+        return $config->setConfig($values);
+    }
 }
 
 /**

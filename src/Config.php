@@ -46,6 +46,16 @@ class Config
     }
 
     /**
+     * Clears the current config
+     */
+    public function clear()
+    {
+        $this->config = [];
+
+        return $this;
+    }
+
+    /**
      * Get a config value
      *
      * @param string $value

@@ -62,4 +62,9 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             throw new \Exception('Feature is not available');
         });
     }
+
+    protected function tearDown()
+    {
+        Config::instance()->clear();
+    }
 }
