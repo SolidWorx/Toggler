@@ -21,4 +21,4 @@ install:
   - composer --prefer-source update
 
 script:
-    - vendor/bin/phpunit run
+    - vendor/bin/phpunit
