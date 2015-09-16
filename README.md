@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/pierredup/toggler.svg)](https://travis-ci.org/pierredup/toggler)
 
-Toggler is a feature toggle library. It allows you to enable or disable features based on a toggle switch.
+Toggler is a feature toggle library for PHP. It allows you to enable or disable features based on a toggle switch.
 This is useful in a continues deployment environment, where you can deploy not-yet-ready features which are disabled, and just enable them when the feature is complete.
 
 ## Requirements
