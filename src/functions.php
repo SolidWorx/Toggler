@@ -1,11 +1,13 @@
 <?php
 
 use Toggler\Config;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @param array $features
  *
  * @return Config
+ * @throws Exception
  */
 function toggleConfig($features)
 {
@@ -16,6 +18,14 @@ function toggleConfig($features)
     }
 
     if (is_file($file = realpath($features))) {
+        if ('yml' === pathinfo($file, PATHINFO_EXTENSION)) {
+            if (!class_exists('Symfony\\Component\\Yaml\\Yaml')) {
+                throw new \Exception('The Symfony Yaml component is needed in order to load config from yml filed');
+            }
+
+            return $config->setConfig(Yaml::parse(file_get_contents($file)));
+        }
+
         $values = require_once $file;
 
         return $config->setConfig($values);

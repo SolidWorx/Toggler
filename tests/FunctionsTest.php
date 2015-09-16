@@ -41,6 +41,20 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
     }
 
+    public function testToggleConfigWithYamlFile()
+    {
+        toggleConfig(__DIR__.'/stubs/config.yml');
+
+        $features = [
+            'foo' => true,
+            'bar' => true,
+            'baz' => false,
+            'foobar' => false
+        ];
+
+        $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
+    }
+
     /**
      * @dataProvider truthyData
      */

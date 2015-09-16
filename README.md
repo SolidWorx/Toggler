@@ -32,7 +32,7 @@ $features = [
 toggleConfig($features);
 ```
 
-You can also pass through a path to a PHP file, which should return an array with the confg:
+You can also pass through a path to a PHP or yml file, which should return an array with the confg:
 
 ``` php
 // config.php
@@ -44,6 +44,19 @@ return [
 
 ``` php
 toggleConfig('/path/to/config.php');
+```
+
+In order to use yml files for config, you need to include the [Symfony Yaml Component](http://symfony.com/doc/current/components/yaml/index.html)
+
+
+``` php
+// config.yml
+foo: true
+bar: false
+```
+
+``` php
+toggleConfig('/path/to/config.yml');
 ```
 
 To enable a feature, any of the following truthy values are accepted:
