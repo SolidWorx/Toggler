@@ -23,6 +23,7 @@
     },
     "suggest": {
         "twig/twig": "To use the twig extension",
-        "symfony/yaml": "To pass yml files to the config"
+        "symfony/yaml": "To pass yml files to the config",
+        "symfony/symfony": "To enable Symfony integration"
     }
 }

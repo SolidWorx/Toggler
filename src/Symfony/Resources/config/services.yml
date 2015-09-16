@@ -1,0 +1,6 @@
+services:
+
+    toggler.twig.extension:
+        class: Toggler\Twig\Extension\ToggleExtension
+        tags:
+            - { name: twig.extension }

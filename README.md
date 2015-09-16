@@ -149,6 +149,32 @@ You can also use the `toggle()` function for conditions
 {{ toggle('foo') ? 'Foo is enabled' : 'Foo is NOT enabled' }}
 ```
 
+## Symfony Integration
+
+Toggler comes with basic integration with the [Symfony](http://symfony.com/) framework.
+To enable toggler inside symfony, register the bundle
+
+``` php
+// AppKernel.php
+
+$bundles = array(
+   ...
+   new Toggler\Symfony\TogglerBundle(),
+   ...
+);
+```
+
+Then inside your `app/config/config.yml` or `app/config/config_dev.yml`, you can enable features using the following config
+
+``` yaml
+toggler:
+    config:
+        foo: true
+        bar: false
+```
+
+When using the Symfony bundle, the twig extension is automatically registered.
+
 ## Testing
 
 To run the unit tests, execute the following command
