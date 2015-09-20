@@ -73,34 +73,66 @@ To toggle a feature, use the `toggle` function, which takes the feature name as 
 An optional third callback argument can be passed which whill be called if the
 
 ``` php
-    toggle(
-        'foobar',
-        function () {
-            /* will be executed when feature 'foobar' is enabled */
-        }
-    );
+toggle(
+    'foobar',
+    function () {
+        /* will be executed when feature 'foobar' is enabled */
+    }
+);
 ```
 
 An optional third callback argument can be passed which whil be called if the feature is not enabled
 
 ``` php
-    toggle(
-            'foobar',
-            function () {
-                /* will NOT be executed when feature 'foobar' is disabled */
-            },
-            function () {
-                /* will be executed when feature 'foobar' is disabled */
-            }
-        );
+toggle(
+    'foobar',
+        function () {
+            /* will NOT be executed when feature 'foobar' is disabled */
+        },
+        function () {
+            /* will be executed when feature 'foobar' is disabled */
+        }
+    );
 ```
 
 You can also use the `toggle` function as a conditional
 
 ``` php
-    if (toggle('foobar')) {
-        /* will be executed when feature 'foobar' is enabled */
+if (toggle('foobar')) {
+    /* will be executed when feature 'foobar' is enabled */
+}
+```
+
+## Toggle a feature based on context
+
+To enable a feature only under specific conditions (E.G only enable it for users in a certain group, or only enable it for 10% of visitor etc)
+
+Each feature in the config can take a callback, where you can return a truthy value based on any logic you want to add:
+
+``` php
+$features = [
+    'foo' => function (User $user) {
+        return in_array('admin', $user->getGroups()); // Only enable features for users in the 'admin' group
+    },
+    'bar' => function () {
+        return  (crc32($_SERVER['REMOTE_ADDR']) % 100) < 25 // Only enable this features for about 25% of visitors
     }
+];
+```
+
+Callbacks that takes any arguments, should be called with the context:
+
+``` php
+$user = User::find(); // Get the current logged-in user
+if (toggle('foo', [$user])) {
+}
+```
+
+or if you want to use callback functions, the context can always be sent as the last parameter:
+
+``` php
+$user = User::find(); // Get the current logged-in user
+toggle('foo', function () { /* enable feature */ }, [$user]);
 ```
 
 ## Twig Integration

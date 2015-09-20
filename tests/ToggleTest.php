@@ -43,6 +43,52 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($instance->isActive('foobar'));
     }
 
+    public function testIsActiveTruthy()
+    {
+        $features = [
+            'foo' => true,
+            'bar' => 1,
+            'baz' => '1',
+            'foobar' => 'on'
+        ];
+
+        $config = Config::instance();
+
+        $config->setConfig($features);
+
+        $instance = Toggle::instance();
+
+        $this->assertTrue($instance->isActive('foo'));
+        $this->assertTrue($instance->isActive('bar'));
+        $this->assertTrue($instance->isActive('baz'));
+        $this->assertTrue($instance->isActive('foobar'));
+    }
+
+    public function testIsActiveFalsey()
+    {
+        $features = [
+            'foo' => false,
+            'bar' => 0,
+            'baz' => '0',
+            'foobar' => 'off',
+            'foobaz' => [],
+            'bazbar' => new \StdClass,
+        ];
+
+        $config = Config::instance();
+
+        $config->setConfig($features);
+
+        $instance = Toggle::instance();
+
+        $this->assertFalse($instance->isActive('foo'));
+        $this->assertFalse($instance->isActive('bar'));
+        $this->assertFalse($instance->isActive('baz'));
+        $this->assertFalse($instance->isActive('foobar'));
+        $this->assertFalse($instance->isActive('foobaz'));
+        $this->assertFalse($instance->isActive('bazbar'));
+    }
+
     public function testExecute()
     {
         $instance = Toggle::instance();

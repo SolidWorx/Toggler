@@ -1,7 +1,7 @@
 <?php
 
-use Toggler\Config;
 use Symfony\Component\Yaml\Yaml;
+use Toggler\Config;
 
 /**
  * @param array $features
@@ -36,14 +36,25 @@ function toggleConfig($features)
  * @param string        $feature
  * @param callable      $callback
  * @param callable|null $reverseCallback
+ * @param array         $context
  *
  * @return mixed
  */
-function toggle($feature, callable $callback = null, callable $reverseCallback = null)
+function toggle($feature, $callback = null, $reverseCallback = null, $context = [])
 {
     $toggler = Toggler\Toggle::instance();
 
-    $active = $toggler->isActive($feature);
+    if (empty($context) && is_array($callback) && !is_callable($callback)) {
+        $context = $callback;
+        $callback = null;
+    }
+
+    if (empty($context) && is_array($reverseCallback) && !is_callable($reverseCallback)) {
+        $context = $reverseCallback;
+        $reverseCallback = null;
+    }
+
+    $active = $toggler->isActive($feature, $context);
 
     if (null === $callback) {
         return $active;
@@ -54,32 +65,4 @@ function toggle($feature, callable $callback = null, callable $reverseCallback =
     } elseif (null !== $reverseCallback) {
         return $toggler->execute($reverseCallback);
     }
-}
-
-/**
- * Checked if a variable has a truthy value
- *
- * @param mixed $value
- *
- * @return bool
- */
-function isTruthy($value)
-{
-    if (is_bool($value)) {
-        return true === $value;
-    }
-
-    if (is_int($value)) {
-        return 1 === $value;
-    }
-
-    if (is_string($value)) {
-        if ((int) $value > 0) {
-            return 1 === (int) $value;
-        }
-
-        return in_array(strtolower($value), ['on', 'true'], true);
-    }
-
-    return false;
 }

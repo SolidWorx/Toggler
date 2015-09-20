@@ -19,7 +19,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         toggleConfig($features);
@@ -35,7 +35,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
@@ -49,26 +49,10 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
-    }
-
-    /**
-     * @dataProvider truthyData
-     */
-    public function testIsTruthy($value)
-    {
-        $this->assertTrue(isTruthy($value));
-    }
-
-    /**
-     * @dataProvider falseyData
-     */
-    public function testIsTruthyFalse($value)
-    {
-        $this->assertFalse(isTruthy($value));
     }
 
     public function testToggle()
@@ -81,7 +65,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         toggleConfig($features);
@@ -95,7 +79,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         toggleConfig($features);
@@ -116,35 +100,33 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         toggleConfig($features);
 
-        $this->assertSame('abcdef', toggle('baz', function (){}, $callback));
-        $this->assertNull(toggle('baz', function (){}));
+        $this->assertSame('abcdef', toggle('baz', function () {}, $callback));
+        $this->assertNull(toggle('baz', function () {}));
     }
 
-    public function truthyData()
+    public function testToggleCallback()
     {
-        return [
-            [true],
-            [1],
-            ['1'],
-            ['on'],
+        $features = [
+            'foo' => function (array $data) {
+                return $data['value'] === 123;
+            },
+            'bar' => function ($a, $b) {
+                return ($a + $b) === 10;
+            },
         ];
-    }
 
-    public function falseyData()
-    {
-        return [
-            [false],
-            [0],
-            ['0'],
-            ['off'],
-            [[]],
-            [new \StdClass],
-        ];
+        toggleConfig($features);
+
+        $this->assertTrue(toggle('foo', [['value' => 123]]));
+        $this->assertFalse(toggle('foo', [['value' => 456]]));
+
+        $this->assertTrue(toggle('bar', [5, 5]));
+        $this->assertFalse(toggle('bar', [1, 2]));
     }
 
     protected function tearDown()
