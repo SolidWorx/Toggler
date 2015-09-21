@@ -122,10 +122,15 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
         toggleConfig($features);
 
+        // Call all these function twice to check that it is memoized correctly
         $this->assertTrue(toggle('foo', [['value' => 123]]));
+        $this->assertTrue(toggle('foo', [['value' => 123]]));
+        $this->assertFalse(toggle('foo', [['value' => 456]]));
         $this->assertFalse(toggle('foo', [['value' => 456]]));
 
         $this->assertTrue(toggle('bar', [5, 5]));
+        $this->assertTrue(toggle('bar', [5, 5]));
+        $this->assertFalse(toggle('bar', [1, 2]));
         $this->assertFalse(toggle('bar', [1, 2]));
     }
 

@@ -22,6 +22,11 @@ class Toggle
     private $config;
 
     /**
+     * @var array
+     */
+    private $callback = [];
+
+    /**
      * @param Config $config
      */
     public function __construct(Config $config)
@@ -52,7 +57,13 @@ class Toggle
         $value = $this->config->get($feature);
 
         if (is_callable($value)) {
-            $value = call_user_func_array($value, $context);
+            $key = $this->generateKey($feature, $context);
+            if (array_key_exists($key, $this->callback)) {
+                $value = $this->callback[$key];
+            } else {
+                $value = call_user_func_array($value, $context);
+                $this->callback[$key] = $value;
+            }
         }
 
         return $this->isTruthy($value);
@@ -94,5 +105,16 @@ class Toggle
         }
 
         return false;
+    }
+
+    /**
+     * @param string $feature
+     * @param array  $context
+     *
+     * @return string
+     */
+    private function generateKey($feature, array $context)
+    {
+        return serialize(['feature' => $feature, 'context' => $context]);
     }
 }
