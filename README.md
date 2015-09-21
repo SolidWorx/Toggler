@@ -103,7 +103,7 @@ if (toggle('foobar')) {
 }
 ```
 
-## Toggle a feature based on context
+### Toggle a feature based on context
 
 To enable a feature only under specific conditions (E.G only enable it for users in a certain group, or only enable it for 10% of visitor etc)
 
@@ -133,6 +133,36 @@ or if you want to use callback functions, the context can always be sent as the 
 ``` php
 $user = User::find(); // Get the current logged-in user
 toggle('foo', function () { /* enable feature */ }, [$user]);
+```
+
+### Custom storage to retrieve feature settings
+
+If you want to store your config in a different place than an array or config file (E.G MySQL database or redis etc) then you can create a storage class that implements `Toggle\Storage\StorageInterface` which can be used to retrieve your config
+
+``` php
+use Toggle\Storage\StorageInterface;
+
+class RedisStorage implements StorageInterface
+{
+    private $redis;
+
+    public function __construct(\Redis $redis)
+    {
+        $this->redis = $redis;
+    }
+
+    public function get($key) // This method comes from StorageInterface and needs to be implemented with your custom logic to retrieve values
+    {
+        return $this->redis->get($key);
+    }
+}
+```
+
+Then you can pass an instance of your class to the `toggleConfig` function
+
+``` php
+$redis = ...; // Get your redis instance
+toggleConfig(new RedisStorage($redis));
 ```
 
 ## Twig Integration
@@ -205,7 +235,19 @@ toggler:
         bar: false
 ```
 
-When using the Symfony bundle, the twig extension is automatically registered.
+If you want to use a storage class, you can use the service id as the argument for the config:
+
+``` yaml
+services:
+    my.toggler.service:
+        class: My\Bundle\DbStorage
+        arguments: [@doctrine]
+        
+toggler:
+    config: my.toggler.service
+```
+
+*Note:* When using the Symfony bundle, the twig extension is automatically registered.
 
 ## Testing
 

@@ -9,12 +9,14 @@
 
 namespace Toggler;
 
+use Toggler\Storage\StorageInterface;
+
 class Config
 {
     /**
-     * @var array
+     * @var array|StorageInterface
      */
-    private $config = [];
+    private $config;
 
     /**
      * @var Config
@@ -34,11 +36,11 @@ class Config
     }
 
     /**
-     * @param array $config
+     * @param array|StorageInterface $config
      *
      * @return Config
      */
-    public function setConfig(array $config)
+    public function setConfig($config)
     {
         $this->config = $config;
 
@@ -50,7 +52,7 @@ class Config
      */
     public function clear()
     {
-        $this->config = [];
+        $this->config = null;
 
         return $this;
     }
@@ -64,8 +66,12 @@ class Config
      */
     public function get($value)
     {
-        if (array_key_exists($value, $this->config)) {
+        if (is_array($this->config) && array_key_exists($value, $this->config)) {
             return $this->config[$value];
+        }
+
+        if ($this->config instanceof StorageInterface) {
+            return $this->config->get($value);
         }
 
         throw new \InvalidArgumentException(sprintf('The config "%s" does not exist', $value));

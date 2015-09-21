@@ -16,7 +16,13 @@ class TogglerBundle extends Bundle
 {
     public function boot()
     {
-        $config = $this->container->getParameter('toggler.config');
+        $config = null;
+
+        if ($this->container->hasParameter('toggler.config')) {
+            $config = $this->container->getParameter('toggler.config');
+        } else if($this->container->has('toggler.config')) {
+            $config = $this->container->get('toggler.config');
+        }
 
         Config::instance()->setConfig($config);
     }

@@ -2,9 +2,10 @@
 
 use Symfony\Component\Yaml\Yaml;
 use Toggler\Config;
+use Toggler\Storage\StorageInterface;
 
 /**
- * @param array $features
+ * @param array|StorageInterface $features
  *
  * @return Config
  * @throws Exception
@@ -13,7 +14,7 @@ function toggleConfig($features)
 {
     $config = Config::instance();
 
-    if (is_array($features)) {
+    if (is_array($features) || $features instanceof StorageInterface) {
         return $config->setConfig($features);
     }
 

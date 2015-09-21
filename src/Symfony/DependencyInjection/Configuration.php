@@ -24,7 +24,11 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->children()
             ->arrayNode('config')
-                ->prototype('boolean')
+                ->beforeNormalization()
+                    ->ifString()
+                        ->then(function($value) { return array('service' => $value); })
+                    ->end()
+                ->prototype('scalar')
             ->end()
         ->end();
 

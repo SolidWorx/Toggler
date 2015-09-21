@@ -49,7 +49,13 @@ class Toggle
      */
     public function isActive($feature, array $context = [])
     {
-        return $this->isTruthy($this->config->get($feature), $context);
+        $value = $this->config->get($feature);
+
+        if (is_callable($value)) {
+            $value = call_user_func_array($value, $context);
+        }
+
+        return $this->isTruthy($value);
     }
 
     /**
@@ -66,11 +72,10 @@ class Toggle
      * Checked if a variable has a truthy value
      *
      * @param mixed $value
-     * @param array $context
      *
      * @return bool
      */
-    private function isTruthy($value, array $context = [])
+    private function isTruthy($value)
     {
         if (is_bool($value)) {
             return true === $value;
@@ -78,10 +83,6 @@ class Toggle
 
         if (is_int($value)) {
             return 1 === $value;
-        }
-
-        if (is_callable($value)) {
-            return $this->isTruthy(call_user_func_array($value, $context));
         }
 
         if (is_string($value)) {

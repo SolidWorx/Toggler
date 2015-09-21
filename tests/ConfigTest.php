@@ -10,6 +10,7 @@
 namespace Tests\Toggler;
 
 use Toggler\Config;
+use Toggler\Storage\StorageInterface;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -64,6 +65,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $instance->get('non-foobar');
     }
 
+    public function testStorage()
+    {
+        toggleConfig(new Storage());
+
+        $this->assertTrue(toggle('foo'));
+        $this->assertFalse(toggle('bar'));
+        $this->assertFalse(toggle('baz'));
+    }
+
     public function testClear()
     {
         $features = [
@@ -81,12 +91,23 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $instance->clear();
 
-        $this->assertSame([], $this->readAttribute($instance, 'config'));
+        $this->assertSame(null, $this->readAttribute($instance, 'config'));
     }
 
     protected function tearDown()
     {
         Config::instance()->clear();
     }
+}
 
+class Storage implements StorageInterface
+{
+    public function get($key)
+    {
+        if ($key === 'foo') {
+            return true;
+        }
+
+        return false;
+    }
 }
