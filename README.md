@@ -5,6 +5,22 @@
 Toggler is a feature toggle library for PHP. It allows you to enable or disable features based on a toggle switch.
 This is useful in a continues deployment environment, where you can deploy not-yet-ready features which are disabled, and just enable them when the feature is complete.
 
+# Table of Contents
+- [Requirements](#requirements)
+- [Installation](#installation)
+    - [Composer](#composer)
+- [Usage](#usage)
+    - [Config](#config)
+- [Toggle a feature](#toggle-a-feature])
+    - [Toggle a feature based on context](#toggle-a-feature-based-on-context)
+    - [Custom storage to retrieve feature settings](#custom-storage-to-retrieve-feature-settings)
+- [Twig integration](#twig-integration)
+- [Symfony integration](#symfony-integration)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Licence](#licence])
+
+
 ## Requirements
 
 Toggler requires PHP 5.4+
@@ -178,7 +194,7 @@ $twig = new Twig_Environment($loader);
 $twig->addExtension(new ToggleExtension());
 ```
 
-or if you use symfony, register it as a service
+or if you use symfony, register it as a service (See note in [Symfony integration](#symfony-integration))
 
 ``` yaml
 toggle.twig.extension:
