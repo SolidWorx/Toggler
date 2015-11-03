@@ -43,6 +43,10 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testToggleConfigWithYamlFile()
     {
+        if (!class_exists('Symfony\Component\Yaml\Yaml')){
+            $this->markTestSkipped('The symfony/yaml component is needed to test yaml config files');
+        }
+
         toggleConfig(__DIR__.'/stubs/config.yml');
 
         $features = [

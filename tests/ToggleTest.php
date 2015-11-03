@@ -121,6 +121,10 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
 
     public function testisActiveExpression()
     {
+        if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+            $this->markTestSkipped('The symfony/expression-language component is needed to test expressions');
+        }
+
         $features = [
             'foo' => new Expression('newValue > 10 and some["value"] < 10'),
         ];
