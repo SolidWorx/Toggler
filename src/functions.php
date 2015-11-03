@@ -20,8 +20,8 @@ function toggleConfig($features)
 
     if (is_file($file = realpath($features))) {
         if ('yml' === pathinfo($file, PATHINFO_EXTENSION)) {
-            if (!class_exists('Symfony\\Component\\Yaml\\Yaml')) {
-                throw new \Exception('The Symfony Yaml component is needed in order to load config from yml filed');
+            if (!class_exists('Symfony\Component\Yaml\Yaml')) {
+                throw new \Exception('The Symfony Yaml component is needed in order to load config from yml file');
             }
 
             return $config->setConfig(Yaml::parse(file_get_contents($file)));

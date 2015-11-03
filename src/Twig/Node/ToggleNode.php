@@ -12,7 +12,7 @@ namespace Toggler\Twig\Node;
 class ToggleNode extends \Twig_Node
 {
     /**
-     * @param $feature
+     * @param \Twig_Node|string        $feature
      * @param \Twig_NodeInterface      $body
      * @param \Twig_NodeInterface|null $else
      * @param null|string              $lineno
@@ -22,7 +22,8 @@ class ToggleNode extends \Twig_Node
         $feature,
         \Twig_NodeInterface $body,
         \Twig_NodeInterface $else = null,
-        $lineno,
+        \Twig_NodeInterface $variables = null,
+        $lineno = null,
         $tag = null
     ) {
         parent::__construct(
@@ -30,6 +31,7 @@ class ToggleNode extends \Twig_Node
                 'feature' => $feature,
                 'body' => $body,
                 'else' => $else,
+                'variables' => $variables,
             ],
             [],
             $lineno,
@@ -49,7 +51,14 @@ class ToggleNode extends \Twig_Node
         $compiler
             ->write('if (')
             ->raw('toggle(')
-            ->subcompile($this->getNode('feature'))
+            ->subcompile($this->getNode('feature'));
+
+        if ($this->hasNode('variables') && null !== $this->getNode('variables')) {
+            $compiler->raw(', ')
+                ->subcompile($this->getNode('variables'));
+        }
+
+        $compiler
             ->raw(')')
             ->raw(") {\n")
             ->indent()

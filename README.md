@@ -111,13 +111,13 @@ toggle(
 );
 ```
 
-An optional third callback argument can be passed which whil be called if the feature is not enabled
+An optional third callback argument can be passed which will be called if the feature is not enabled
 
 ``` php
 toggle(
     'foobar',
         function () {
-            /* will NOT be executed when feature 'foobar' is disabled */
+            /* will be executed when feature 'foobar' is enabled */
         },
         function () {
             /* will be executed when feature 'foobar' is disabled */
@@ -248,7 +248,7 @@ Then you can use the `toggle` tag in twig templates:
 
 ``` twig
 {% toggle 'foo' %}
-    Some content that will only display if foo is truthy
+    Some content that will only display if foo is enabled
 {% endtoggle %}
 ```
 
@@ -256,9 +256,17 @@ To add an alternaltive if a feature is not available, use the `else` tag
 
 ``` twig
 {% toggle 'foo' %}
-    Some content that will only display if foo is truthy
+    Some content that will only display if foo is enabled
 {% else %}
     Some content that will only display if foo is not enabled
+{% endtoggle %}
+```
+
+To use context values with the tag, you can pass it using the `with` keyword:
+
+``` twig
+{% toggle 'foo' with [{"valueOne" : 12}] %}
+    Some content that will only display if foo is enabled based on the context provided
 {% endtoggle %}
 ```
 
