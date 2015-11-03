@@ -47,7 +47,7 @@ if (class_exists('Twig_Test_NodeTestCase')) {
             $tests[] = [
                 $node,
                 <<<EOF
-    // line 1
+// line 1
 if (toggle("foo")) {
     echo {$this->getVariableGetter('foo')};
 }
@@ -63,7 +63,7 @@ EOF
             $tests[] = [
                 $node,
                 <<<EOF
-    // line 1
+// line 1
 if (toggle("foo")) {
     echo {$this->getVariableGetter('foo')};
 } else {
