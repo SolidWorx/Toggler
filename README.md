@@ -11,7 +11,7 @@ This is useful in a continues deployment environment, where you can deploy not-y
     - [Composer](#composer)
 - [Usage](#usage)
     - [Config](#config)
-    - [Toggle a feature](#toggle-a-feature])
+    - [Toggle a feature](#toggle-a-feature)
     - [Toggle a feature based on context](#toggle-a-feature-based-on-context)
     - [Using Symfony Expression Language](#using-symfony-expression-language)
     - [Custom storage to retrieve feature settings](#custom-storage-to-retrieve-feature-settings)
@@ -19,7 +19,7 @@ This is useful in a continues deployment environment, where you can deploy not-y
 - [Symfony integration](#symfony-integration)
 - [Testing](#testing)
 - [Contributing](#contributing)
-- [Licence](#licence])
+- [Licence](#licence)
 
 
 ## Requirements
