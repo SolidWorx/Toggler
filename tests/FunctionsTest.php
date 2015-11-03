@@ -109,31 +109,6 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertNull(toggle('baz', function () {}));
     }
 
-    public function testToggleCallback()
-    {
-        $features = [
-            'foo' => function (array $data) {
-                return $data['value'] === 123;
-            },
-            'bar' => function ($a, $b) {
-                return ($a + $b) === 10;
-            },
-        ];
-
-        toggleConfig($features);
-
-        // Call all these function twice to check that it is memoized correctly
-        $this->assertTrue(toggle('foo', [['value' => 123]]));
-        $this->assertTrue(toggle('foo', [['value' => 123]]));
-        $this->assertFalse(toggle('foo', [['value' => 456]]));
-        $this->assertFalse(toggle('foo', [['value' => 456]]));
-
-        $this->assertTrue(toggle('bar', [5, 5]));
-        $this->assertTrue(toggle('bar', [5, 5]));
-        $this->assertFalse(toggle('bar', [1, 2]));
-        $this->assertFalse(toggle('bar', [1, 2]));
-    }
-
     protected function tearDown()
     {
         Config::instance()->clear();

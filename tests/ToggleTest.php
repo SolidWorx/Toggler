@@ -9,6 +9,7 @@
 
 namespace Tests\Toggler;
 
+use Symfony\Component\ExpressionLanguage\Expression;
 use Toggler\Config;
 use Toggler\Toggle;
 
@@ -87,6 +88,52 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($instance->isActive('foobar'));
         $this->assertFalse($instance->isActive('foobaz'));
         $this->assertFalse($instance->isActive('bazbar'));
+    }
+
+    public function testisActiveCallback()
+    {
+        $features = [
+            'foo' => function (array $data) {
+                return $data['value'] === 123;
+            },
+            'bar' => function ($a, $b) {
+                return ($a + $b) === 10;
+            },
+        ];
+
+        $config = Config::instance();
+
+        $config->setConfig($features);
+
+        $instance = Toggle::instance();
+
+        // Call all these function twice to check that it is memoized correctly
+        $this->assertTrue($instance->isActive('foo', [['value' => 123]]));
+        $this->assertTrue($instance->isActive('foo', [['value' => 123]]));
+        $this->assertFalse($instance->isActive('foo', [['value' => 456]]));
+        $this->assertFalse($instance->isActive('foo', [['value' => 456]]));
+
+        $this->assertTrue($instance->isActive('bar', [5, 5]));
+        $this->assertTrue($instance->isActive('bar', [5, 5]));
+        $this->assertFalse($instance->isActive('bar', [1, 2]));
+        $this->assertFalse($instance->isActive('bar', [1, 2]));
+    }
+
+    public function testisActiveExpression()
+    {
+        $features = [
+            'foo' => new Expression('newValue > 10 and some["value"] < 10'),
+        ];
+
+        $config = Config::instance();
+
+        $config->setConfig($features);
+
+        $instance = Toggle::instance();
+
+        // Call all these function twice to check that it is memoized correctly
+        $this->assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));
+        $this->assertFalse($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 500]]));
     }
 
     public function testExecute()

@@ -19,7 +19,7 @@ before_install:
 
 install:
   - composer --prefer-source update
-  - composer require twig/twig symfony/yaml
+  - composer require twig/twig symfony/yaml symfony/expression-language
 
 script:
     - vendor/bin/phpunit

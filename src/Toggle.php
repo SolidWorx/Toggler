@@ -9,6 +9,9 @@
 
 namespace Toggler;
 
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+
 class Toggle
 {
     /**
@@ -27,11 +30,20 @@ class Toggle
     private $callback = [];
 
     /**
+     * @var ExpressionLanguage
+     */
+    private $expressionLanguage;
+
+    /**
      * @param Config $config
      */
     public function __construct(Config $config)
     {
         $this->config = $config;
+
+        if (class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
     }
 
     /**
@@ -56,14 +68,13 @@ class Toggle
     {
         $value = $this->config->get($feature);
 
-        if (is_callable($value)) {
-            $key = $this->generateKey($feature, $context);
-            if (array_key_exists($key, $this->callback)) {
-                $value = $this->callback[$key];
-            } else {
-                $value = call_user_func_array($value, $context);
-                $this->callback[$key] = $value;
-            }
+        switch (true) {
+            case $value instanceof Expression:
+                $this->evaluateExpression($feature, $value, $context);
+                break;
+            case is_callable($value):
+                $value = $this->evaluateCallback($feature, $value, $context);
+                break;
         }
 
         return $this->isTruthy($value);
@@ -116,5 +127,46 @@ class Toggle
     private function generateKey($feature, array $context)
     {
         return serialize(['feature' => $feature, 'context' => $context]);
+    }
+
+    /**
+     * @param string $feature
+     * @param mixed  $value
+     * @param array  $context
+     *
+     * @return array
+     */
+    private function evaluateExpression($feature, $value, array $context)
+    {
+        $key = $this->generateKey($feature, $context);
+
+        if (array_key_exists($key, $this->callback)) {
+            return $this->callback[$key];
+        }
+
+        $value = $this->expressionLanguage->evaluate($value, $context);
+        $this->callback[$key] = $value;
+
+        return $value;
+    }
+
+    /**
+     * @param string $feature
+     * @param mixed  $value
+     * @param array  $context
+     *
+     * @return mixed
+     */
+    private function evaluateCallback($feature, $value, array $context)
+    {
+        $key = $this->generateKey($feature, $context);
+        if (array_key_exists($key, $this->callback)) {
+            return $this->callback[$key];
+        }
+
+        $value = call_user_func_array($value, $context);
+        $this->callback[$key] = $value;
+
+        return $value;
     }
 }

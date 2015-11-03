@@ -13,6 +13,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class TogglerExtension extends Extension
@@ -28,6 +29,12 @@ class TogglerExtension extends Extension
         if (isset($config['config']['service']) && 1 === count($config['config'])) {
             $container->setAlias('toggler.config', new Alias($config['config']['service']));
         } else {
+            foreach ($config['config'] as $key => &$value) {
+                if ('@=' === substr($value, 0, 2)) {
+                    $value = new Expression(substr($value, 2));
+                }
+            }
+
             $container->setParameter('toggler.config', $config['config']);
         }
 

@@ -24,6 +24,7 @@
     "suggest": {
         "twig/twig": "To use the twig extension",
         "symfony/yaml": "To pass yml files to the config",
-        "symfony/symfony": "To enable Symfony integration"
+        "symfony/symfony": "To enable Symfony integration",
+        "symfony/expression-language": "To use expressions for conditions"
     }
 }

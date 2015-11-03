@@ -11,8 +11,9 @@ This is useful in a continues deployment environment, where you can deploy not-y
     - [Composer](#composer)
 - [Usage](#usage)
     - [Config](#config)
-- [Toggle a feature](#toggle-a-feature])
+    - [Toggle a feature](#toggle-a-feature])
     - [Toggle a feature based on context](#toggle-a-feature-based-on-context)
+    - [Using Symfony Expression Language](#using-symfony-expression-language)
     - [Custom storage to retrieve feature settings](#custom-storage-to-retrieve-feature-settings)
 - [Twig integration](#twig-integration)
 - [Symfony integration](#symfony-integration)
@@ -37,7 +38,17 @@ $ composer require pierredup/toggler:~1.0
 
 ### Config
 
-To configure Toggler, you need to set the feature flags with a truthy value if it should be enabled
+To configure Toggler, you need to set the feature flags with a truthy value if it should be enabled.
+
+To enable a feature, any of the following truthy values are accepted:
+
+* (boolean) true
+* (int) 1
+* '1'
+* 'on'
+* 'true'
+
+The config needs to be an array with the name of the feature as the key, and a truthy value, callback or [expression](#using-symfony-expression-language) as the value.
 
 ``` php
 $features = [
@@ -48,7 +59,7 @@ $features = [
 toggleConfig($features);
 ```
 
-You can also pass through a path to a PHP or yml file, which should return an array with the confg:
+You can also pass through a path to a PHP file which should return an array with the config:
 
 ``` php
 // config.php
@@ -62,8 +73,17 @@ return [
 toggleConfig('/path/to/config.php');
 ```
 
+#### Using YAML files
+
 In order to use yml files for config, you need to include the [Symfony Yaml Component](http://symfony.com/doc/current/components/yaml/index.html)
 
+To install and use the Yaml component, run the following command from the root of your project:
+
+```bash
+$ composer require symfony/yaml
+```
+
+Then you can define your config using a yaml file
 
 ``` php
 // config.yml
@@ -71,17 +91,11 @@ foo: true
 bar: false
 ```
 
+Pass the path to the yml file to your config
+
 ``` php
 toggleConfig('/path/to/config.yml');
 ```
-
-To enable a feature, any of the following truthy values are accepted:
-
-* (boolean) true
-* (int) 1
-* '1'
-* 'on'
-* 'true'
 
 ### Toggle a feature
 
@@ -151,6 +165,32 @@ $user = User::find(); // Get the current logged-in user
 toggle('foo', function () { /* enable feature */ }, [$user]);
 ```
 
+### Using Symfony Expression Language
+
+You can use the [Symfony Expression Language Component](http://symfony.com/doc/current/components/expression_language/index.html) to create expressions for your features.
+
+To install and use the Expression Language component, run the following command from the root of your project:
+
+```bash
+$ composer require symfony/expression-language
+```
+
+Then you can create an expression for your feature:
+
+```php
+use Symfony\Component\ExpressionLanguage\Expression;
+
+$feaures = [
+    'foo' => new Expression('valueOne > 10 and valueTwo < 10')
+];
+```
+
+When checking the feature, you need to pass the context to use in your expression:
+
+```php
+toggle('foo', ['valueOne' => 25, 'valueTwo' => 5]); // Will return true
+```
+
 ### Custom storage to retrieve feature settings
 
 If you want to store your config in a different place than an array or config file (E.G MySQL database or redis etc) then you can create a storage class that implements `Toggle\Storage\StorageInterface` which can be used to retrieve your config
@@ -194,7 +234,8 @@ $twig = new Twig_Environment($loader);
 $twig->addExtension(new ToggleExtension());
 ```
 
-or if you use symfony, register it as a service (See note in [Symfony integration](#symfony-integration))
+or if you use symfony, register it as a service
+**Note:** When using the Symfony bundle, the twig extension is automatically registered.
 
 ``` yaml
 toggle.twig.extension:
@@ -251,6 +292,14 @@ toggler:
         bar: false
 ```
 
+If you want to use an expression for a feature config, you can use the `@=` syntax:
+
+``` yaml
+toggler:
+    config:
+        foo: @=myValue > 10
+```
+
 If you want to use a storage class, you can use the service id as the argument for the config:
 
 ``` yaml
@@ -263,7 +312,7 @@ toggler:
     config: my.toggler.service
 ```
 
-*Note:* When using the Symfony bundle, the twig extension is automatically registered.
+**Note:** When using the Symfony bundle, the twig extension is automatically registered.
 
 ## Testing
 
