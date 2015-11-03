@@ -70,7 +70,7 @@ class Toggle
 
         switch (true) {
             case $value instanceof Expression:
-                $this->evaluateExpression($feature, $value, $context);
+                $value = $this->evaluateExpression($feature, $value, $context);
                 break;
             case is_callable($value):
                 $value = $this->evaluateCallback($feature, $value, $context);
