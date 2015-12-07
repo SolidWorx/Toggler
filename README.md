@@ -100,7 +100,6 @@ toggleConfig('/path/to/config.yml');
 ### Toggle a feature
 
 To toggle a feature, use the `toggle` function, which takes the feature name as the first argument, and a callback as the second argument.
-An optional third callback argument can be passed which whill be called if the
 
 ``` php
 toggle(
