@@ -7,10 +7,10 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler\Symfony;
+namespace SolidWorx\Toggler\Symfony;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Toggler\Config;
+use SolidWorx\Toggler\Config;
 
 class TogglerBundle extends Bundle
 {

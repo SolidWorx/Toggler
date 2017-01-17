@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler\Symfony\DependencyInjection;
+namespace SolidWorx\Toggler\Symfony\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;

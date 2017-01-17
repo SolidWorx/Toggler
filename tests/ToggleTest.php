@@ -7,11 +7,11 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Tests\Toggler;
+namespace SolidWorx\Tests\Toggler;
 
 use Symfony\Component\ExpressionLanguage\Expression;
-use Toggler\Config;
-use Toggler\Toggle;
+use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Toggle;
 
 class ToggleTest extends \PHPUnit_Framework_TestCase
 {

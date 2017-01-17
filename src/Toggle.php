@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler;
+namespace SolidWorx\Toggler;
 
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;

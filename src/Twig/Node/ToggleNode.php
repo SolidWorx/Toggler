@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler\Twig\Node;
+namespace SolidWorx\Toggler\Twig\Node;
 
 class ToggleNode extends \Twig_Node
 {

@@ -7,10 +7,10 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Tests\Toggler;
+namespace SolidWorx\Tests\Toggler;
 
-use Toggler\Config;
-use Toggler\Storage\StorageInterface;
+use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageInterface;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {

@@ -7,9 +7,9 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler;
+namespace SolidWorx\Toggler;
 
-use Toggler\Storage\StorageInterface;
+use SolidWorx\Toggler\Storage\StorageInterface;
 
 class Config
 {

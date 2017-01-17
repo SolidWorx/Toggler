@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler\Storage;
+namespace SolidWorx\Toggler\Storage;
 
 interface StorageInterface
 {

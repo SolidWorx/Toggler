@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler\Twig\Extension;
+namespace SolidWorx\Toggler\Twig\Extension;
 
 use Toggler\Twig\Parser\ToggleTokenParser;
 

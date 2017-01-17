@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Tests\Toggler\Twig\Extension\Node;
+namespace SolidWorx\Tests\Toggler\Twig\Extension\Node;
 
-use Toggler\Twig\Node\ToggleNode;
+use SolidWorx\Toggler\Twig\Node\ToggleNode;
 
 if (class_exists('Twig_Test_NodeTestCase')) {
     class ToggleNodeTest extends \Twig_Test_NodeTestCase

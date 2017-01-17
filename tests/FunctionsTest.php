@@ -7,9 +7,9 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Tests\Toggler;
+namespace SolidWorx\Tests\Toggler;
 
-use Toggler\Config;
+use SolidWorx\Toggler\Config;
 
 class FunctionsTest extends \PHPUnit_Framework_TestCase
 {

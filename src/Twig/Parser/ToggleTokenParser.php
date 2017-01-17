@@ -7,9 +7,9 @@
  * @copyright Copyright (c) 2015
  */
 
-namespace Toggler\Twig\Parser;
+namespace SolidWorx\Toggler\Twig\Parser;
 
-use Toggler\Twig\Node\ToggleNode;
+use SolidWorx\Toggler\Twig\Node\ToggleNode;
 
 class ToggleTokenParser extends \Twig_TokenParser
 {
