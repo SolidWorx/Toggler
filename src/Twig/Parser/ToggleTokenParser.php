@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -16,7 +18,7 @@ class ToggleTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function parse(\Twig_Token $token)
+    public function parse(\Twig_Token $token): ToggleNode
     {
         $lineNo = $token->getLine();
         $feature = $this->parser->getExpressionParser()->parseExpression();
@@ -47,7 +49,7 @@ class ToggleTokenParser extends \Twig_TokenParser
                     throw new \Twig_Error_Syntax(
                         sprintf('Unexpected end of template. Twig was looking for the following tags "else", or "endtoggle" to close the "toggle" block started at line %d)', $lineNo),
                         $stream->getCurrent()->getLine(),
-                        $stream->getFilename()
+                        $stream->getSourceContext()
                     );
             }
         }
@@ -62,7 +64,7 @@ class ToggleTokenParser extends \Twig_TokenParser
      *
      * @return bool
      */
-    public function decideIfFork(\Twig_Token $token)
+    public function decideIfFork(\Twig_Token $token): bool
     {
         return $token->test(['else', 'endtoggle']);
     }
@@ -72,7 +74,7 @@ class ToggleTokenParser extends \Twig_TokenParser
      *
      * @return bool
      */
-    public function decideIfEnd(\Twig_Token $token)
+    public function decideIfEnd(\Twig_Token $token): bool
     {
         return $token->test(['endtoggle']);
     }
@@ -80,7 +82,7 @@ class ToggleTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function getTag()
+    public function getTag(): string
     {
         return 'toggle';
     }

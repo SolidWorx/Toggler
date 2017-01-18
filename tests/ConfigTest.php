@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -59,7 +61,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetException()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The config "non-foobar" does not exist');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The config "non-foobar" does not exist');
         $instance = Config::instance();
 
         $instance->get('non-foobar');
@@ -102,7 +105,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
 class Storage implements StorageInterface
 {
-    public function get($key)
+    public function get(string $key): bool
     {
         if ($key === 'foo') {
             return true;

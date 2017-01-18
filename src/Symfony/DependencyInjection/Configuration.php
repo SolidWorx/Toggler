@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -17,7 +19,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('toggler');
@@ -26,7 +28,7 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('config')
                 ->beforeNormalization()
                     ->ifString()
-                        ->then(function($value) { return array('service' => $value); })
+                        ->then(function($value): array { return array('service' => $value); })
                     ->end()
                 ->prototype('scalar')
             ->end()

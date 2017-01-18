@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -9,14 +11,14 @@
 
 namespace SolidWorx\Toggler\Twig\Extension;
 
-use Toggler\Twig\Parser\ToggleTokenParser;
+use SolidWorx\Toggler\Twig\Parser\ToggleTokenParser;
 
 class ToggleExtension extends \Twig_Extension
 {
     /**
      * {@inheritdoc}
      */
-    public function getTokenParsers()
+    public function getTokenParsers(): array
     {
         return [new ToggleTokenParser()];
     }
@@ -24,7 +26,7 @@ class ToggleExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new \Twig_SimpleFunction('toggle', 'toggle'),
@@ -34,7 +36,7 @@ class ToggleExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'toggler';
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -26,7 +28,7 @@ class Config
     /**
      * @return Config
      */
-    public static function instance()
+    public static function instance(): Config
     {
         if (!isset(self::$instance)) {
             self::$instance = new Config();
@@ -40,7 +42,7 @@ class Config
      *
      * @return Config
      */
-    public function setConfig($config)
+    public function setConfig($config): Config
     {
         $this->config = $config;
 
@@ -50,7 +52,7 @@ class Config
     /**
      * Clears the current config
      */
-    public function clear()
+    public function clear(): Config
     {
         $this->config = null;
 
@@ -63,8 +65,9 @@ class Config
      * @param string $value
      *
      * @return mixed
+     * @throws \InvalidArgumentException
      */
-    public function get($value)
+    public function get(string $value)
     {
         if (is_array($this->config) && array_key_exists($value, $this->config)) {
             return $this->config[$value];

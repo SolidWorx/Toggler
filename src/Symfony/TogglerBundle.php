@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -14,7 +16,7 @@ use SolidWorx\Toggler\Config;
 
 class TogglerBundle extends Bundle
 {
-    public function boot()
+    public function boot(): void
     {
         $config = null;
 

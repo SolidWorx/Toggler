@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -9,9 +11,9 @@
 
 namespace SolidWorx\Tests\Toggler;
 
-use Symfony\Component\ExpressionLanguage\Expression;
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Toggle;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 class ToggleTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +31,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         $config = Config::instance();
@@ -50,7 +52,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => 1,
             'baz' => '1',
-            'foobar' => 'on'
+            'foobar' => 'on',
         ];
 
         $config = Config::instance();
@@ -93,10 +95,10 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
     public function testisActiveCallback()
     {
         $features = [
-            'foo' => function (array $data) {
+            'foo' => function (array $data): bool {
                 return $data['value'] === 123;
             },
-            'bar' => function ($a, $b) {
+            'bar' => function ($a, $b): bool {
                 return ($a + $b) === 10;
             },
         ];
@@ -144,14 +146,15 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
     {
         $instance = Toggle::instance();
 
-        $this->assertSame(456, $instance->execute(function () {
+        $this->assertSame(456, $instance->execute(function (): int {
             return 456;
         }));
     }
 
     public function testExecuteException()
     {
-        $this->setExpectedException('Exception', 'Feature is not available');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Feature is not available');
 
         $instance = Toggle::instance();
 

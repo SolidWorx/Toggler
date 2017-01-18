@@ -1,16 +1,18 @@
 <?php
 
-use Symfony\Component\Yaml\Yaml;
+declare(strict_types=1);
+
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Storage\StorageInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
- * @param array|StorageInterface $features
+ * @param string|array|StorageInterface $features
  *
  * @return Config
  * @throws Exception
  */
-function toggleConfig($features)
+function toggleConfig($features): Config
 {
     $config = Config::instance();
 
@@ -41,7 +43,7 @@ function toggleConfig($features)
  *
  * @return mixed
  */
-function toggle($feature, $callback = null, $reverseCallback = null, $context = [])
+function toggle(string $feature, $callback = null, $reverseCallback = null, array $context = [])
 {
     $toggler = SolidWorx\Toggler\Toggle::instance();
 

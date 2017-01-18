@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -10,6 +12,7 @@
 namespace SolidWorx\Tests\Toggler;
 
 use SolidWorx\Toggler\Config;
+use Symfony\Component\Yaml\Yaml;
 
 class FunctionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,7 +46,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testToggleConfigWithYamlFile()
     {
-        if (!class_exists('Symfony\Component\Yaml\Yaml')){
+        if (!class_exists(Yaml::class)) {
             $this->markTestSkipped('The symfony/yaml component is needed to test yaml config files');
         }
 
@@ -61,7 +64,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testToggle()
     {
-        $callback = function () {
+        $callback = function (): string {
             return 'abcdef';
         };
 
@@ -96,7 +99,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testToggleFail()
     {
-        $callback = function () {
+        $callback = function (): string {
             return 'abcdef';
         };
 
@@ -109,8 +112,8 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
         toggleConfig($features);
 
-        $this->assertSame('abcdef', toggle('baz', function () {}, $callback));
-        $this->assertNull(toggle('baz', function () {}));
+        $this->assertSame('abcdef', toggle('baz', function (): void { }, $callback));
+        $this->assertNull(toggle('baz', function (): void { }));
     }
 
     protected function tearDown()

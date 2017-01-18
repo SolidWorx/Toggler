@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -49,7 +51,7 @@ class Toggle
     /**
      * @return Toggle
      */
-    public static function instance()
+    public static function instance(): Toggle
     {
         if (!isset(self::$instance)) {
             self::$instance = new Toggle(Config::instance());
@@ -64,7 +66,7 @@ class Toggle
      *
      * @return bool
      */
-    public function isActive($feature, array $context = [])
+    public function isActive(string $feature, array $context = []): bool
     {
         $value = $this->config->get($feature);
 
@@ -97,7 +99,7 @@ class Toggle
      *
      * @return bool
      */
-    private function isTruthy($value)
+    private function isTruthy($value): bool
     {
         if (is_bool($value)) {
             return true === $value;
@@ -124,7 +126,7 @@ class Toggle
      *
      * @return string
      */
-    private function generateKey($feature, array $context)
+    private function generateKey(string $feature, array $context): string
     {
         return serialize(['feature' => $feature, 'context' => $context]);
     }
@@ -134,9 +136,9 @@ class Toggle
      * @param mixed  $value
      * @param array  $context
      *
-     * @return array
+     * @return string
      */
-    private function evaluateExpression($feature, $value, array $context)
+    private function evaluateExpression(string $feature, $value, array $context)
     {
         $key = $this->generateKey($feature, $context);
 
@@ -157,7 +159,7 @@ class Toggle
      *
      * @return mixed
      */
-    private function evaluateCallback($feature, $value, array $context)
+    private function evaluateCallback(string $feature, $value, array $context)
     {
         $key = $this->generateKey($feature, $context);
         if (array_key_exists($key, $this->callback)) {

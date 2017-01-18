@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -18,5 +20,5 @@ interface StorageInterface
      *
      * @return bool
      */
-    public function get($key);
+    public function get(string $key): bool;
 }

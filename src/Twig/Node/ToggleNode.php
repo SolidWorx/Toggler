@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the toggler project.
  *
@@ -12,31 +14,29 @@ namespace SolidWorx\Toggler\Twig\Node;
 class ToggleNode extends \Twig_Node
 {
     /**
-     * @param \Twig_Node|string        $feature
-     * @param \Twig_NodeInterface      $body
-     * @param \Twig_NodeInterface|null $else
-     * @param null|string              $lineno
-     * @param null                     $tag
+     * @param \Twig_Node $feature
+     * @param \Twig_Node $body
+     * @param \Twig_Node $else
+     * @param \Twig_Node $variables
+     * @param int        $lineNo
+     * @param string     $tag
      */
-    public function __construct(
-        $feature,
-        \Twig_NodeInterface $body,
-        \Twig_NodeInterface $else = null,
-        \Twig_NodeInterface $variables = null,
-        $lineno = null,
-        $tag = null
-    ) {
-        parent::__construct(
-            [
-                'feature' => $feature,
-                'body' => $body,
-                'else' => $else,
-                'variables' => $variables,
-            ],
-            [],
-            $lineno,
-            $tag
-        );
+    public function __construct(\Twig_Node $feature, \Twig_Node $body, ?\Twig_Node $else, ?\Twig_Node $variables, int $lineNo, string $tag = null)
+    {
+        $nodes = [
+            'feature' => $feature,
+            'body' => $body,
+        ];
+
+        if (null !== $else) {
+            $nodes['else'] = $else;
+        }
+
+        if (null !== $variables) {
+            $nodes['variables'] = $variables;
+        }
+
+        parent::__construct($nodes, [], $lineNo, $tag);
     }
 
     /**
@@ -44,7 +44,7 @@ class ToggleNode extends \Twig_Node
      *
      * @param \Twig_Compiler $compiler A Twig_Compiler instance
      */
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(\Twig_Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
 
@@ -53,7 +53,7 @@ class ToggleNode extends \Twig_Node
             ->raw('toggle(')
             ->subcompile($this->getNode('feature'));
 
-        if ($this->hasNode('variables') && null !== $this->getNode('variables')) {
+        if ($this->hasNode('variables')) {
             $compiler->raw(', ')
                 ->subcompile($this->getNode('variables'));
         }
@@ -64,7 +64,7 @@ class ToggleNode extends \Twig_Node
             ->indent()
             ->subcompile($this->getNode('body'));
 
-        if ($this->hasNode('else') && null !== $this->getNode('else')) {
+        if ($this->hasNode('else')) {
             $compiler
                 ->outdent()
                 ->write("} else {\n")

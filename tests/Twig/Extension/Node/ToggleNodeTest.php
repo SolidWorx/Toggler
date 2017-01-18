@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of CSBill project.
  *
@@ -23,18 +25,21 @@ if (class_exists('Twig_Test_NodeTestCase')) {
                 new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
             ], [], 1);
             $else = null;
-            $node = new ToggleNode('foo', $t, $else, null, 1);
+            $node = new ToggleNode(new \Twig_Node_Text('foo', 1), $t, $else, null, 1, null);
 
             $this->assertEquals($t, $node->getNode('body'));
-            $this->assertEquals('foo', $node->getNode('feature'));
-            $this->assertNull($node->getNode('else'));
+            $this->assertEquals(new \Twig_Node_Text('foo', 1), $node->getNode('feature'));
+            $this->assertFalse($node->hasNode('else'));
 
             $else = new \Twig_Node_Print(new \Twig_Node_Expression_Name('bar', 1), 1);
-            $node = new ToggleNode('bar', $t, $else, null, 1);
+            $node = new ToggleNode(new \Twig_Node_Text('bar', 1), $t, $else, null, 1, null);
             $this->assertEquals($else, $node->getNode('else'));
         }
 
-        public function getTests()
+        /**
+         * @return array
+         */
+        public function getTests(): array
         {
             $tests = [];
 
@@ -48,7 +53,7 @@ if (class_exists('Twig_Test_NodeTestCase')) {
         /**
          * @return array
          */
-        private function getToggleTest()
+        private function getToggleTest(): array
         {
             $t = new \Twig_Node([
                 new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
@@ -64,13 +69,14 @@ if (toggle("foo")) {
     echo {$this->getVariableGetter('foo')};
 }
 EOF
+    ,
             ];
         }
 
         /**
          * @return array
          */
-        private function getToggleWithElseTest()
+        private function getToggleWithElseTest(): array
         {
             $t = new \Twig_Node([
                 new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
@@ -88,13 +94,14 @@ if (toggle("foo")) {
     echo {$this->getVariableGetter('bar')};
 }
 EOF
+    ,
             ];
         }
 
         /**
          * @return array
          */
-        private function getToggleWithContextTest()
+        private function getToggleWithContextTest(): array
         {
             $t = new \Twig_Node([
                 new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
@@ -115,6 +122,7 @@ if (toggle("foo", array("value1" => 12))) {
     echo {$this->getVariableGetter('foo')};
 }
 EOF
+    ,
             ];
         }
     }
