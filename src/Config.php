@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler;
 
 use SolidWorx\Toggler\Storage\StorageInterface;
-use Symfony\Component\Yaml\Yaml;
+use SolidWorx\Toggler\Storage\YamlFileStorage;
 
 class Config
 {
@@ -34,11 +34,7 @@ class Config
             $this->config = $config;
         } else if (is_file($file = realpath($config))) {
             if ('yml' === pathinfo($file, PATHINFO_EXTENSION)) {
-                if (!class_exists(Yaml::class)) {
-                    throw new \Exception('The Symfony Yaml component is needed in order to load config from yml file');
-                }
-
-                $this->config = Yaml::parse(file_get_contents($file));
+                $this->config = new YamlFileStorage($file);
             } else {
                 $this->config = require_once $file;
             }
