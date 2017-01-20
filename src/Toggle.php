@@ -75,7 +75,7 @@ final class Toggle
      */
     public function execute(callable $callback)
     {
-        return call_user_func($callback);
+        return $callback();
     }
 
     /**
@@ -139,22 +139,21 @@ final class Toggle
     }
 
     /**
-     * @param string $feature
-     * @param mixed  $value
-     * @param array  $context
+     * @param string   $feature
+     * @param callable $value
+     * @param array    $context
      *
      * @return mixed
      */
-    private function evaluateCallback(string $feature, $value, array $context)
+    private function evaluateCallback(string $feature, callable $value, array $context)
     {
         $key = $this->generateKey($feature, $context);
         if (array_key_exists($key, $this->callback)) {
             return $this->callback[$key];
         }
 
-        $value = call_user_func_array($value, $context);
-        $this->callback[$key] = $value;
+        $this->callback[$key] = $value(...$context);
 
-        return $value;
+        return $this->callback[$key];
     }
 }
