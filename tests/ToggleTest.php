@@ -14,17 +14,10 @@ namespace SolidWorx\Tests\Toggler;
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Toggle;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class ToggleTest extends \PHPUnit_Framework_TestCase
 {
-    public function testInstance()
-    {
-        $instance1 = Toggle::instance();
-        $instance2 = Toggle::instance();
-
-        $this->assertSame($instance1, $instance2);
-    }
-
     public function testIsActive()
     {
         $features = [
@@ -34,11 +27,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        $config = Config::instance();
-
-        $config->setConfig($features);
-
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config($features));
 
         $this->assertTrue($instance->isActive('foo'));
         $this->assertTrue($instance->isActive('bar'));
@@ -55,11 +44,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             'foobar' => 'on',
         ];
 
-        $config = Config::instance();
-
-        $config->setConfig($features);
-
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config($features));
 
         $this->assertTrue($instance->isActive('foo'));
         $this->assertTrue($instance->isActive('bar'));
@@ -78,11 +63,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             'bazbar' => new \StdClass,
         ];
 
-        $config = Config::instance();
-
-        $config->setConfig($features);
-
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config($features));
 
         $this->assertFalse($instance->isActive('foo'));
         $this->assertFalse($instance->isActive('bar'));
@@ -103,11 +84,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             },
         ];
 
-        $config = Config::instance();
-
-        $config->setConfig($features);
-
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config($features));
 
         // Call all these function twice to check that it is memoized correctly
         $this->assertTrue($instance->isActive('foo', [['value' => 123]]));
@@ -123,19 +100,11 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
 
     public function testisActiveExpression()
     {
-        if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
-            $this->markTestSkipped('The symfony/expression-language component is needed to test expressions');
-        }
-
         $features = [
             'foo' => new Expression('newValue > 10 and some["value"] < 10'),
         ];
 
-        $config = Config::instance();
-
-        $config->setConfig($features);
-
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config($features));
 
         // Call all these function twice to check that it is memoized correctly
         $this->assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));
@@ -144,7 +113,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
 
     public function testExecute()
     {
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config([]));
 
         $this->assertSame(456, $instance->execute(function (): int {
             return 456;
@@ -156,15 +125,10 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Feature is not available');
 
-        $instance = Toggle::instance();
+        $instance = new Toggle(new Config([]));
 
         $instance->execute(function () {
             throw new \Exception('Feature is not available');
         });
-    }
-
-    protected function tearDown()
-    {
-        Config::instance()->clear();
     }
 }

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler;
 
 use SolidWorx\Toggler\Config;
-use Symfony\Component\Yaml\Yaml;
 
 class FunctionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,15 +24,11 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        toggleConfig($features);
-
-        $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
+        $this->assertSame($features, $this->readAttribute(new Config($features), 'config'));
     }
 
     public function testToggleConfigWithFile()
     {
-        toggleConfig(__DIR__.'/stubs/config.php');
-
         $features = [
             'foo' => true,
             'bar' => true,
@@ -41,17 +36,11 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
+        $this->assertSame($features, $this->readAttribute(new Config(__DIR__.'/stubs/config.php'), 'config'));
     }
 
     public function testToggleConfigWithYamlFile()
     {
-        if (!class_exists(Yaml::class)) {
-            $this->markTestSkipped('The symfony/yaml component is needed to test yaml config files');
-        }
-
-        toggleConfig(__DIR__.'/stubs/config.yml');
-
         $features = [
             'foo' => true,
             'bar' => true,
@@ -59,9 +48,12 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        $this->assertSame($features, $this->readAttribute(Config::instance(), 'config'));
+        $this->assertSame($features, $this->readAttribute(new Config(__DIR__.'/stubs/config.yml'), 'config'));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testToggle()
     {
         $callback = function (): string {
@@ -80,6 +72,9 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('abcdef', toggle('foo', $callback));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testToggleReturn()
     {
         $features = [
@@ -97,6 +92,9 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(toggle('foobar'));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testToggleFail()
     {
         $callback = function (): string {
@@ -114,10 +112,5 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('abcdef', toggle('baz', function (): void { }, $callback));
         $this->assertNull(toggle('baz', function (): void { }));
-    }
-
-    protected function tearDown()
-    {
-        Config::instance()->clear();
     }
 }

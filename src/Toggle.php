@@ -14,13 +14,8 @@ namespace SolidWorx\Toggler;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-class Toggle
+final class Toggle
 {
-    /**
-     * @var Toggle
-     */
-    private static $instance;
-
     /**
      * @var Config
      */
@@ -43,21 +38,9 @@ class Toggle
     {
         $this->config = $config;
 
-        if (class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+        if (class_exists(ExpressionLanguage::class)) {
             $this->expressionLanguage = new ExpressionLanguage();
         }
-    }
-
-    /**
-     * @return Toggle
-     */
-    public static function instance(): Toggle
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new Toggle(Config::instance());
-        }
-
-        return self::$instance;
     }
 
     /**

@@ -16,14 +16,6 @@ use SolidWorx\Toggler\Storage\StorageInterface;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-    public function testInstance()
-    {
-        $instance1 = Config::instance();
-        $instance2 = Config::instance();
-
-        $this->assertSame($instance1, $instance2);
-    }
-
     public function testSetConfig()
     {
         $features = [
@@ -33,11 +25,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'foobar' => false
         ];
 
-        $instance = Config::instance();
+        $config = new Config($features);
 
-        $instance->setConfig($features);
-
-        $this->assertSame($features, $this->readAttribute($instance, 'config'));
+        $this->assertSame($features, $this->readAttribute($config, 'config'));
     }
 
     public function testGet()
@@ -49,23 +39,21 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'foobar' => false
         ];
 
-        $instance = Config::instance();
+        $config = new Config($features);
 
-        $instance->setConfig($features);
-
-        $this->assertTrue($instance->get('foo'));
-        $this->assertTrue($instance->get('bar'));
-        $this->assertFalse($instance->get('baz'));
-        $this->assertFalse($instance->get('foobar'));
+        $this->assertTrue($config->get('foo'));
+        $this->assertTrue($config->get('bar'));
+        $this->assertFalse($config->get('baz'));
+        $this->assertFalse($config->get('foobar'));
     }
 
     public function testGetException()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The config "non-foobar" does not exist');
-        $instance = Config::instance();
+        $config = new Config([]);
 
-        $instance->get('non-foobar');
+        $config->get('non-foobar');
     }
 
     public function testStorage()
@@ -86,20 +74,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'foobar' => false
         ];
 
-        $instance = Config::instance();
+        $config = new Config($features);
 
-        $instance->setConfig($features);
+        $this->assertSame($features, $this->readAttribute($config, 'config'));
 
-        $this->assertSame($features, $this->readAttribute($instance, 'config'));
+        $config->clear();
 
-        $instance->clear();
-
-        $this->assertSame(null, $this->readAttribute($instance, 'config'));
-    }
-
-    protected function tearDown()
-    {
-        Config::instance()->clear();
+        $this->assertSame(null, $this->readAttribute($config, 'config'));
     }
 }
 

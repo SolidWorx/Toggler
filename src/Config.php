@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler;
 
 use SolidWorx\Toggler\Storage\StorageInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
@@ -21,32 +22,25 @@ class Config
     private $config;
 
     /**
-     * @var Config
-     */
-    private static $instance;
-
-    /**
-     * @return Config
-     */
-    public static function instance(): Config
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new Config();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @param array|StorageInterface $config
+     * @param array|StorageInterface|string $config
      *
-     * @return Config
+     * @throws \Exception
      */
-    public function setConfig($config): Config
+    public function __construct($config)
     {
-        $this->config = $config;
+        if (is_array($config) || $config instanceof StorageInterface) {
+            $this->config = $config;
+        } else if (is_file($file = realpath($config))) {
+            if ('yml' === pathinfo($file, PATHINFO_EXTENSION)) {
+                if (!class_exists(Yaml::class)) {
+                    throw new \Exception('The Symfony Yaml component is needed in order to load config from yml file');
+                }
 
-        return $this;
+                $this->config = Yaml::parse(file_get_contents($file));
+            } else {
+                $this->config = require_once $file;
+            }
+        }
     }
 
     /**

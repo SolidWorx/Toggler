@@ -2,9 +2,16 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the toggler project.
+ *
+ * @author    pierre
+ * @copyright Copyright (c) 2015
+ */
+
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Storage\StorageInterface;
-use Symfony\Component\Yaml\Yaml;
+use SolidWorx\Toggler\Toggle;
 
 /**
  * @param string|array|StorageInterface $features
@@ -12,27 +19,15 @@ use Symfony\Component\Yaml\Yaml;
  * @return Config
  * @throws Exception
  */
-function toggleConfig($features): Config
+function toggleConfig($features = null): Config
 {
-    $config = Config::instance();
+    static $config;
 
-    if (is_array($features) || $features instanceof StorageInterface) {
-        return $config->setConfig($features);
+    if (!$config) {
+        $config = new Config($features);
     }
 
-    if (is_file($file = realpath($features))) {
-        if ('yml' === pathinfo($file, PATHINFO_EXTENSION)) {
-            if (!class_exists('Symfony\Component\Yaml\Yaml')) {
-                throw new \Exception('The Symfony Yaml component is needed in order to load config from yml file');
-            }
-
-            return $config->setConfig(Yaml::parse(file_get_contents($file)));
-        }
-
-        $values = require_once $file;
-
-        return $config->setConfig($values);
-    }
+    return $config;
 }
 
 /**
@@ -45,7 +40,11 @@ function toggleConfig($features): Config
  */
 function toggle(string $feature, $callback = null, $reverseCallback = null, array $context = [])
 {
-    $toggler = SolidWorx\Toggler\Toggle::instance();
+    static $toggle;
+
+    if (!$toggle) {
+        $toggle = new Toggle(toggleConfig());
+    }
 
     if (empty($context) && is_array($callback) && !is_callable($callback)) {
         $context = $callback;
@@ -57,15 +56,15 @@ function toggle(string $feature, $callback = null, $reverseCallback = null, arra
         $reverseCallback = null;
     }
 
-    $active = $toggler->isActive($feature, $context);
+    $active = $toggle->isActive($feature, $context);
 
     if (null === $callback) {
         return $active;
     }
 
     if ($active) {
-        return $toggler->execute($callback);
+        return $toggle->execute($callback);
     } elseif (null !== $reverseCallback) {
-        return $toggler->execute($reverseCallback);
+        return $toggle->execute($reverseCallback);
     }
 }
