@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the toggler project.
+ * This file is part of the Toggler package.
  *
- * @author    pierre
- * @copyright Copyright (c) 2015
+ * (c) SolidWorx <open-source@solidworx.co>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 use SolidWorx\Toggler\Config;

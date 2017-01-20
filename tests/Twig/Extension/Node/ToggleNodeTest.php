@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of CSBill project.
+ * This file is part of the Toggler package.
  *
- * (c) 2013-2015 Pierre du Plessis <info@customscripts.co.za>
+ * (c) SolidWorx <open-source@solidworx.co>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace SolidWorx\Tests\Toggler\Twig\Extension\Node;
