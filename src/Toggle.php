@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler;
 
+use SolidWorx\Toggler\Storage\StorageInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class Toggle
 {
     /**
-     * @var Config
+     * @var StorageInterface
      */
     private $config;
 
@@ -34,9 +35,9 @@ final class Toggle
     private $expressionLanguage;
 
     /**
-     * @param Config $config
+     * @param StorageInterface $config
      */
-    public function __construct(Config $config)
+    public function __construct(StorageInterface $config)
     {
         $this->config = $config;
 

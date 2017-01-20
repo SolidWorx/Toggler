@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler;
 
 use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\ArrayStorage;
 use SolidWorx\Toggler\Storage\StorageInterface;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
@@ -24,12 +25,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         $config = new Config($features);
 
-        $this->assertSame($features, $this->readAttribute($config, 'config'));
+        $this->assertEquals(new ArrayStorage($features), $this->readAttribute($config, 'config'));
     }
 
     public function testGet()
@@ -38,7 +39,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'foo' => true,
             'bar' => true,
             'baz' => false,
-            'foobar' => false
+            'foobar' => false,
         ];
 
         $config = new Config($features);
@@ -49,15 +50,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($config->get('foobar'));
     }
 
-    public function testGetException()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The config "non-foobar" does not exist');
-        $config = new Config([]);
-
-        $config->get('non-foobar');
-    }
-
     public function testStorage()
     {
         toggleConfig(new Storage());
@@ -65,24 +57,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(toggle('foo'));
         $this->assertFalse(toggle('bar'));
         $this->assertFalse(toggle('baz'));
-    }
-
-    public function testClear()
-    {
-        $features = [
-            'foo' => true,
-            'bar' => true,
-            'baz' => false,
-            'foobar' => false
-        ];
-
-        $config = new Config($features);
-
-        $this->assertSame($features, $this->readAttribute($config, 'config'));
-
-        $config->clear();
-
-        $this->assertSame(null, $this->readAttribute($config, 'config'));
     }
 }
 
@@ -99,6 +73,6 @@ class Storage implements StorageInterface
 
     public function set(string $key, bool $value): bool
     {
-       // noop
+        // noop
     }
 }

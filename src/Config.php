@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler;
 
+use SolidWorx\Toggler\Storage\ArrayStorage;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 
-class Config
+class Config implements StorageInterface
 {
     /**
      * @var array|StorageInterface
@@ -24,51 +25,44 @@ class Config
     private $config;
 
     /**
-     * @param array|StorageInterface|string $config
+     * @param mixed $config
      *
      * @throws \Exception
      */
     public function __construct($config)
     {
-        if (is_array($config) || $config instanceof StorageInterface) {
-            $this->config = $config;
-        } else if (is_file($file = realpath($config))) {
-            if ('yml' === pathinfo($file, PATHINFO_EXTENSION)) {
-                $this->config = new YamlFileStorage($file);
-            } else {
-                $this->config = require_once $file;
-            }
+        switch (true) {
+            case is_array($config):
+                $this->config = new ArrayStorage($config);
+                break;
+            case $config instanceof StorageInterface:
+                $this->config = $config;
+                break;
+            case is_file($config):
+                if ('yml' === pathinfo($config, PATHINFO_EXTENSION)) {
+                    $this->config = new YamlFileStorage($config);
+                } else {
+                    $this->config = new ArrayStorage(require_once $config);
+                }
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('The 1st argument for %s expects an array, string or instance of StorageInterface, %s given', __METHOD__, is_object($config) ? get_class($config) : gettype($config)));
         }
     }
 
     /**
-     * Clears the current config
-     */
-    public function clear(): Config
-    {
-        $this->config = null;
-
-        return $this;
-    }
-
-    /**
-     * Get a config value
-     *
-     * @param string $value
-     *
-     * @return mixed
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
     public function get(string $value)
     {
-        if (is_array($this->config) && array_key_exists($value, $this->config)) {
-            return $this->config[$value];
-        }
+        return $this->config->get($value);
+    }
 
-        if ($this->config instanceof StorageInterface) {
-            return $this->config->get($value);
-        }
-
-        throw new \InvalidArgumentException(sprintf('The config "%s" does not exist', $value));
+    /**
+     * {@inheritdoc}
+     */
+    public function set(string $key, bool $value)
+    {
+        return $this->config->set($key, $value);
     }
 }

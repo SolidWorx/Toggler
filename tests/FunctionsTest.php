@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler;
 
 use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\ArrayStorage;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 
 class FunctionsTest extends \PHPUnit_Framework_TestCase
@@ -27,7 +28,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        $this->assertSame($features, $this->readAttribute(new Config($features), 'config'));
+        $this->assertEquals(new ArrayStorage($features), $this->readAttribute(new Config($features), 'config'));
     }
 
     public function testToggleConfigWithFile()
@@ -39,7 +40,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        $this->assertSame($features, $this->readAttribute(new Config(__DIR__.'/stubs/config.php'), 'config'));
+        $this->assertEquals(new ArrayStorage($features), $this->readAttribute(new Config(__DIR__.'/stubs/config.php'), 'config'));
     }
 
     public function testToggleConfigWithYamlFile()
@@ -108,7 +109,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
         toggleConfig($features);
 
-        $this->assertSame('abcdef', toggle('baz', function (): void { }, $callback));
+        $this->assertEquals('abcdef', toggle('baz', function (): void { }, $callback));
         $this->assertNull(toggle('baz', function (): void { }));
     }
 }

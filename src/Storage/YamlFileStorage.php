@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Toggler package.
  *
@@ -13,13 +15,8 @@ namespace SolidWorx\Toggler\Storage;
 
 use Symfony\Component\Yaml\Yaml;
 
-class YamlFileStorage implements StorageInterface
+class YamlFileStorage extends ArrayStorage
 {
-    /**
-     * @var array
-     */
-    private $config;
-
     /**
      * @var string
      */
@@ -36,15 +33,8 @@ class YamlFileStorage implements StorageInterface
         }
 
         $this->filePath = $filePath;
-        $this->config = Yaml::parse(file_get_contents($this->filePath));
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get(string $key)
-    {
-        return $this->config[$key] ?? null;
+        parent::__construct(Yaml::parse(file_get_contents($this->filePath)));
     }
 
     /**
@@ -52,7 +42,7 @@ class YamlFileStorage implements StorageInterface
      */
     public function set(string $key, bool $value)
     {
-        $this->config[$key] = $value;
+        parent::set($key, $value);
 
         file_put_contents($this->filePath, Yaml::dump($this->config));
     }
