@@ -31,18 +31,29 @@ class Config implements StorageInterface
      */
     public function __construct($config)
     {
+        $this->config = self::factory($config);
+    }
+
+    /**
+     * @param $config
+     *
+     * @return StorageInterface
+     * @throws \InvalidArgumentException
+     */
+    public static function factory($config): StorageInterface
+    {
         switch (true) {
-            case is_array($config):
-                $this->config = new ArrayStorage($config);
-                break;
             case $config instanceof StorageInterface:
-                $this->config = $config;
+                return $config;
+                break;
+            case is_array($config):
+                return new ArrayStorage($config);
                 break;
             case is_file($config):
                 if ('yml' === pathinfo($config, PATHINFO_EXTENSION)) {
-                    $this->config = new YamlFileStorage($config);
+                    return new YamlFileStorage($config);
                 } else {
-                    $this->config = new ArrayStorage(require_once $config);
+                    return new ArrayStorage(require_once $config);
                 }
                 break;
             default:
