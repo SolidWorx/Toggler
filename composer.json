@@ -14,9 +14,11 @@
         }
     ],
     "autoload": {
-        "files": ["src/functions.php"],
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {
-            "SolidWorx\\Toggler\\" : "./src"
+            "SolidWorx\\Toggler\\": "./src"
         }
     },
     "require": {
@@ -28,7 +30,8 @@
         "symfony/yaml": "^3.2",
         "symfony/expression-language": "^3.2",
         "symfony/framework-bundle": "^3.2",
-        "symfony/phpunit-bridge": "^3.2"
+        "symfony/phpunit-bridge": "^3.2",
+        "predis/predis": "^1.1"
     },
     "suggest": {
         "twig/twig": "To use the twig extension",

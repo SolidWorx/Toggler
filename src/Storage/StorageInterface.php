@@ -20,7 +20,17 @@ interface StorageInterface
      *
      * @param string $key
      *
-     * @return bool
+     * @return bool|string|int
      */
-    public function get(string $key): bool;
+    public function get(string $key);
+
+    /**
+     * Update a value in the storage
+     *
+     * @param string $key
+     * @param bool   $value
+     *
+     * @return bool|string|int
+     */
+    public function set(string $key, bool $value);
 }

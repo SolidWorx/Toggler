@@ -96,4 +96,9 @@ class Storage implements StorageInterface
 
         return false;
     }
+
+    public function set(string $key, bool $value): bool
+    {
+       // noop
+    }
 }
