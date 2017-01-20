@@ -17,7 +17,7 @@ use SolidWorx\Toggler\Storage\ArrayStorage;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 
-class Config implements StorageInterface
+final class Config implements StorageInterface
 {
     /**
      * @var array|StorageInterface
@@ -50,11 +50,18 @@ class Config implements StorageInterface
                 return new ArrayStorage($config);
                 break;
             case is_file($config):
-                if ('yml' === pathinfo($config, PATHINFO_EXTENSION)) {
+                $extension = strtolower(pathinfo($config, PATHINFO_EXTENSION));
+
+                if ('yml' === $extension) {
                     return new YamlFileStorage($config);
-                } else {
+                }
+
+                if ('php' === $extension) {
                     return new ArrayStorage(require_once $config);
                 }
+
+                throw new \InvalidArgumentException(sprintf('File with extension %s is not supported', $extension));
+
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf('The 1st argument for %s expects an array, string or instance of StorageInterface, %s given', __METHOD__, is_object($config) ? get_class($config) : gettype($config)));
