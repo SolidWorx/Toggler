@@ -52,7 +52,7 @@ class ToggleNode extends \Twig_Node
 
         $compiler
             ->write('if (')
-            ->raw('toggle(')
+            ->raw("\$this->env->getExtension('SolidWorx\\Toggler\\Twig\\Extension\\ToggleExtension')->getToggle()->isActive(")
             ->subcompile($this->getNode('feature'));
 
         if ($this->hasNode('variables')) {

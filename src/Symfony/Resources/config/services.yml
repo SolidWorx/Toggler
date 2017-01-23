@@ -8,7 +8,12 @@
  ##
 
 services:
+    toggler.toggle:
+        class: SolidWorx\Toggler\Toggle
+        arguments: ['?']
+
     toggler.twig.extension:
-        class: Toggler\Twig\Extension\ToggleExtension
+        class: SolidWorx\Toggler\Twig\Extension\ToggleExtension
+        arguments: ['@toggler.toggle']
         tags:
             - { name: twig.extension }

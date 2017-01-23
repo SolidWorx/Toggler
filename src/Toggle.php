@@ -152,7 +152,7 @@ final class Toggle
             return $this->callback[$key];
         }
 
-        $this->callback[$key] = $value(...$context);
+        $this->callback[$key] = call_user_func_array($value, $context);
 
         return $this->callback[$key];
     }

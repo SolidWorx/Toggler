@@ -15,6 +15,7 @@ namespace SolidWorx\Toggler\Symfony\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class Configuration implements ConfigurationInterface
 {
@@ -26,13 +27,51 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('toggler');
 
-        $rootNode->children()
-            ->arrayNode('config')
-                ->beforeNormalization()
-                    ->ifString()
-                        ->then(function($value): array { return array('service' => $value); })
+        $node = $rootNode
+            ->children()
+                ->arrayNode('config')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->children()
+                        ->scalarNode('storage')
+                            ->info('Set the storage handler service')
+                            ->example('@redis.storage')
+                            ->cannotBeEmpty()
+                            ->defaultNull()
+                            ->treatTrueLike(null)
+                            ->treatFalseLike(null)
+                        ->end()
+                        ->arrayNode('features')
+                            ->useAttributeAsKey('name')
+                            ->info('An array containing available features. The feature name is the key, and the status of the feature is the value')
+                            ->example(['foo' => 'true', 'bar' => 'false'])
+                            ->prototype('scalar')
+                                ->beforeNormalization()
+                                    ->ifArray()
+                                        ->then(function (array $value) {
+                                            if (2 !== count($value)) {
+                                                throw new InvalidConfigurationException('Callbacks should contain exactly two keys');
+                                            }
+
+                                            return implode('::', $value);
+                                        })
+                                ->end()
+                            ->end()
+                        ->end()
                     ->end()
-                ->prototype('scalar')
+                    ->validate()
+                        ->ifTrue(function ($config) {
+                            return !empty($config['storage']) && !empty($config['features']);
+                        })
+                        ->thenInvalid('You should only specify one of "storage" or "features" values, not both.')
+                    ->end()
+                    ->validate()
+                        ->ifTrue(function ($config) {
+                            return empty($config['storage']) && empty($config['features']);
+                        })
+                        ->thenInvalid('At least one of "storage" or "features" must be set.')
+                    ->end()
+                ->end()
             ->end()
         ->end();
 

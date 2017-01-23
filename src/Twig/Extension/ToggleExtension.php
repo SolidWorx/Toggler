@@ -13,10 +13,29 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Twig\Extension;
 
+use SolidWorx\Toggler\Toggle;
 use SolidWorx\Toggler\Twig\Parser\ToggleTokenParser;
 
 class ToggleExtension extends \Twig_Extension
 {
+    /**
+     * @var Toggle
+     */
+    private $toggle;
+
+    public function __construct(Toggle $toggle)
+    {
+        $this->toggle = $toggle;
+    }
+
+    /**
+     * @return Toggle
+     */
+    public function getToggle(): Toggle
+    {
+        return $this->toggle;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -31,7 +50,7 @@ class ToggleExtension extends \Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction('toggle', 'toggle'),
+            new \Twig_SimpleFunction('toggle', [$this->toggle, 'isActive']),
         ];
     }
 
