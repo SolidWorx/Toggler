@@ -8,9 +8,33 @@
  ##
 
 services:
+
+    toggler.expression.language.provider.dependency_injection:
+        class: Symfony\Component\DependencyInjection\ExpressionLanguageProvider
+        public: false
+
+    toggler.expression.language.provider.security:
+        class: Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider
+        public: false
+
+    toggler.expression.language:
+        class: Symfony\Component\ExpressionLanguage\ExpressionLanguage
+        public: false
+        calls:
+            - ['registerProvider', ['@toggler.expression.language.provider.dependency_injection']]
+            - ['registerProvider', ['@toggler.expression.language.provider.security']]
+
     toggler.toggle:
         class: SolidWorx\Toggler\Toggle
-        arguments: ['?']
+        arguments: ['?', '@toggler.expression.language']
+
+    toggler.symfony.toggle:
+        class: SolidWorx\Toggler\Symfony\Toggle
+        decorates: toggler.toggle
+        public: false
+        arguments: ['@toggler.symfony.toggle.inner']
+        calls:
+            - ['setContainer', ['@service_container']]
 
     toggler.twig.extension:
         class: SolidWorx\Toggler\Twig\Extension\ToggleExtension

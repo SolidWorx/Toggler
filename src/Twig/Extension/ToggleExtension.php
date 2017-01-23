@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Twig\Extension;
 
-use SolidWorx\Toggler\Toggle;
+use SolidWorx\Toggler\ToggleInterface;
 use SolidWorx\Toggler\Twig\Parser\ToggleTokenParser;
 
 class ToggleExtension extends \Twig_Extension
 {
     /**
-     * @var Toggle
+     * @var ToggleInterface
      */
     private $toggle;
 
-    public function __construct(Toggle $toggle)
+    public function __construct(ToggleInterface $toggle)
     {
         $this->toggle = $toggle;
     }
 
     /**
-     * @return Toggle
+     * @return ToggleInterface
      */
-    public function getToggle(): Toggle
+    public function getToggle(): ToggleInterface
     {
         return $this->toggle;
     }

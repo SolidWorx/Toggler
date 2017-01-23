@@ -17,7 +17,7 @@ use SolidWorx\Toggler\Storage\StorageInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-final class Toggle
+final class Toggle implements ToggleInterface
 {
     /**
      * @var StorageInterface
@@ -35,14 +35,15 @@ final class Toggle
     private $expressionLanguage;
 
     /**
-     * @param StorageInterface $config
+     * @param StorageInterface   $config
+     * @param ExpressionLanguage $expressionLanguage
      */
-    public function __construct(StorageInterface $config)
+    public function __construct(StorageInterface $config, ExpressionLanguage $expressionLanguage = null)
     {
         $this->config = $config;
 
         if (class_exists(ExpressionLanguage::class)) {
-            $this->expressionLanguage = new ExpressionLanguage();
+            $this->expressionLanguage = $expressionLanguage ?? new ExpressionLanguage();
         }
     }
 
