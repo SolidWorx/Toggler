@@ -5,7 +5,11 @@
     "license": "MIT",
     "keywords": [
         "feature toggle",
-        "feature switch"
+        "feature switch",
+        "feature library",
+        "toggle",
+        "switch",
+        "feature"
     ],
     "authors": [
         {
