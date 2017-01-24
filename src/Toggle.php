@@ -25,11 +25,6 @@ final class Toggle implements ToggleInterface
     private $config;
 
     /**
-     * @var array
-     */
-    private $callback = [];
-
-    /**
      * @var ExpressionLanguage
      */
     private $expressionLanguage;
@@ -109,17 +104,6 @@ final class Toggle implements ToggleInterface
 
     /**
      * @param string $feature
-     * @param array  $context
-     *
-     * @return string
-     */
-    private function generateKey(string $feature, array $context): string
-    {
-        return serialize(['feature' => $feature, 'context' => $context]);
-    }
-
-    /**
-     * @param string $feature
      * @param mixed  $value
      * @param array  $context
      *
@@ -127,12 +111,6 @@ final class Toggle implements ToggleInterface
      */
     private function evaluateExpression(string $feature, $value, array $context)
     {
-        $key = $this->generateKey($feature, $context);
-
-        if (array_key_exists($key, $this->callback)) {
-            return $this->callback[$key];
-        }
-
         $value = $this->expressionLanguage->evaluate($value, $context);
         $this->callback[$key] = $value;
 
@@ -148,13 +126,6 @@ final class Toggle implements ToggleInterface
      */
     private function evaluateCallback(string $feature, callable $value, array $context)
     {
-        $key = $this->generateKey($feature, $context);
-        if (array_key_exists($key, $this->callback)) {
-            return $this->callback[$key];
-        }
-
-        $this->callback[$key] = call_user_func_array($value, $context);
-
-        return $this->callback[$key];
+        return call_user_func_array($value, $context);
     }
 }
