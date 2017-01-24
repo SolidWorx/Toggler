@@ -9,6 +9,12 @@
 
 services:
 
+    toggler.command.set_value:
+        class: SolidWorx\Toggler\Symfony\Command\ToggleSetCommand
+        arguments: ['?']
+        tags:
+            - { name: console.command }
+
     toggler.expression.language.provider.dependency_injection:
         class: Symfony\Component\DependencyInjection\ExpressionLanguageProvider
         public: false

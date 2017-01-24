@@ -37,6 +37,7 @@ class TogglerExtension extends Extension
         $loader->load('services.yml');
 
         $definition = $container->getDefinition('toggler.toggle');
+        $commandDefinition = $container->getDefinition('toggler.command.set_value');
 
         if (!empty($config['config']['storage'])) {
             $service = $config['config']['storage'];
@@ -48,6 +49,7 @@ class TogglerExtension extends Extension
             $service = substr($service, 1);
 
             $definition->replaceArgument(0, new Reference($service));
+            $commandDefinition->replaceArgument(0, new Reference($service));
 
             return;
         }
@@ -82,6 +84,6 @@ class TogglerExtension extends Extension
         $storageDefinition->setLazy(true);
 
         $definition->replaceArgument(0, $storageDefinition);
-
+        $commandDefinition->replaceArgument(0, $storageDefinition);
     }
 }
