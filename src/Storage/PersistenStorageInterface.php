@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
-interface StorageInterface
+interface PersistenStorageInterface extends StorageInterface
 {
     /**
-     * Reads a key from the storage
+     * Update a value in the storage
      *
      * @param string $key
+     * @param bool   $value
      *
      * @return bool|string|int
      */
-    public function get(string $key);
+    public function set(string $key, bool $value);
 }

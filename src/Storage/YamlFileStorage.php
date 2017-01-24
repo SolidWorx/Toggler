@@ -15,7 +15,7 @@ namespace SolidWorx\Toggler\Storage;
 
 use Symfony\Component\Yaml\Yaml;
 
-class YamlFileStorage extends ArrayStorage
+class YamlFileStorage extends ArrayStorage implements PersistenStorageInterface
 {
     /**
      * @var string
@@ -42,7 +42,7 @@ class YamlFileStorage extends ArrayStorage
      */
     public function set(string $key, bool $value)
     {
-        parent::set($key, $value);
+        $this->config[$key] = $value;
 
         file_put_contents($this->filePath, Yaml::dump($this->config));
     }

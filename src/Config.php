@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler;
 
 use SolidWorx\Toggler\Storage\ArrayStorage;
+use SolidWorx\Toggler\Storage\PersistenStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 
-final class Config implements StorageInterface
+final class Config implements PersistenStorageInterface
 {
     /**
      * @var array|StorageInterface
@@ -81,6 +82,10 @@ final class Config implements StorageInterface
      */
     public function set(string $key, bool $value)
     {
+        if (!$this->config instanceof PersistenStorageInterface) {
+            throw new \RuntimeException(sprintf('Cannot change the value for feature %s as storage %s does not implement PersistenStorageInterface', $key, get_class($this->config)));
+        }
+
         return $this->config->set($key, $value);
     }
 }

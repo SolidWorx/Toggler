@@ -32,12 +32,4 @@ class ArrayStorage implements StorageInterface
     {
         return $this->config[$key] ?? null;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function set(string $key, bool $value)
-    {
-        $this->config[$key] = $value;
-    }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
-class RedisStorage implements StorageInterface
+class RedisStorage implements PersistenStorageInterface
 {
     /**
      * @var \Predis\Client|\Redis|\RedisArray|\RedisCluster
