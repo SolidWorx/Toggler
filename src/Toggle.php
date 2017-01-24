@@ -101,10 +101,7 @@ final class Toggle implements ToggleInterface
      */
     private function evaluateExpression(string $feature, $value, array $context)
     {
-        $value = $this->expressionLanguage->evaluate($value, $context);
-        $this->callback[$key] = $value;
-
-        return $value;
+        return $this->expressionLanguage->evaluate($value, $context);
     }
 
     /**
