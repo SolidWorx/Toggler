@@ -36,5 +36,10 @@
         "symfony/yaml": "To pass yml files to the config",
         "symfony/symfony": "To enable Symfony integration",
         "symfony/expression-language": "To use expressions for conditions"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     }
 }
