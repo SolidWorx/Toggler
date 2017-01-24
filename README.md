@@ -1,6 +1,6 @@
 # Toggler
 
-[![Build Status](https://travis-ci.org/pierredup/toggler.svg)](https://travis-ci.org/pierredup/toggler)
+[![Build Status](https://travis-ci.org/solidworx/toggler.svg)](https://travis-ci.org/solidworx/toggler)
 
 Toggler is a feature toggle library for PHP. It allows you to enable or disable features based on a toggle switch.
 This is useful in a continues deployment environment, where you can deploy not-yet-ready features which are disabled, and just enable them when the feature is complete.
@@ -24,23 +24,73 @@ This is useful in a continues deployment environment, where you can deploy not-y
 
 ## Requirements
 
-Toggler requires PHP 5.4+
+Toggler requires PHP 7.1+ and Symfony 3.2+
 
 ## Installation
 
 ### Composer
 
-``` bash
-$ composer require pierredup/toggler:~1.0
+```bash
+$ composer require solidworx/toggler:^2.0
 ```
 
 ## Usage
 
-### Config
+### Quick Example
 
-To configure Toggler, you need to set the feature flags with a truthy value if it should be enabled.
+```php
+<?php
 
-To enable a feature, any of the following truthy values are accepted:
+use SolidWorx\Toggler\Toggle;
+use SolidWorx\Toggler\Config;
+
+$features = [
+    'foo' => true,
+    'bar' => false
+];
+
+$toggle = new Toggle(new Config($features));
+```
+
+You can then check if a feature is active or not using the `isActive` call
+
+```php
+<?php
+
+$toggle->isActive('foo'); // true
+$toggle->isActive('bar'); // false
+```
+
+## Config
+
+Toggler comes with many storage adapters to store the configuration. The most basic is the `ArrayStorage` class, which takes an array of features.
+
+The `Config` class acts as a factory to create the config. You can pass it any value, and it will determine which storage adapter to use.
+To get an instance of the config, you can either create a new instance of the `Config` class, or use the static `factory` method
+
+```php
+<?php
+
+use SolidWorx\Toggler\Config;
+
+$features = [
+    'foo' => true,
+    'bar' => false
+];
+
+$config = new Config($features);
+// Or using the factory method
+$config = Config::factory($features); // $config will be an instance of ArrayStorage
+
+// Using YAML
+$config = new Config('/path/to/config.yml');
+// Or using the factory method
+$config = Config::factory('/path/to/config.yml'); // $config will be an instance of YamlFileStorage
+```
+
+Each feature flag need to be a truthy value in order to be enabled.
+
+The following truthy values are accepted:
 
 * (boolean) true
 * (int) 1
@@ -48,32 +98,50 @@ To enable a feature, any of the following truthy values are accepted:
 * 'on'
 * 'true'
 
-The config needs to be an array with the name of the feature as the key, and a truthy value, callback or [expression](#using-symfony-expression-language) as the value.
+### Using callbacks
 
-``` php
+You can also use closures or callbacks to retrieve the value
+
+```php
+<?php
+
+$features = [
+    'foo' => function () {
+        return true;
+    },
+    'bar' => [$myObject, 'checkBar']
+];
+```
+
+## Storage Adapters
+
+Toggler supports various storage adapters to store the config.
+
+### Array
+
+The most basic config is using an array with the `ArrayStorage` adapter.
+
+```php
+<?php
+
+use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\ArrayStorage;
+use SolidWorx\Toggler\Toggle;
+
 $features = [
     'foo' => true,
     'bar' => false
 ];
 
-toggleConfig($features);
+$toggle = new Toggle(new ArrayStorage($features));
+
+// Or using the Config factory
+$toggle = new Toggle(Config::factory($features));
+// or
+$toggle = new Toggle(new Config($features));
 ```
 
-You can also pass through a path to a PHP file which should return an array with the config:
-
-``` php
-// config.php
-return [
-    'foo' => true,
-    'bar' => false
-];
-```
-
-``` php
-toggleConfig('/path/to/config.php');
-```
-
-#### Using YAML files
+### YAML
 
 In order to use yml files for config, you need to include the [Symfony Yaml Component](http://symfony.com/doc/current/components/yaml/index.html)
 
@@ -85,7 +153,7 @@ $ composer require symfony/yaml
 
 Then you can define your config using a yaml file
 
-``` php
+```php
 // config.yml
 foo: true
 bar: false
@@ -93,78 +161,131 @@ bar: false
 
 Pass the path to the yml file to your config
 
-``` php
-toggleConfig('/path/to/config.yml');
+```php
+<?php
+
+use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\YamlFileStorage;
+use SolidWorx\Toggler\Toggle;
+
+$toggle = new Toggle(new YamlFileStorage('/path/to/config.yml'));
+
+// Or using the Config factory
+$toggle = new Toggle(Config::factory('/path/to/config.yml'));
+// or
+$toggle = new Toggle(new Config('/path/to/config.yml'));
 ```
 
-### Toggle a feature
+### PHP File
 
-To toggle a feature, use the `toggle` function, which takes the feature name as the first argument, and a callback as the second argument.
+You can store your config in a separate PHP file.
+This fille needs to return an array with the config.
+By default, PHP files always use the `ArrayStorage` adapter.
 
-``` php
-toggle(
-    'foobar',
-    function () {
-        /* will be executed when feature 'foobar' is enabled */
-    }
-);
+```php
+<?php
+
+// config.php
+return[
+    'foo' => true,
+    'bar' => false,
+];
 ```
 
-An optional third callback argument can be passed which will be called if the feature is not enabled
+Pass the path to the PHP file to your config
 
-``` php
-toggle(
-    'foobar',
-        function () {
-            /* will be executed when feature 'foobar' is enabled */
-        },
-        function () {
-            /* will be executed when feature 'foobar' is disabled */
-        }
-    );
+```php
+<?php
+
+use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Toggle;
+
+$toggle = new Toggle(Config::factory('/path/to/config.php'));
+// or
+$toggle = new Toggle(new Config('/path/to/config.php'));
 ```
 
-You can also use the `toggle` function as a conditional
+### Redis
 
-``` php
-if (toggle('foobar')) {
-    /* will be executed when feature 'foobar' is enabled */
-}
+You can use [Redis](https://redis.io/) to store the configs.
+
+You will then need to either install the [Predis](https://github.com/nrk/predis) library or the [Redis PHP](https://github.com/phpredis/phpredis) extension.
+
+To install Predis, run the following command from the root of your project:
+
+```bash
+$ composer require predis/predis
 ```
 
-### Toggle a feature based on context
+The `RedisStorage` adapter can take any class instance of `Redis`, `RedisArray`, `RedisCluster` or `Predis\Client`.
+
+```php
+<?php
+
+use SolidWorx\Toggler\Storage\RedisStorage;
+use SolidWorx\Toggler\Toggle;
+
+$redis = new \Redis();
+$toggle = new Toggle(new RedisStorage($redis));
+```
+
+## Persistent Storage
+
+Toggler supports persisting config values if a storage adapter implements the ` SolidWorx\Toggler\Storage\PersistenStorageInterface`.
+
+The following storage adapters currently supports persisting config values:
+
+* YamlFileStorage
+* RedisStorage
+
+To update a feature, use the `set` method:
+
+```php
+<?php
+
+$toggle->set('foo', true); // This will enable the foo feature
+$toggle->set('bar', false); // This will disable the bar feature
+```
+
+## Toggle a feature based on context
 
 To enable a feature only under specific conditions (E.G only enable it for users in a certain group, or only enable it for 10% of visitor etc)
 
 Each feature in the config can take a callback, where you can return a truthy value based on any logic you want to add:
 
-``` php
+```php
+<?php
+
 $features = [
     'foo' => function (User $user) {
         return in_array('admin', $user->getGroups()); // Only enable features for users in the 'admin' group
     },
     'bar' => function () {
-        return  (crc32($_SERVER['REMOTE_ADDR']) % 100) < 25 // Only enable this features for about 25% of visitors
+        return  (crc32($_SERVER['REMOTE_ADDR']) % 100) < 25; // Only enable this features for about 25% of visitors
+    },
+    'baz' => function (Request $request) {
+        return false !== strpos($request->headers->get('referer'), 'facebook.com'); // Only enable this features for users that come from Facebook
     }
 ];
 ```
 
 Callbacks that takes any arguments, should be called with the context:
 
-``` php
+```php
+<?php
+
 $user = User::find(); // Get the current logged-in user
-if (toggle('foo', [$user])) {
+
+if ($toggle->isActive('foo', [$user])) {
+    
+}
+
+if ($toggle->isActive('bar', [$request])) {
+    
 }
 ```
 
-or if you want to use callback functions, the context can always be sent as the last parameter:
-
-``` php
-$user = User::find(); // Get the current logged-in user
-toggle('foo', function () { /* enable feature */ }, [$user]);
-```
-
-### Using Symfony Expression Language
+## Using Symfony Expression Language
 
 You can use the [Symfony Expression Language Component](http://symfony.com/doc/current/components/expression_language/index.html) to create expressions for your features.
 
@@ -177,6 +298,8 @@ $ composer require symfony/expression-language
 Then you can create an expression for your feature:
 
 ```php
+<?php
+
 use Symfony\Component\ExpressionLanguage\Expression;
 
 $feaures = [
@@ -187,37 +310,11 @@ $feaures = [
 When checking the feature, you need to pass the context to use in your expression:
 
 ```php
-toggle('foo', ['valueOne' => 25, 'valueTwo' => 5]); // Will return true
-```
+<?php
 
-### Custom storage to retrieve feature settings
-
-If you want to store your config in a different place than an array or config file (E.G MySQL database or redis etc) then you can create a storage class that implements `Toggle\Storage\StorageInterface` which can be used to retrieve your config
-
-``` php
-use Toggle\Storage\StorageInterface;
-
-class RedisStorage implements StorageInterface
-{
-    private $redis;
-
-    public function __construct(\Redis $redis)
-    {
-        $this->redis = $redis;
-    }
-
-    public function get($key) // This method comes from StorageInterface and needs to be implemented with your custom logic to retrieve values
-    {
-        return $this->redis->get($key);
-    }
+if ($toggle->isActive('foo', ['valueOne' => 25, 'valueTwo' => 5])) { // Will return true
+    
 }
-```
-
-Then you can pass an instance of your class to the `toggleConfig` function
-
-``` php
-$redis = ...; // Get your redis instance
-toggleConfig(new RedisStorage($redis));
 ```
 
 ## Twig Integration
@@ -226,26 +323,22 @@ Toggler comes with an optional Twig extension, which allows you to toggle elemen
 
 To use the extension, register it with Twig
 
-``` php
-use Toggler\Twig\Extension\ToggleExtension;
+```php
+<?php
+
+use SolidWorx\Toggler\Twig\Extension\ToggleExtension;
 
 $twig = new Twig_Environment($loader);
-$twig->addExtension(new ToggleExtension());
+$twig->addExtension(new ToggleExtension($toggle));
 ```
 
-or if you use symfony, register it as a service
-**Note:** When using the Symfony bundle, the twig extension is automatically registered.
+or if you use symfony, register it as a service.
 
-``` yaml
-toggle.twig.extension:
-    class: Toggler\Twig\Extension\ToggleExtension
-    tags:
-        - { name: twig.extension }
-```
+**Note:** When using the [Symfony Bundle](Symfony Integration), the twig extension is automatically registered.
 
 Then you can use the `toggle` tag in twig templates:
 
-``` twig
+```twig
 {% toggle 'foo' %}
     Some content that will only display if foo is enabled
 {% endtoggle %}
@@ -253,7 +346,7 @@ Then you can use the `toggle` tag in twig templates:
 
 To add an alternaltive if a feature is not available, use the `else` tag
 
-``` twig
+```twig
 {% toggle 'foo' %}
     Some content that will only display if foo is enabled
 {% else %}
@@ -263,24 +356,25 @@ To add an alternaltive if a feature is not available, use the `else` tag
 
 To use context values with the tag, you can pass it using the `with` keyword:
 
-``` twig
-{% toggle 'foo' with [{"valueOne" : 12}] %}
+```twig
+{% toggle 'foo' with {"valueOne" : 12} %}
     Some content that will only display if foo is enabled based on the context provided
 {% endtoggle %}
 ```
 
 You can also use the `toggle()` function for conditions
 
-``` twig
+```twig
 {{ toggle('foo') ? 'Foo is enabled' : 'Foo is NOT enabled' }}
 ```
 
 ## Symfony Integration
 
-Toggler comes with basic integration with the [Symfony](http://symfony.com/) framework.
+Toggler comes with integration with the [Symfony](http://symfony.com/) framework.
+
 To enable toggler inside symfony, register the bundle
 
-``` php
+```php
 // AppKernel.php
 
 $bundles = array(
@@ -292,46 +386,104 @@ $bundles = array(
 
 Then inside your `app/config/config.yml` or `app/config/config_dev.yml`, you can enable features using the following config
 
-``` yaml
+```yaml
 toggler:
     config:
-        foo: true
-        bar: false
+        features:
+            foo: true
+            bar: false
+            
+            # Callables is also supported
+            baz: '@my.service.class' # Class must be callable (I.E implement the __invoke() method)
+            foobar: ['@my.service.class', 'foobar'] # Will call the `foobar` method on the service class
+            baz: ['My\Awesome\Feature\Class', 'checkFeature'] # Will call the static method `checkFeature` on the `My\Awesome\Feature\Class` class
+            
+            # The last two lines can be written as the following:
+            foobar: '@my.service.class::foobar'
+            baz: 'My\Awesome\Feature\Class::checkFeature'
 ```
 
 If you want to use an expression for a feature config, you can use the `@=` syntax:
 
-``` yaml
+```yaml
 toggler:
     config:
-        foo: @=myValue > 10
+        features:
+            foo: '@=myValue > 10'
 ```
 
-If you want to use a storage class, you can use the service id as the argument for the config:
+If you want to use a storage class, you can use the `storage` config parameter to define a service for the storage:
 
-``` yaml
+```yaml
 services:
-    my.toggler.service:
-        class: My\Bundle\DbStorage
-        arguments: [@doctrine]
+    my.toggler.storage:
+        class: SolidWorx\Toggler\Storage\RedisStorage
+        arguments: ['@redis']
         
 toggler:
-    config: my.toggler.service
+    config:
+        storage: '@my.toggler.storage'
 ```
+**Note:** The `features` and `storage` options can't be used together. You must use either the one or the other. At least one of the two must be defined.
 
 **Note:** When using the Symfony bundle, the twig extension is automatically registered.
 
-## Testing
+### Console Commands
+
+The Symfony Bundle comes with 2 pre-registered console commands.
+
+#### Get the status of a feature
+
+To see if a feature is enabled or not, run the following command
+
+```bash
+$ php bin/console toggler:get foo
+```
+
+This will output the status of a feature.
+
+You can also get the status of multiple features by passing in multiple values:
+
+```bash
+$ php bin/console toggler:get foo bar baz
+```
+
+This will show whether the features `foo`, `bar` and `baz` is enabled or not.
+
+##### Get the value using context values
+
+To test if a feature will be enabled under certain conditions, you can pass context values to the command using either the `-c` or `--context` flags.
+Multiple values for the context can be provided.
+
+**Note:** Context values can only be strings. Objects are not supported.
+
+```bash
+$ php bin/console toggler:get foo -c myValue=10 -c anotherValue=25
+```
+
+#### Set the value of a feature
+
+You can enable or disable a feature using the `toggler:set` command.
+
+**Note:** You can only change the status of a feature if you are using a persistent storage.
+
+```bash
+$ php bin/console toggler:set foo true
+```
+
+This will enable the `foo` feature.
+
+# Testing
 
 To run the unit tests, execute the following command
 
-``` bash
+```bash
 $ vendor/bin/phpunit
 ```
 
 ## Contributing
 
-See [CONTRIBUTING](https://github.com/pierredup/toggler/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING](https://github.com/SolidWorx/Toggler/blob/master/CONTRIBUTING.md)
 
 ## License
 
