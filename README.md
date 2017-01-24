@@ -1,6 +1,6 @@
 # Toggler
 
-[![Build Status](https://travis-ci.org/solidworx/toggler.svg)](https://travis-ci.org/solidworx/toggler)
+[![Build Status](https://travis-ci.org/SolidWorx/Toggler.svg)](https://travis-ci.org/SolidWorx/Toggler)
 
 Toggler is a feature toggle library for PHP. It allows you to enable or disable features based on a toggle switch.
 This is useful in a continues deployment environment, where you can deploy not-yet-ready features which are disabled, and just enable them when the feature is complete.
