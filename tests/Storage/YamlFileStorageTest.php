@@ -29,6 +29,13 @@ class YamlFileStorageTest extends \PHPUnit_Framework_TestCase
         $this->root = vfsStream::setup('exampleDir');
     }
 
+    public function testInvalidFile()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The file /non/existent/file.yml either does not exist, or is not readable');
+        new YamlFileStorage('/non/existent/file.yml');
+    }
+
     public function testGet()
     {
         $features = 'foo: true
@@ -36,11 +43,11 @@ bar: true
 baz: false
 foobar: false';
 
-        $largeFile = vfsStream::newFile('large.txt')
+        $file = vfsStream::newFile('file.yml')
             ->withContent($features)
             ->at($this->root);
 
-        $storage = new YamlFileStorage($largeFile->url());
+        $storage = new YamlFileStorage($file->url());
 
         $this->assertTrue($storage->get('foo'));
         $this->assertTrue($storage->get('bar'));

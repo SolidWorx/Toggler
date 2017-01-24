@@ -111,25 +111,4 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));
         $this->assertFalse($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 500]]));
     }
-
-    public function testExecute()
-    {
-        $instance = new Toggle(new Config([]));
-
-        $this->assertSame(456, $instance->execute(function (): int {
-            return 456;
-        }));
-    }
-
-    public function testExecuteException()
-    {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Feature is not available');
-
-        $instance = new Toggle(new Config([]));
-
-        $instance->execute(function () {
-            throw new \Exception('Feature is not available');
-        });
-    }
 }

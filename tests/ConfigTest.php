@@ -13,12 +13,23 @@ declare(strict_types=1);
 
 namespace SolidWorx\Tests\Toggler;
 
+use org\bovigo\vfs\vfsStream;
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Storage\ArrayStorage;
+use SolidWorx\Toggler\Storage\PersistenStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
+use SolidWorx\Toggler\Storage\YamlFileStorage;
+use Symfony\Component\Yaml\Yaml;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
+    private $root;
+
+    protected function setUp()
+    {
+        $this->root = vfsStream::setup('exampleDir');
+    }
+
     public function testSetConfig()
     {
         $features = [
@@ -28,9 +39,46 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'foobar' => false,
         ];
 
-        $config = new Config($features);
+        $yamlFile = vfsStream::newFile('file.yml')
+            ->withContent(Yaml::dump($features))
+            ->at($this->root);
 
-        $this->assertEquals(new ArrayStorage($features), $this->readAttribute($config, 'config'));
+        $phpFile = vfsStream::newFile('file.php')
+            ->withContent('<?php return ' . var_export($features, true) . ';')
+            ->at($this->root);
+
+        $this->assertInstanceOf(StorageInterface::class, $this->readAttribute(new Config(new ArrayStorage($features)), 'config'));
+        $this->assertInstanceOf(ArrayStorage::class, $this->readAttribute(new Config($features), 'config'));
+        $this->assertInstanceOf(YamlFileStorage::class, $this->readAttribute(new Config($yamlFile->url()), 'config'));
+        $this->assertInstanceOf(ArrayStorage::class, $this->readAttribute(new Config($phpFile->url()), 'config'));
+    }
+
+    public function testInvalidConfigFile()
+    {
+        $features = [
+            'foo' => true,
+            'bar' => true,
+            'baz' => false,
+            'foobar' => false,
+        ];
+
+        $file = vfsStream::newFile('file.txt')
+            ->withContent(Yaml::dump($features))
+            ->at($this->root);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('File with extension txt is not supported');
+
+        new Config($file->url());
+    }
+
+    public function testInvalidConfigType()
+    {
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The 1st argument for SolidWorx\Toggler\Config::factory expects an array, string or instance of StorageInterface, boolean given');
+
+        new Config(true);
     }
 
     public function testGet()
@@ -50,29 +98,30 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($config->get('foobar'));
     }
 
-    public function testStorage()
+    public function testSetException()
     {
-        toggleConfig(new Storage());
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Cannot change the value for feature foo as storage SolidWorx\Toggler\Storage\ArrayStorage does not implement PersistenStorageInterface');
 
-        $this->assertTrue(toggle('foo'));
-        $this->assertFalse(toggle('bar'));
-        $this->assertFalse(toggle('baz'));
-    }
-}
+        $features = [
+        ];
 
-class Storage implements StorageInterface
-{
-    public function get(string $key): bool
-    {
-        if ($key === 'foo') {
-            return true;
-        }
+        $config = new Config($features);
 
-        return false;
+        $config->set('foo', true);
     }
 
-    public function set(string $key, bool $value): bool
+    public function testSet()
     {
-        // noop
+        $storage = $this->createMock(PersistenStorageInterface::class);
+
+        $storage->expects($this->once())
+            ->method('set')
+            ->with('foo', true)
+            ->willReturn(true);
+
+        $config = new Config($storage);
+
+        $this->assertTrue($config->set('foo', true));
     }
 }

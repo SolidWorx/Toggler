@@ -27,6 +27,14 @@ class RedisStorageTest extends \PHPUnit_Framework_TestCase
         $this->redis = $this->createPartialMock(\Predis\Client::class, ['get', 'set']);
     }
 
+    public function testConstructorException()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('SolidWorx\Toggler\Storage\RedisStorage::__construct() expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\Client, NULL given');
+
+        $storage = new RedisStorage(null);
+    }
+
     public function testGet()
     {
         $this->redis->expects($this->at(0))

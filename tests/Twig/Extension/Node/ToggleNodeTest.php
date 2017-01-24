@@ -65,7 +65,7 @@ if (class_exists('Twig_Test_NodeTestCase')) {
                 $node,
                 <<<EOF
 // line 1
-if (toggle("foo")) {
+if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo")) {
     echo {$this->getVariableGetter('foo')};
 }
 EOF
@@ -88,7 +88,7 @@ EOF
                 $node,
                 <<<EOF
 // line 1
-if (toggle("foo")) {
+if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo")) {
     echo {$this->getVariableGetter('foo')};
 } else {
     echo {$this->getVariableGetter('bar')};
@@ -118,7 +118,7 @@ EOF
                 $node,
                 <<<EOF
 // line 1
-if (toggle("foo", array("value1" => 12))) {
+if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo", array("value1" => 12))) {
     echo {$this->getVariableGetter('foo')};
 }
 EOF

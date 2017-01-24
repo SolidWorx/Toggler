@@ -50,7 +50,7 @@ final class Config implements PersistenStorageInterface
             case is_array($config):
                 return new ArrayStorage($config);
                 break;
-            case is_file($config):
+            case is_string($config) && is_file($config):
                 $extension = strtolower(pathinfo($config, PATHINFO_EXTENSION));
 
                 if ('yml' === $extension) {
