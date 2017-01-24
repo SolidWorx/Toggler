@@ -14,9 +14,6 @@
         }
     ],
     "autoload": {
-        "files": [
-            "src/functions.php"
-        ],
         "psr-4": {
             "SolidWorx\\Toggler\\": "./src"
         }

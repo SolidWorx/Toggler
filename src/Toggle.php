@@ -65,16 +65,6 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param callable $callback
-     *
-     * @return mixed
-     */
-    public function execute(callable $callback)
-    {
-        return $callback();
-    }
-
-    /**
      * Checked if a variable has a truthy value
      *
      * @param mixed $value
