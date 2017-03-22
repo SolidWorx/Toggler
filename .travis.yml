@@ -4,7 +4,6 @@ sudo: false
 
 matrix:
   include:
-    - php: hhvm
     - php: 7.1
 
 cache:
