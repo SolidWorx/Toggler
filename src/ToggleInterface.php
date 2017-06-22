@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler;
 
-use SolidWorx\Toggler\Storage\StorageInterface;
-use Symfony\Component\ExpressionLanguage\Expression;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-
 interface ToggleInterface
 {
     /**
