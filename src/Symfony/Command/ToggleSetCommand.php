@@ -40,7 +40,7 @@ class ToggleSetCommand extends ContainerAwareCommand
             ->setDescription('Change the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED, 'The feature to change the status')
             ->addArgument('value', InputArgument::REQUIRED, 'The status to set the feature to (can be either true|false or 1|0)')
-            ->setHelp(<<<HELP
+            ->setHelp(<<<'HELP'
 Set the status of a specific feature:
 
     <info>$ bin/console %command.name% feature on</info>

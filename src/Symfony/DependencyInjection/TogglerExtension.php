@@ -33,7 +33,7 @@ class TogglerExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
         $definition = $container->getDefinition('toggler.toggle');
@@ -60,7 +60,6 @@ class TogglerExtension extends Extension
             }
 
             switch (true) {
-
                 case false !== strpos($value, '::') && '@' === $value[0]:
                     $parts = explode('::', $value);
 
@@ -80,7 +79,7 @@ class TogglerExtension extends Extension
 
         $storageDefinition = new Definition(Config::class, [$config['config']['features']]);
         $storageDefinition->setPublic(false);
-        $storageDefinition->setFactory(Config::class . '::factory');
+        $storageDefinition->setFactory(Config::class.'::factory');
         $storageDefinition->setLazy(true);
 
         $definition->replaceArgument(0, $storageDefinition);

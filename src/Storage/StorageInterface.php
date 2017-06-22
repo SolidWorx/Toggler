@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Toggler package.
  *
@@ -14,7 +16,7 @@ namespace SolidWorx\Toggler\Storage;
 interface StorageInterface
 {
     /**
-     * Reads a key from the storage
+     * Reads a key from the storage.
      *
      * @param string $key
      *

@@ -39,6 +39,7 @@ final class Config implements PersistenStorageInterface
      * @param $config
      *
      * @return StorageInterface
+     *
      * @throws \InvalidArgumentException
      */
     public static function factory($config): StorageInterface
@@ -62,7 +63,6 @@ final class Config implements PersistenStorageInterface
                 }
 
                 throw new \InvalidArgumentException(sprintf('File with extension %s is not supported', $extension));
-
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf('The 1st argument for %s expects an array, string or instance of StorageInterface, %s given', __METHOD__, is_object($config) ? get_class($config) : gettype($config)));

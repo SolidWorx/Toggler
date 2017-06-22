@@ -31,7 +31,7 @@ class ToggleGetCommand extends ContainerAwareCommand
             ->setDescription('Get the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The feature to get the status')
             ->addOption('context', 'c', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Add context to the feature check')
-            ->setHelp(<<<HELP
+            ->setHelp(<<<'HELP'
 Get the status of a specific feature:
 
     <info>$ bin/console %command.name% feature</info>
@@ -64,7 +64,6 @@ HELP
         $context = [];
 
         foreach ($input->getOption('context') as $parameter) {
-
             if (false === strpos($parameter, '=')) {
                 throw new \Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
             }
@@ -89,7 +88,7 @@ HELP
 
             $row = [
                 $feature,
-                sprintf('<%1$s>%2$s</%1$s>', $active ? 'info' : 'error', $active ? 'Active' : 'Not-Active')
+                sprintf('<%1$s>%2$s</%1$s>', $active ? 'info' : 'error', $active ? 'Active' : 'Not-Active'),
             ];
 
             if (!empty($context)) {
