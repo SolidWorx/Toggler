@@ -2,9 +2,18 @@ language: php
 
 sudo: false
 
+env:
+    - COMPOSER_ARGS=''
+
 matrix:
   include:
     - php: 7.1
+      env:
+          - COMPOSER_ARGS='--prefer-stable'
+    - php: 7.1
+      env:
+          - COMPOSER_ARGS='--prefer-lowest'
+    - php: nightly
 
 cache:
   directories:
@@ -14,7 +23,7 @@ before_install:
   - composer self-update
 
 install:
-  - composer install
+  - composer update -n "$COMPOSER_ARGS"
 
 script:
     - vendor/bin/phpunit
