@@ -15,9 +15,10 @@ namespace SolidWorx\Tests\Toggler\Storage;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 
-class YamlFileStorageTest extends \PHPUnit_Framework_TestCase
+class YamlFileStorageTest extends TestCase
 {
     /**
      * @var vfsStreamDirectory

@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace SolidWorx\Tests\Toggler;
 
+use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Toggle;
 use Symfony\Component\ExpressionLanguage\Expression;
 
-class ToggleTest extends \PHPUnit_Framework_TestCase
+class ToggleTest extends TestCase
 {
     public function testIsActive()
     {
