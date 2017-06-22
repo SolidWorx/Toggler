@@ -16,7 +16,7 @@ namespace SolidWorx\Toggler\Storage;
 interface PersistenStorageInterface extends StorageInterface
 {
     /**
-     * Update a value in the storage
+     * Update a value in the storage.
      *
      * @param string $key
      * @param bool   $value

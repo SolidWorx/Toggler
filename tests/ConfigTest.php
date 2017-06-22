@@ -44,7 +44,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             ->at($this->root);
 
         $phpFile = vfsStream::newFile('file.php')
-            ->withContent('<?php return ' . var_export($features, true) . ';')
+            ->withContent('<?php return '.var_export($features, true).';')
             ->at($this->root);
 
         $this->assertInstanceOf(StorageInterface::class, $this->readAttribute(new Config(new ArrayStorage($features)), 'config'));
@@ -74,7 +74,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidConfigType()
     {
-
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The 1st argument for SolidWorx\Toggler\Config::factory expects an array, string or instance of StorageInterface, boolean given');
 

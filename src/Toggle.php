@@ -65,7 +65,7 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * Checked if a variable has a truthy value
+     * Checked if a variable has a truthy value.
      *
      * @param mixed $value
      *

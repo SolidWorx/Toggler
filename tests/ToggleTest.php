@@ -61,7 +61,7 @@ class ToggleTest extends \PHPUnit_Framework_TestCase
             'baz' => '0',
             'foobar' => 'off',
             'foobaz' => [],
-            'bazbar' => new \StdClass,
+            'bazbar' => new \StdClass(),
         ];
 
         $instance = new Toggle(new Config($features));

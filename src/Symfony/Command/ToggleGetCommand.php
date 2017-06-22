@@ -31,7 +31,7 @@ class ToggleGetCommand extends ContainerAwareCommand
             ->setDescription('Get the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The feature to get the status')
             ->addOption('context', 'c', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Add context to the feature check')
-            ->setHelp(<<<HELP
+            ->setHelp(<<<'HELP'
 Get the status of a specific feature:
 
     <info>$ bin/console %command.name% feature</info>
