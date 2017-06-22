@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace SolidWorx\Tests\Toggler\Storage;
 
+use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Storage\RedisStorage;
 
-class RedisStorageTest extends \PHPUnit_Framework_TestCase
+class RedisStorageTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject

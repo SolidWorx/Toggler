@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler;
 
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Config;
 use SolidWorx\Toggler\Storage\ArrayStorage;
 use SolidWorx\Toggler\Storage\PersistenStorageInterface;
@@ -21,7 +22,7 @@ use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends TestCase
 {
     private $root;
 
