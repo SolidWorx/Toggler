@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler;
 
 use PHPUnit\Framework\TestCase;
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageFactory;
 use SolidWorx\Toggler\Toggle;
 use Symfony\Component\ExpressionLanguage\Expression;
 
@@ -29,7 +29,7 @@ class ToggleTest extends TestCase
             'foobar' => false,
         ];
 
-        $instance = new Toggle(new Config($features));
+        $instance = new Toggle(StorageFactory::factory($features));
 
         $this->assertTrue($instance->isActive('foo'));
         $this->assertTrue($instance->isActive('bar'));
@@ -46,7 +46,7 @@ class ToggleTest extends TestCase
             'foobar' => 'on',
         ];
 
-        $instance = new Toggle(new Config($features));
+        $instance = new Toggle(StorageFactory::factory($features));
 
         $this->assertTrue($instance->isActive('foo'));
         $this->assertTrue($instance->isActive('bar'));
@@ -65,7 +65,7 @@ class ToggleTest extends TestCase
             'bazbar' => new \StdClass(),
         ];
 
-        $instance = new Toggle(new Config($features));
+        $instance = new Toggle(StorageFactory::factory($features));
 
         $this->assertFalse($instance->isActive('foo'));
         $this->assertFalse($instance->isActive('bar'));
@@ -86,7 +86,7 @@ class ToggleTest extends TestCase
             },
         ];
 
-        $instance = new Toggle(new Config($features));
+        $instance = new Toggle(StorageFactory::factory($features));
 
         // Call all these function twice to check that it is memoized correctly
         $this->assertTrue($instance->isActive('foo', [['value' => 123]]));
@@ -106,7 +106,7 @@ class ToggleTest extends TestCase
             'foo' => new Expression('newValue > 10 and some["value"] < 10'),
         ];
 
-        $instance = new Toggle(new Config($features));
+        $instance = new Toggle(StorageFactory::factory($features));
 
         // Call all these function twice to check that it is memoized correctly
         $this->assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));

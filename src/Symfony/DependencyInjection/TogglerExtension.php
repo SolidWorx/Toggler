@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony\DependencyInjection;
 
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageFactory;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -77,9 +77,9 @@ class TogglerExtension extends Extension
             }
         }
 
-        $storageDefinition = new Definition(Config::class, [$config['config']['features']]);
+        $storageDefinition = new Definition(StorageFactory::class, [$config['config']['features']]);
         $storageDefinition->setPublic(false);
-        $storageDefinition->setFactory(Config::class.'::factory');
+        $storageDefinition->setFactory(StorageFactory::class.'::factory');
         $storageDefinition->setLazy(true);
 
         $definition->replaceArgument(0, $storageDefinition);

@@ -10,7 +10,7 @@ This is useful in a continues deployment environment, where you can deploy not-y
 - [Installation](#installation)
     - [Composer](#composer)
 - [Usage](#usage)
-    - [Config](#config)
+    - [StorageFactory](#config)
     - [Toggle a feature](#toggle-a-feature)
     - [Toggle a feature based on context](#toggle-a-feature-based-on-context)
     - [Using Symfony Expression Language](#using-symfony-expression-language)
@@ -42,14 +42,14 @@ $ composer require solidworx/toggler:^2.0
 <?php
 
 use SolidWorx\Toggler\Toggle;
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\ArrayStorage;
 
 $features = [
     'foo' => true,
     'bar' => false
 ];
 
-$toggle = new Toggle(new Config($features));
+$toggle = new Toggle(new ArrayStorage($features));
 ```
 
 You can then check if a feature is active or not using the `isActive` call
@@ -61,31 +61,27 @@ $toggle->isActive('foo'); // true
 $toggle->isActive('bar'); // false
 ```
 
-## Config
+## StorageFactory
 
 Toggler comes with many storage adapters to store the configuration. The most basic is the `ArrayStorage` class, which takes an array of features.
 
-The `Config` class acts as a factory to create the config. You can pass it any value, and it will determine which storage adapter to use.
-To get an instance of the config, you can either create a new instance of the `Config` class, or use the static `factory` method
+The `StorageFactory` class acts as a factory to create the config. You can pass it any value, and it will determine which storage adapter to use.
+To get an instance of the config, you can either create a new instance of the `StorageFactory` class, or use the static `factory` method
 
 ```php
 <?php
 
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageFactory;
 
 $features = [
     'foo' => true,
     'bar' => false
 ];
 
-$config = new Config($features);
-// Or using the factory method
-$config = Config::factory($features); // $config will be an instance of ArrayStorage
+$config = StorageFactory::factory($features); // $config will be an instance of ArrayStorage
 
 // Using YAML
-$config = new Config('/path/to/config.yml');
-// Or using the factory method
-$config = Config::factory('/path/to/config.yml'); // $config will be an instance of YamlFileStorage
+$config = StorageFactory::factory('/path/to/config.yml'); // $config will be an instance of YamlFileStorage
 ```
 
 Each feature flag need to be a truthy value in order to be enabled.
@@ -124,7 +120,7 @@ The most basic config is using an array with the `ArrayStorage` adapter.
 ```php
 <?php
 
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageFactory;
 use SolidWorx\Toggler\Storage\ArrayStorage;
 use SolidWorx\Toggler\Toggle;
 
@@ -135,10 +131,8 @@ $features = [
 
 $toggle = new Toggle(new ArrayStorage($features));
 
-// Or using the Config factory
-$toggle = new Toggle(Config::factory($features));
-// or
-$toggle = new Toggle(new Config($features));
+// Or using the StorageFactory factory
+$toggle = new Toggle(StorageFactory::factory($features));
 ```
 
 ### YAML
@@ -164,16 +158,14 @@ Pass the path to the yml file to your config
 ```php
 <?php
 
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageFactory;
 use SolidWorx\Toggler\Storage\YamlFileStorage;
 use SolidWorx\Toggler\Toggle;
 
 $toggle = new Toggle(new YamlFileStorage('/path/to/config.yml'));
 
-// Or using the Config factory
-$toggle = new Toggle(Config::factory('/path/to/config.yml'));
-// or
-$toggle = new Toggle(new Config('/path/to/config.yml'));
+// Or using the StorageFactory factory
+$toggle = new Toggle(StorageFactory::factory('/path/to/config.yml'));
 ```
 
 ### PHP File
@@ -197,12 +189,10 @@ Pass the path to the PHP file to your config
 ```php
 <?php
 
-use SolidWorx\Toggler\Config;
+use SolidWorx\Toggler\Storage\StorageFactory;
 use SolidWorx\Toggler\Toggle;
 
-$toggle = new Toggle(Config::factory('/path/to/config.php'));
-// or
-$toggle = new Toggle(new Config('/path/to/config.php'));
+$toggle = new Toggle(StorageFactory::factory('/path/to/config.php'));
 ```
 
 ### Redis
@@ -328,7 +318,7 @@ To use the extension, register it with Twig
 
 use SolidWorx\Toggler\Twig\Extension\ToggleExtension;
 
-$twig = new Twig_Environment($loader);
+$twig = new \Twig_Environment($loader);
 $twig->addExtension(new ToggleExtension($toggle));
 ```
 
