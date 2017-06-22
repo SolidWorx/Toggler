@@ -66,7 +66,7 @@ $toggle->isActive('bar'); // false
 Toggler comes with many storage adapters to store the configuration. The most basic is the `ArrayStorage` class, which takes an array of features.
 
 The `StorageFactory` class acts as a factory to create the config. You can pass it any value, and it will determine which storage adapter to use.
-To get an instance of the config, you can either create a new instance of the `StorageFactory` class, or use the static `factory` method
+To get an instance of the config, you can  use the static `factory` method
 
 ```php
 <?php
