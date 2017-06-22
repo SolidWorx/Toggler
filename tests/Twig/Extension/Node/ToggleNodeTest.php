@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace SolidWorx\Tests\Toggler\Twig\Extension\Node;
 
+use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Twig\Node\ToggleNode;
+
 
 if (class_exists('Twig_Test_NodeTestCase')) {
 
-    if (!class_exists('PHPUnit_Framework_TestCase')) {
-        class_alias('PHPUnit\\Framework\\TestCase', 'PHPUnit_Framework_TestCase');
-    }
+    class_alias(TestCase::class, 'PHPUnit_Framework_TestCase');
 
     class ToggleNodeTest extends \Twig_Test_NodeTestCase
     {
