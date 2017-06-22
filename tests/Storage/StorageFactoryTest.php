@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler\Storage;
 
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Storage\{
     ArrayStorage,
     StorageFactory,
@@ -22,7 +23,7 @@ use SolidWorx\Toggler\Storage\{
 };
 use Symfony\Component\Yaml\Yaml;
 
-class StorageFactoryTest extends \PHPUnit_Framework_TestCase
+class StorageFactoryTest extends TestCase
 {
     private $root;
 
