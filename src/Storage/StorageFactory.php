@@ -11,30 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace SolidWorx\Toggler;
+namespace SolidWorx\Toggler\Storage;
 
-use SolidWorx\Toggler\Storage\ArrayStorage;
-use SolidWorx\Toggler\Storage\PersistenStorageInterface;
-use SolidWorx\Toggler\Storage\StorageInterface;
-use SolidWorx\Toggler\Storage\YamlFileStorage;
-
-final class Config implements PersistenStorageInterface
+final class StorageFactory
 {
-    /**
-     * @var array|StorageInterface
-     */
-    private $config;
-
-    /**
-     * @param mixed $config
-     *
-     * @throws \Exception
-     */
-    public function __construct($config)
-    {
-        $this->config = self::factory($config);
-    }
-
     /**
      * @param $config
      *
@@ -63,29 +43,8 @@ final class Config implements PersistenStorageInterface
                 }
 
                 throw new \InvalidArgumentException(sprintf('File with extension %s is not supported', $extension));
-                break;
             default:
                 throw new \InvalidArgumentException(sprintf('The 1st argument for %s expects an array, string or instance of StorageInterface, %s given', __METHOD__, is_object($config) ? get_class($config) : gettype($config)));
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get(string $value)
-    {
-        return $this->config->get($value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function set(string $key, bool $value)
-    {
-        if (!$this->config instanceof PersistenStorageInterface) {
-            throw new \RuntimeException(sprintf('Cannot change the value for feature %s as storage %s does not implement PersistenStorageInterface', $key, get_class($this->config)));
-        }
-
-        return $this->config->set($key, $value);
     }
 }
