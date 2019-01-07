@@ -59,4 +59,34 @@ class RedisStorageTest extends TestCase
 
         $storage->set('foobar', false);
     }
+
+    public function testGetWithNamespace()
+    {
+        $namespace = 'fooNamespace';
+        $this->redis->expects($this->at(0))
+            ->method('get')
+            ->with($namespace . ':foobar')
+            ->willReturn(true);
+
+        $this->redis->expects($this->at(1))
+            ->method('get')
+            ->with($namespace . ':baz');
+
+        $storage = new RedisStorage($this->redis, $namespace);
+
+        $this->assertTrue($storage->get('foobar'));
+        $this->assertNull($storage->get('baz'));
+    }
+
+    public function testSetWithNamespace()
+    {
+        $namespace = 'fooNamespace';
+        $this->redis->expects($this->at(0))
+            ->method('set')
+            ->with($namespace . ':foobar', false);
+
+        $storage = new RedisStorage($this->redis, $namespace);
+
+        $storage->set('foobar', false);
+    }
 }
