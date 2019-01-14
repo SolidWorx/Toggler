@@ -369,7 +369,7 @@ To enable toggler inside symfony, register the bundle
 
 $bundles = array(
    ...
-   new Toggler\Symfony\TogglerBundle(),
+   new SolidWorx\Toggler\Symfony\TogglerBundle(),
    ...
 );
 ```
