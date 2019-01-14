@@ -1,6 +1,11 @@
-2.0.0
-=====
+2.0.0 Alpha 2
+=============
 
+  * Introducing ability to specify a namespace for redis storage (#10)
+  * Change Config class to StorageFactory (#6)
+  * Update Travis config to test on different environments (#8)
+  * Update PHPUnit to the latest version
+  * Remove HHVM support
   * Change `Config` class to `StorageFactory`
   * Remove the `get`, `set` and `__construct` methods in the `StorageFactory` class
   * Move the `StorageFactory` class to the `SolidWorx\Toggler\Storage` namespace
