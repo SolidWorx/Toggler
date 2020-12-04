@@ -33,4 +33,4 @@ jobs:
         run: composer install --ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Run test suite
-        run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        run: vendor/bin/simple-phpunit --coverage-clover build/logs/clover.xml
