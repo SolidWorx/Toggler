@@ -37,3 +37,9 @@ jobs:
 
       - name: Run test suite
         run: vendor/bin/simple-phpunit --coverage-clover build/logs/clover.xml
+
+      - uses: codecov/codecov-action@v1
+        with:
+          file: build/logs/clover.xml
+          fail_ci_if_error: true
+          verbose: true
