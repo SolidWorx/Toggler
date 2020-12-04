@@ -16,21 +16,19 @@ namespace SolidWorx\Toggler\Storage;
 final class StorageFactory
 {
     /**
-     * @param $config
+     * @param mixed $config
      *
-     * @return StorageInterface
-     *
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException|\Exception
      */
     public static function factory($config): StorageInterface
     {
         switch (true) {
             case $config instanceof StorageInterface:
                 return $config;
-                break;
+
             case is_array($config):
                 return new ArrayStorage($config);
-                break;
+
             case is_string($config) && is_file($config):
                 $extension = strtolower(pathinfo($config, PATHINFO_EXTENSION));
 
@@ -39,10 +37,11 @@ final class StorageFactory
                 }
 
                 if ('php' === $extension) {
-                    return new ArrayStorage(require_once $config);
+                    return new ArrayStorage(require $config);
                 }
 
                 throw new \InvalidArgumentException(sprintf('File with extension %s is not supported', $extension));
+                // no break
             default:
                 throw new \InvalidArgumentException(sprintf('The 1st argument for %s expects an array, string or instance of StorageInterface, %s given', __METHOD__, is_object($config) ? get_class($config) : gettype($config)));
         }

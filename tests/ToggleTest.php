@@ -79,7 +79,7 @@ class ToggleTest extends TestCase
     {
         $features = [
             'foo' => function (array $data): bool {
-                return $data['value'] === 123;
+                return 123 === $data['value'];
             },
             'bar' => function ($a, $b): bool {
                 return ($a + $b) === 10;

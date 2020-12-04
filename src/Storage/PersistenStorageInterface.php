@@ -18,9 +18,6 @@ interface PersistenStorageInterface extends StorageInterface
     /**
      * Update a value in the storage.
      *
-     * @param string $key
-     * @param bool   $value
-     *
      * @return bool|string|int
      */
     public function set(string $key, bool $value);

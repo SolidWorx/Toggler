@@ -15,11 +15,5 @@ namespace SolidWorx\Toggler;
 
 interface ToggleInterface
 {
-    /**
-     * @param string $feature
-     * @param array  $context
-     *
-     * @return bool
-     */
     public function isActive(string $feature, array $context = []): bool;
 }

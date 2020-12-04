@@ -48,11 +48,7 @@ class ToggleTokenParser extends \Twig_TokenParser
                     break;
 
                 default:
-                    throw new \Twig_Error_Syntax(
-                        sprintf('Unexpected end of template. Twig was looking for the following tags "else", or "endtoggle" to close the "toggle" block started at line %d)', $lineNo),
-                        $stream->getCurrent()->getLine(),
-                        $stream->getSourceContext()
-                    );
+                    throw new \Twig_Error_Syntax(sprintf('Unexpected end of template. Twig was looking for the following tags "else", or "endtoggle" to close the "toggle" block started at line %d)', $lineNo), $stream->getCurrent()->getLine(), $stream->getSourceContext());
             }
         }
 
@@ -61,21 +57,11 @@ class ToggleTokenParser extends \Twig_TokenParser
         return new ToggleNode($feature, $body, $else, $variables, $lineNo, $this->getTag());
     }
 
-    /**
-     * @param \Twig_Token $token
-     *
-     * @return bool
-     */
     public function decideIfFork(\Twig_Token $token): bool
     {
         return $token->test(['else', 'endtoggle']);
     }
 
-    /**
-     * @param \Twig_Token $token
-     *
-     * @return bool
-     */
     public function decideIfEnd(\Twig_Token $token): bool
     {
         return $token->test(['endtoggle']);

@@ -1,0 +1,39 @@
+name: Toggler Test Suite
+
+on: [ push, pull_request ]
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-20.04
+
+    env:
+      SYMFONY_DEPRECATIONS_HELPER: 9999
+
+    strategy:
+      matrix:
+        php: [ '7.1', '7.2', '7.3', '7.4', '8.0' ]
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: ${{ runner.os }}-php-${{ matrix.php }}-composer-
+
+      - name: Install dependencies
+        run: composer install --ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Run test suite
+        run: vendor/bin/simple-phpunit --coverage-clover build/logs/clover.xml

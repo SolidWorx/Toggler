@@ -23,7 +23,7 @@ class RedisStorageTest extends TestCase
      */
     private $redis;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->redis = $this->createPartialMock(\Predis\Client::class, ['get', 'set']);
     }
