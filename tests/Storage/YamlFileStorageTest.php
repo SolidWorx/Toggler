@@ -25,7 +25,7 @@ class YamlFileStorageTest extends TestCase
      */
     private $root;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->root = vfsStream::setup('exampleDir');
     }
