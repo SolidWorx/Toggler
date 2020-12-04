@@ -67,7 +67,6 @@ class TogglerExtension extends Extension
                     break;
 
                 case '@=' === substr($value, 0, 2):
-
                     if (!class_exists(Expression::class)) {
                         throw new \InvalidArgumentException('The symfony/expression-language component is required in order to use expressions.');
                     }

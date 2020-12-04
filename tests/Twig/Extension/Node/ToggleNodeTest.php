@@ -36,9 +36,6 @@ if (class_exists('Twig_Test_NodeTestCase')) {
             $this->assertEquals($else, $node->getNode('else'));
         }
 
-        /**
-         * @return array
-         */
         public function getTests(): array
         {
             $tests = [];
@@ -50,9 +47,6 @@ if (class_exists('Twig_Test_NodeTestCase')) {
             return $tests;
         }
 
-        /**
-         * @return array
-         */
         private function getToggleTest(): array
         {
             $t = new \Twig_Node([
@@ -73,9 +67,6 @@ EOF
             ];
         }
 
-        /**
-         * @return array
-         */
         private function getToggleWithElseTest(): array
         {
             $t = new \Twig_Node([
@@ -98,9 +89,6 @@ EOF
             ];
         }
 
-        /**
-         * @return array
-         */
         private function getToggleWithContextTest(): array
         {
             $t = new \Twig_Node([
