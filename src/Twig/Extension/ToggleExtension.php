@@ -28,9 +28,6 @@ class ToggleExtension extends \Twig_Extension
         $this->toggle = $toggle;
     }
 
-    /**
-     * @return ToggleInterface
-     */
     public function getToggle(): ToggleInterface
     {
         return $this->toggle;

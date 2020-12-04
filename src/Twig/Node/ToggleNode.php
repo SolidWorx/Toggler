@@ -16,11 +16,8 @@ namespace SolidWorx\Toggler\Twig\Node;
 class ToggleNode extends \Twig_Node
 {
     /**
-     * @param \Twig_Node $feature
-     * @param \Twig_Node $body
      * @param \Twig_Node $else
      * @param \Twig_Node $variables
-     * @param int        $lineNo
      * @param string     $tag
      */
     public function __construct(\Twig_Node $feature, \Twig_Node $body, ?\Twig_Node $else, ?\Twig_Node $variables, int $lineNo, string $tag = null)

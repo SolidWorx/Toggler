@@ -18,8 +18,6 @@ final class StorageFactory
     /**
      * @param $config
      *
-     * @return StorageInterface
-     *
      * @throws \InvalidArgumentException
      */
     public static function factory($config): StorageInterface

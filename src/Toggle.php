@@ -30,7 +30,6 @@ final class Toggle implements ToggleInterface
     private $expressionLanguage;
 
     /**
-     * @param StorageInterface   $config
      * @param ExpressionLanguage $expressionLanguage
      */
     public function __construct(StorageInterface $config, ExpressionLanguage $expressionLanguage = null)
@@ -42,12 +41,6 @@ final class Toggle implements ToggleInterface
         }
     }
 
-    /**
-     * @param string $feature
-     * @param array  $context
-     *
-     * @return bool
-     */
     public function isActive(string $feature, array $context = []): bool
     {
         $value = $this->config->get($feature);
@@ -68,8 +61,6 @@ final class Toggle implements ToggleInterface
      * Checked if a variable has a truthy value.
      *
      * @param mixed $value
-     *
-     * @return bool
      */
     private function isTruthy($value): bool
     {
@@ -93,9 +84,7 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param string $feature
-     * @param mixed  $value
-     * @param array  $context
+     * @param mixed $value
      *
      * @return string
      */
@@ -105,10 +94,6 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param string   $feature
-     * @param callable $value
-     * @param array    $context
-     *
      * @return mixed
      */
     private function evaluateCallback(string $feature, callable $value, array $context)
