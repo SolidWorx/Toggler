@@ -33,7 +33,7 @@
         "symfony/framework-bundle": "^3.2 || ^4.0",
         "symfony/phpunit-bridge": "^3.2 || ^4.0",
         "predis/predis": "^1.1",
-        "mikey179/vfsStream": "^1.6"
+        "mikey179/vfsstream": "^1.6"
     },
     "suggest": {
         "twig/twig": "To use the twig extension",
