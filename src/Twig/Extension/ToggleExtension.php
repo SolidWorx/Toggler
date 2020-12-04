@@ -15,8 +15,10 @@ namespace SolidWorx\Toggler\Twig\Extension;
 
 use SolidWorx\Toggler\ToggleInterface;
 use SolidWorx\Toggler\Twig\Parser\ToggleTokenParser;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class ToggleExtension extends \Twig_Extension
+class ToggleExtension extends AbstractExtension
 {
     /**
      * @var ToggleInterface
@@ -47,7 +49,7 @@ class ToggleExtension extends \Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction('toggle', [$this->toggle, 'isActive']),
+            new TwigFunction('toggle', [$this->toggle, 'isActive']),
         ];
     }
 
