@@ -13,22 +13,36 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use SolidWorx\Toggler\ToggleInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ToggleGetCommand extends ContainerAwareCommand
+class ToggleGetCommand extends Command
 {
+    protected static $defaultName = 'toggler:get';
+
+    /**
+     * @var ToggleInterface
+     */
+    private $toggle;
+
+    public function __construct(ToggleInterface $toggle)
+    {
+        $this->toggle = $toggle;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('toggler:get')
-            ->setDescription('Get the status of a specific feature')
+        $this->setDescription('Get the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The feature to get the status')
             ->addOption('context', 'c', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Add context to the feature check')
             ->setHelp(<<<'HELP'
@@ -55,10 +69,6 @@ HELP
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->getContainer();
-
-        $toggle = $container->get('toggler.toggle');
-
         $features = $input->getArgument('feature');
 
         $context = [];
@@ -84,7 +94,7 @@ HELP
         $table->setHeaders($headers);
 
         foreach ($features as $feature) {
-            $active = $toggle->isActive($feature, $context);
+            $active = $this->toggle->isActive($feature, $context);
 
             $row = [
                 $feature,
