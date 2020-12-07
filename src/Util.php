@@ -19,8 +19,6 @@ final class Util
      * Checked if a variable has a truthy value.
      *
      * @param mixed $value
-     *
-     * @return bool
      */
     public static function isTruthy($value): bool
     {
