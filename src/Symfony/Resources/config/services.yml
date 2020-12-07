@@ -8,42 +8,44 @@
  ##
 
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
 
-    toggler.command.set_value:
-        class: SolidWorx\Toggler\Symfony\Command\ToggleSetCommand
+    SolidWorx\Toggler\Symfony\Command\:
+        resource: '../../Command/'
+
+    SolidWorx\Toggler\Symfony\Command\ToggleSetCommand:
         arguments: ['?']
-        tags:
-            - { name: console.command }
 
-    toggler.expression.language.provider.dependency_injection:
-        class: Symfony\Component\DependencyInjection\ExpressionLanguageProvider
+    SolidWorx\Toggler\Symfony\Command\ToggleGetCommand:
+        arguments:
+            $toggle: '@SolidWorx\Toggler\Toggle'
+
+    Symfony\Component\DependencyInjection\ExpressionLanguageProvider:
         public: false
 
-    toggler.expression.language.provider.security:
-        class: Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider
+    Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider:
         public: false
 
-    toggler.expression.language:
-        class: Symfony\Component\ExpressionLanguage\ExpressionLanguage
+    Symfony\Component\ExpressionLanguage\ExpressionLanguage:
         public: false
         calls:
-            - ['registerProvider', ['@toggler.expression.language.provider.dependency_injection']]
-            - ['registerProvider', ['@toggler.expression.language.provider.security']]
+            - ['registerProvider', ['@Symfony\Component\DependencyInjection\ExpressionLanguageProvider']]
+            - ['registerProvider', ['@Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider']]
 
-    toggler.toggle:
-        class: SolidWorx\Toggler\Toggle
-        arguments: ['?', '@toggler.expression.language']
+    SolidWorx\Toggler\Toggle:
+        arguments: ['?', '@Symfony\Component\ExpressionLanguage\ExpressionLanguage']
 
-    toggler.symfony.toggle:
-        class: SolidWorx\Toggler\Symfony\Toggle
-        decorates: toggler.toggle
+    SolidWorx\Toggler\Symfony\Toggle:
+        decorates: 'SolidWorx\Toggler\Toggle'
         public: false
-        arguments: ['@toggler.symfony.toggle.inner']
+        arguments:
+            $toggle: '@SolidWorx\Toggler\Symfony\Toggle.inner'
         calls:
             - ['setContainer', ['@service_container']]
 
-    toggler.twig.extension:
-        class: SolidWorx\Toggler\Twig\Extension\ToggleExtension
-        arguments: ['@toggler.toggle']
+    SolidWorx\Toggler\Twig\Extension\ToggleExtension:
+        arguments: ['@Solidworx\Toggler\Toggle']
         tags:
             - { name: twig.extension }

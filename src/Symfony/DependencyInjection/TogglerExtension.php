@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler\Symfony\DependencyInjection;
 
 use SolidWorx\Toggler\Storage\StorageFactory;
+use SolidWorx\Toggler\Symfony\Command\ToggleSetCommand;
+use SolidWorx\Toggler\Toggle;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,8 +38,8 @@ class TogglerExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $definition = $container->getDefinition('toggler.toggle');
-        $commandDefinition = $container->getDefinition('toggler.command.set_value');
+        $definition = $container->getDefinition(Toggle::class);
+        $commandDefinition = $container->getDefinition(ToggleSetCommand::class);
 
         if (!empty($config['config']['storage'])) {
             $service = $config['config']['storage'];
