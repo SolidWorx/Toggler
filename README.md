@@ -93,7 +93,8 @@ The following truthy values are accepted:
 * (int) 1
 * '1'
 * 'on'
-* 'true'
+* 'yes'
+* 'y'
 
 ### Using callbacks
 
