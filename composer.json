@@ -30,7 +30,12 @@
         "symfony/phpunit-bridge": "^5.2",
         "symfony/security-core": "^4.0 || ^5.2",
         "symfony/yaml": "^4.0 || ^5.0",
-        "twig/twig": "^2.7 || ^3.0"
+        "twig/twig": "^2.7 || ^3.0",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan-phpunit": "^0.12.16",
+        "phpstan/phpstan-symfony": "^0.12.11",
+        "phpstan/phpstan-strict-rules": "^0.12.5",
+        "phpstan/phpstan-deprecation-rules": "^0.12.5"
     },
     "suggest": {
         "symfony/expression-language": "To use expressions for conditions",
