@@ -75,7 +75,7 @@ class ToggleTest extends TestCase
         self::assertFalse($instance->isActive('bazbar'));
     }
 
-    public function testisActiveCallback(): void
+    public function testIsActiveCallback(): void
     {
         $features = [
             'foo' => function (array $data): bool {
@@ -100,7 +100,7 @@ class ToggleTest extends TestCase
         self::assertFalse($instance->isActive('bar', [1, 2]));
     }
 
-    public function testisActiveExpression(): void
+    public function testIsActiveExpression(): void
     {
         $features = [
             'foo' => new Expression('newValue > 10 and some["value"] < 10'),
@@ -108,8 +108,30 @@ class ToggleTest extends TestCase
 
         $instance = new Toggle(StorageFactory::factory($features));
 
-        // Call all these function twice to check that it is memoized correctly
         self::assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));
         self::assertFalse($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 500]]));
+    }
+
+    public function testIsActiveStringClass(): void
+    {
+        $features = [
+            'foo' => new class() {
+                public function __toString()
+                {
+                    return '1';
+                }
+            },
+            'bar' => new class() {
+                public function __toString()
+                {
+                    return '0';
+                }
+            },
+        ];
+
+        $instance = new Toggle(StorageFactory::factory($features));
+
+        self::assertTrue($instance->isActive('foo'));
+        self::assertFalse($instance->isActive('bar'));
     }
 }
