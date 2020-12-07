@@ -17,6 +17,7 @@ use SolidWorx\Toggler\Toggle as BaseToggle;
 use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\Security\Core\Role\Role;
 
 final class Toggle implements ToggleInterface, ContainerAwareInterface
 {
@@ -53,7 +54,7 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
             self::$variables = [
                 'token' => $token,
                 'request' => $request,
-                'roles' => array_map(function (RoleInterface $role) {
+                'roles' => array_map(static function (Role $role) {
                     return $role->getRole();
                 }, $roles),
                 'trust_resolver' => $this->container->get('security.authentication.trust_resolver'),

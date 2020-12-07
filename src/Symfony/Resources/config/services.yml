@@ -22,20 +22,23 @@ services:
         arguments:
             $toggle: '@SolidWorx\Toggler\Toggle'
 
-    Symfony\Component\DependencyInjection\ExpressionLanguageProvider:
+    toggler.expression.language.provider.dependency_injection:
+        class: Symfony\Component\DependencyInjection\ExpressionLanguageProvider
         public: false
 
-    Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider:
+    toggler.expression.language.provider.security:
+        class: Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider
         public: false
 
-    Symfony\Component\ExpressionLanguage\ExpressionLanguage:
+    toggler.expression.language:
+        class: Symfony\Component\ExpressionLanguage\ExpressionLanguage
         public: false
         calls:
-            - ['registerProvider', ['@Symfony\Component\DependencyInjection\ExpressionLanguageProvider']]
-            - ['registerProvider', ['@Symfony\Component\Security\Core\Authorization\ExpressionLanguageProvider']]
+            - ['registerProvider', ['@toggler.expression.language.provider.dependency_injection']]
+            - ['registerProvider', ['@toggler.expression.language.provider.security']]
 
     SolidWorx\Toggler\Toggle:
-        arguments: ['?', '@Symfony\Component\ExpressionLanguage\ExpressionLanguage']
+        arguments: ['?', '@toggler.expression.language']
 
     SolidWorx\Toggler\Symfony\Toggle:
         decorates: 'SolidWorx\Toggler\Toggle'
@@ -46,6 +49,6 @@ services:
             - ['setContainer', ['@service_container']]
 
     SolidWorx\Toggler\Twig\Extension\ToggleExtension:
-        arguments: ['@Solidworx\Toggler\Toggle']
+        arguments: ['@SolidWorx\Toggler\Toggle']
         tags:
             - { name: twig.extension }
