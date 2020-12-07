@@ -13,14 +13,17 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Twig\Node;
 
-class ToggleNode extends \Twig_Node
+use Twig\Compiler;
+use Twig\Node\Node;
+
+class ToggleNode extends Node
 {
     /**
      * @param \Twig_Node $else
      * @param \Twig_Node $variables
      * @param string     $tag
      */
-    public function __construct(\Twig_Node $feature, \Twig_Node $body, ?\Twig_Node $else, ?\Twig_Node $variables, int $lineNo, string $tag = null)
+    public function __construct(Node $feature, Node $body, ?Node $else, ?Node $variables, int $lineNo, string $tag = null)
     {
         $nodes = [
             'feature' => $feature,
@@ -41,9 +44,9 @@ class ToggleNode extends \Twig_Node
     /**
      * Compiles the node to PHP.
      *
-     * @param \Twig_Compiler $compiler A Twig_Compiler instance
+     * @param Compiler $compiler A Twig_Compiler instance
      */
-    public function compile(\Twig_Compiler $compiler): void
+    public function compile(Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
 

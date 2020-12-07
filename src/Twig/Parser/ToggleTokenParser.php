@@ -14,24 +14,27 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler\Twig\Parser;
 
 use SolidWorx\Toggler\Twig\Node\ToggleNode;
+use Twig\Error\SyntaxError;
+use Twig\Token;
+use Twig\TokenParser\AbstractTokenParser;
 
-class ToggleTokenParser extends \Twig_TokenParser
+class ToggleTokenParser extends AbstractTokenParser
 {
     /**
      * {@inheritdoc}
      */
-    public function parse(\Twig_Token $token): ToggleNode
+    public function parse(Token $token): ToggleNode
     {
         $lineNo = $token->getLine();
         $feature = $this->parser->getExpressionParser()->parseExpression();
         $stream = $this->parser->getStream();
 
         $variables = null;
-        if ($stream->nextIf(\Twig_Token::NAME_TYPE, 'with')) {
+        if ($stream->nextIf(Token::NAME_TYPE, 'with')) {
             $variables = $this->parser->getExpressionParser()->parseExpression();
         }
 
-        $stream->expect(\Twig_Token::BLOCK_END_TYPE);
+        $stream->expect(Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse([$this, 'decideIfFork']);
         $else = null;
         $end = false;
@@ -39,7 +42,7 @@ class ToggleTokenParser extends \Twig_TokenParser
         while (!$end) {
             switch ($stream->next()->getValue()) {
                 case 'else':
-                    $stream->expect(\Twig_Token::BLOCK_END_TYPE);
+                    $stream->expect(Token::BLOCK_END_TYPE);
                     $else = $this->parser->subparse([$this, 'decideIfEnd']);
                     break;
 
@@ -48,21 +51,21 @@ class ToggleTokenParser extends \Twig_TokenParser
                     break;
 
                 default:
-                    throw new \Twig_Error_Syntax(sprintf('Unexpected end of template. Twig was looking for the following tags "else", or "endtoggle" to close the "toggle" block started at line %d)', $lineNo), $stream->getCurrent()->getLine(), $stream->getSourceContext());
+                    throw new SyntaxError(sprintf('Unexpected end of template. Twig was looking for the following tags "else", or "endtoggle" to close the "toggle" block started at line %d)', $lineNo), $stream->getCurrent()->getLine(), $stream->getSourceContext());
             }
         }
 
-        $stream->expect(\Twig_Token::BLOCK_END_TYPE);
+        $stream->expect(Token::BLOCK_END_TYPE);
 
         return new ToggleNode($feature, $body, $else, $variables, $lineNo, $this->getTag());
     }
 
-    public function decideIfFork(\Twig_Token $token): bool
+    public function decideIfFork(Token $token): bool
     {
         return $token->test(['else', 'endtoggle']);
     }
 
-    public function decideIfEnd(\Twig_Token $token): bool
+    public function decideIfEnd(Token $token): bool
     {
         return $token->test(['endtoggle']);
     }

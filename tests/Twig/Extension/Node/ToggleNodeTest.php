@@ -14,25 +14,32 @@ declare(strict_types=1);
 namespace SolidWorx\Tests\Toggler\Twig\Extension\Node;
 
 use SolidWorx\Toggler\Twig\Node\ToggleNode;
+use Twig\Node\Expression\ArrayExpression;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\NameExpression;
+use Twig\Node\Node;
+use Twig\Node\PrintNode;
+use Twig\Node\TextNode;
+use Twig\Test\NodeTestCase;
 
-if (class_exists('Twig_Test_NodeTestCase')) {
-    class ToggleNodeTest extends \Twig_Test_NodeTestCase
+if (class_exists(NodeTestCase::class)) {
+    class ToggleNodeTest extends NodeTestCase
     {
         public function testConstructor()
         {
-            $t = new \Twig_Node([
-                new \Twig_Node_Expression_Constant(true, 1),
-                new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
+            $t = new Node([
+                new ConstantExpression(true, 1),
+                new PrintNode(new NameExpression('foo', 1), 1),
             ], [], 1);
             $else = null;
-            $node = new ToggleNode(new \Twig_Node_Text('foo', 1), $t, $else, null, 1, null);
+            $node = new ToggleNode(new TextNode('foo', 1), $t, $else, null, 1, null);
 
             $this->assertEquals($t, $node->getNode('body'));
-            $this->assertEquals(new \Twig_Node_Text('foo', 1), $node->getNode('feature'));
+            $this->assertEquals(new TextNode('foo', 1), $node->getNode('feature'));
             $this->assertFalse($node->hasNode('else'));
 
-            $else = new \Twig_Node_Print(new \Twig_Node_Expression_Name('bar', 1), 1);
-            $node = new ToggleNode(new \Twig_Node_Text('bar', 1), $t, $else, null, 1, null);
+            $else = new PrintNode(new NameExpression('bar', 1), 1);
+            $node = new ToggleNode(new TextNode('bar', 1), $t, $else, null, 1, null);
             $this->assertEquals($else, $node->getNode('else'));
         }
 
@@ -49,11 +56,11 @@ if (class_exists('Twig_Test_NodeTestCase')) {
 
         private function getToggleTest(): array
         {
-            $t = new \Twig_Node([
-                new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
-            ], [], null, 1);
+            $t = new Node([
+                new PrintNode(new NameExpression('foo', 1), 1),
+            ], [], 1, null);
             $else = null;
-            $node = new ToggleNode(new \Twig_Node([new \Twig_Node_Expression_Constant('foo', 1)]), $t, $else, null, 1);
+            $node = new ToggleNode(new Node([new ConstantExpression('foo', 1)]), $t, $else, null, 1);
 
             return [
                 $node,
@@ -69,11 +76,11 @@ EOF
 
         private function getToggleWithElseTest(): array
         {
-            $t = new \Twig_Node([
-                new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
-            ], [], null, 1);
-            $else = new \Twig_Node_Print(new \Twig_Node_Expression_Name('bar', 1), 1);
-            $node = new ToggleNode(new \Twig_Node([new \Twig_Node_Expression_Constant('foo', 1)]), $t, $else, null, 1);
+            $t = new Node([
+                new PrintNode(new NameExpression('foo', 1), 1),
+            ], [], 1, null);
+            $else = new PrintNode(new NameExpression('bar', 1), 1);
+            $node = new ToggleNode(new Node([new ConstantExpression('foo', 1)]), $t, $else, null, 1);
 
             return [
                 $node,
@@ -91,14 +98,14 @@ EOF
 
         private function getToggleWithContextTest(): array
         {
-            $t = new \Twig_Node([
-                new \Twig_Node_Print(new \Twig_Node_Expression_Name('foo', 1), 1),
-            ], [], null, 1);
+            $t = new Node([
+                new PrintNode(new NameExpression('foo', 1), 1),
+            ], [], 1, null);
 
-            $node = new ToggleNode(new \Twig_Node([new \Twig_Node_Expression_Constant('foo', 1)]),
+            $node = new ToggleNode(new Node([new ConstantExpression('foo', 1)]),
                 $t,
                 null,
-                new \Twig_Node_Expression_Array([new \Twig_Node_Expression_Constant('value1', 1), new \Twig_Node_Expression_Constant(12, 1)], 1),
+                new ArrayExpression([new ConstantExpression('value1', 1), new ConstantExpression(12, 1)], 1),
                 1
             );
 
@@ -106,7 +113,7 @@ EOF
                 $node,
                 <<<EOF
 // line 1
-if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo", array("value1" => 12))) {
+if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo", ["value1" => 12])) {
     echo {$this->getVariableGetter('foo')};
 }
 EOF
