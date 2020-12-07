@@ -1,0 +1,16 @@
+parameters:
+    level: max
+    paths:
+        - src
+    bootstrapFiles:
+        - vendor/autoload.php
+        - vendor/bin/.phpunit/phpunit-8.3-0/vendor/autoload.php
+
+
+
+
+
+
+
+
+
