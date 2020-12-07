@@ -1,3 +1,14 @@
+2.0.0 Alpha 3
+=============
+
+  * Add support for classes that implements a __toString method
+  * Add support for "yes", "y", "no" and "n" checks
+  * Bump up minimum twig version (#13)
+  * Add support for Symfony 5 (#12)
+  * Drop support for Symfony 3 (#12)
+  * Add code coverage (#16)
+  * Migrate from Travis-CI to Github Actions (#14)
+
 2.0.0 Alpha 2
 =============
 
