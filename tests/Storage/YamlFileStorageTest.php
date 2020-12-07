@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace SolidWorx\Tests\Toggler\Storage;
+namespace SolidWorx\Toggler\Tests\Storage;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -30,14 +30,14 @@ class YamlFileStorageTest extends TestCase
         $this->root = vfsStream::setup('exampleDir');
     }
 
-    public function testInvalidFile()
+    public function testInvalidFile(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The file /non/existent/file.yml either does not exist, or is not readable');
         new YamlFileStorage('/non/existent/file.yml');
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $features = 'foo: true
 bar: true
@@ -50,14 +50,14 @@ foobar: false';
 
         $storage = new YamlFileStorage($file->url());
 
-        $this->assertTrue($storage->get('foo'));
-        $this->assertTrue($storage->get('bar'));
-        $this->assertFalse($storage->get('baz'));
-        $this->assertFalse($storage->get('foobar'));
-        $this->assertNull($storage->get('foobarbaz'));
+        self::assertTrue($storage->get('foo'));
+        self::assertTrue($storage->get('bar'));
+        self::assertFalse($storage->get('baz'));
+        self::assertFalse($storage->get('foobar'));
+        self::assertNull($storage->get('foobarbaz'));
     }
 
-    public function testSet()
+    public function testSet(): void
     {
         $features = 'foo: true
 bar: true
@@ -70,13 +70,13 @@ foobar: false';
 
         $storage = new YamlFileStorage($largeFile->url());
 
-        $this->assertTrue($storage->get('foo'));
-        $this->assertNull($storage->get('foobarbaz'));
+        self::assertTrue($storage->get('foo'));
+        self::assertNull($storage->get('foobarbaz'));
 
         $storage->set('foo', false);
         $storage->set('foobarbaz', true);
 
-        $this->assertFalse($storage->get('foo'));
-        $this->assertTrue($storage->get('foobarbaz'));
+        self::assertFalse($storage->get('foo'));
+        self::assertTrue($storage->get('foobarbaz'));
     }
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace SolidWorx\Tests\Toggler\Storage;
+namespace SolidWorx\Toggler\Tests\Storage;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +32,7 @@ class StorageFactoryTest extends TestCase
         $this->root = vfsStream::setup('exampleDir');
     }
 
-    public function testFactory()
+    public function testFactory(): void
     {
         $features = [
             'foo' => true,
@@ -49,13 +49,12 @@ class StorageFactoryTest extends TestCase
             ->withContent('<?php return '.var_export($features, true).';')
             ->at($this->root);
 
-        $this->assertInstanceOf(StorageInterface::class, StorageFactory::factory(new ArrayStorage($features)));
-        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
-        $this->assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
-        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
+        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
+        self::assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
+        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
     }
 
-    public function testInvalidConfigFile()
+    public function testInvalidConfigFile(): void
     {
         $features = [
             'foo' => true,
@@ -74,7 +73,7 @@ class StorageFactoryTest extends TestCase
         StorageFactory::factory($file->url());
     }
 
-    public function testInvalidConfigType()
+    public function testInvalidConfigType(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The 1st argument for '.StorageFactory::class.'::factory expects an array, string or instance of StorageInterface, boolean given');

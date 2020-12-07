@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace SolidWorx\Tests\Toggler;
+namespace SolidWorx\Toggler\Tests;
 
 use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Storage\StorageFactory;
@@ -20,7 +20,7 @@ use Symfony\Component\ExpressionLanguage\Expression;
 
 class ToggleTest extends TestCase
 {
-    public function testIsActive()
+    public function testIsActive(): void
     {
         $features = [
             'foo' => true,
@@ -31,13 +31,13 @@ class ToggleTest extends TestCase
 
         $instance = new Toggle(StorageFactory::factory($features));
 
-        $this->assertTrue($instance->isActive('foo'));
-        $this->assertTrue($instance->isActive('bar'));
-        $this->assertFalse($instance->isActive('baz'));
-        $this->assertFalse($instance->isActive('foobar'));
+        self::assertTrue($instance->isActive('foo'));
+        self::assertTrue($instance->isActive('bar'));
+        self::assertFalse($instance->isActive('baz'));
+        self::assertFalse($instance->isActive('foobar'));
     }
 
-    public function testIsActiveTruthy()
+    public function testIsActiveTruthy(): void
     {
         $features = [
             'foo' => true,
@@ -48,13 +48,13 @@ class ToggleTest extends TestCase
 
         $instance = new Toggle(StorageFactory::factory($features));
 
-        $this->assertTrue($instance->isActive('foo'));
-        $this->assertTrue($instance->isActive('bar'));
-        $this->assertTrue($instance->isActive('baz'));
-        $this->assertTrue($instance->isActive('foobar'));
+        self::assertTrue($instance->isActive('foo'));
+        self::assertTrue($instance->isActive('bar'));
+        self::assertTrue($instance->isActive('baz'));
+        self::assertTrue($instance->isActive('foobar'));
     }
 
-    public function testIsActiveFalsey()
+    public function testIsActiveFalsey(): void
     {
         $features = [
             'foo' => false,
@@ -67,15 +67,15 @@ class ToggleTest extends TestCase
 
         $instance = new Toggle(StorageFactory::factory($features));
 
-        $this->assertFalse($instance->isActive('foo'));
-        $this->assertFalse($instance->isActive('bar'));
-        $this->assertFalse($instance->isActive('baz'));
-        $this->assertFalse($instance->isActive('foobar'));
-        $this->assertFalse($instance->isActive('foobaz'));
-        $this->assertFalse($instance->isActive('bazbar'));
+        self::assertFalse($instance->isActive('foo'));
+        self::assertFalse($instance->isActive('bar'));
+        self::assertFalse($instance->isActive('baz'));
+        self::assertFalse($instance->isActive('foobar'));
+        self::assertFalse($instance->isActive('foobaz'));
+        self::assertFalse($instance->isActive('bazbar'));
     }
 
-    public function testisActiveCallback()
+    public function testisActiveCallback(): void
     {
         $features = [
             'foo' => function (array $data): bool {
@@ -89,18 +89,18 @@ class ToggleTest extends TestCase
         $instance = new Toggle(StorageFactory::factory($features));
 
         // Call all these function twice to check that it is memoized correctly
-        $this->assertTrue($instance->isActive('foo', [['value' => 123]]));
-        $this->assertTrue($instance->isActive('foo', [['value' => 123]]));
-        $this->assertFalse($instance->isActive('foo', [['value' => 456]]));
-        $this->assertFalse($instance->isActive('foo', [['value' => 456]]));
+        self::assertTrue($instance->isActive('foo', [['value' => 123]]));
+        self::assertTrue($instance->isActive('foo', [['value' => 123]]));
+        self::assertFalse($instance->isActive('foo', [['value' => 456]]));
+        self::assertFalse($instance->isActive('foo', [['value' => 456]]));
 
-        $this->assertTrue($instance->isActive('bar', [5, 5]));
-        $this->assertTrue($instance->isActive('bar', [5, 5]));
-        $this->assertFalse($instance->isActive('bar', [1, 2]));
-        $this->assertFalse($instance->isActive('bar', [1, 2]));
+        self::assertTrue($instance->isActive('bar', [5, 5]));
+        self::assertTrue($instance->isActive('bar', [5, 5]));
+        self::assertFalse($instance->isActive('bar', [1, 2]));
+        self::assertFalse($instance->isActive('bar', [1, 2]));
     }
 
-    public function testisActiveExpression()
+    public function testisActiveExpression(): void
     {
         $features = [
             'foo' => new Expression('newValue > 10 and some["value"] < 10'),
@@ -109,7 +109,7 @@ class ToggleTest extends TestCase
         $instance = new Toggle(StorageFactory::factory($features));
 
         // Call all these function twice to check that it is memoized correctly
-        $this->assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));
-        $this->assertFalse($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 500]]));
+        self::assertTrue($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 5]]));
+        self::assertFalse($instance->isActive('foo', ['newValue' => 123, 'some' => ['value' => 500]]));
     }
 }

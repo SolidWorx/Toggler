@@ -11,47 +11,51 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace SolidWorx\Tests\Toggler\Storage;
+namespace SolidWorx\Toggler\Tests\Storage;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Predis\Client;
 use SolidWorx\Toggler\Storage\RedisStorage;
 
 class RedisStorageTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject&Client
      */
     private $redis;
 
     public function setUp(): void
     {
-        $this->redis = $this->createPartialMock(\Predis\Client::class, ['get', 'set']);
+        $this->redis = $this->getMockBuilder(Client::class)
+            ->addMethods(['get', 'set'])
+            ->getMock();
     }
 
-    public function testConstructorException()
+    public function testConstructorException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('SolidWorx\Toggler\Storage\RedisStorage::__construct() expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\Client, NULL given');
 
-        $storage = new RedisStorage(null);
+        new RedisStorage(null);
     }
 
-    public function testGet()
+    public function testGet(): void
     {
-        $this->redis->expects($this->at(0))
+        $this->redis->expects(self::at(0))
             ->method('get')
             ->with('foobar')
             ->willReturn(true);
 
         $storage = new RedisStorage($this->redis);
 
-        $this->assertTrue($storage->get('foobar'));
-        $this->assertNull($storage->get('baz'));
+        self::assertTrue($storage->get('foobar'));
+        self::assertNull($storage->get('baz'));
     }
 
-    public function testSet()
+    public function testSet(): void
     {
-        $this->redis->expects($this->at(0))
+        $this->redis->expects(self::at(0))
             ->method('set')
             ->with('foobar', false);
 
@@ -60,33 +64,40 @@ class RedisStorageTest extends TestCase
         $storage->set('foobar', false);
     }
 
-    public function testGetWithNamespace()
+    public function testGetWithNamespace(): void
     {
         $namespace = 'fooNamespace';
-        $this->redis->expects($this->at(0))
+        $this->redis->expects(self::at(0))
             ->method('get')
             ->with($namespace.':foobar')
             ->willReturn(true);
 
-        $this->redis->expects($this->at(1))
+        $this->redis->expects(self::at(1))
             ->method('get')
             ->with($namespace.':baz');
 
         $storage = new RedisStorage($this->redis, $namespace);
 
-        $this->assertTrue($storage->get('foobar'));
-        $this->assertNull($storage->get('baz'));
+        self::assertTrue($storage->get('foobar'));
+        self::assertNull($storage->get('baz'));
     }
 
-    public function testSetWithNamespace()
+    public function testSetWithNamespace(): void
     {
         $namespace = 'fooNamespace';
-        $this->redis->expects($this->at(0))
+        $this->redis->expects(self::at(0))
             ->method('set')
             ->with($namespace.':foobar', false);
+
+        $this->redis->expects(self::at(1))
+            ->method('get')
+            ->with($namespace.':foobar')
+            ->willReturn(false);
 
         $storage = new RedisStorage($this->redis, $namespace);
 
         $storage->set('foobar', false);
+
+        self::assertFalse($storage->get('foobar'));
     }
 }
