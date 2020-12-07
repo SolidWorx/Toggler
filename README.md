@@ -25,7 +25,7 @@ This is useful in a continues deployment environment, where you can deploy not-y
 
 ## Requirements
 
-Toggler requires PHP 7.1+ and Symfony 3.2+
+Toggler requires PHP 7.1+ and Symfony 4.0+
 
 ## Installation
 
@@ -419,6 +419,8 @@ toggler:
 **Note:** The `features` and `storage` options can't be used together. You must use either the one or the other. At least one of the two must be defined.
 
 **Note:** When using the Symfony bundle, the twig extension is automatically registered.
+
+**Note:** The `symfony/security-core` package is required with `symfony/framework-bundle`.
 
 ### Console Commands
 
