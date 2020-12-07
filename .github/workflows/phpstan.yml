@@ -41,6 +41,8 @@ jobs:
       - name: "Install dependencies"
         run: "composer update"
 
+      - name: Install PHPUnit
+        run: vendor/bin/simple-phpunit --version
+
       - name: Run PHPStan
-        run: |
-          vendor/bin/phpstan analyse --configuration=phpstan.neon
+        run: vendor/bin/phpstan analyse --configuration=phpstan.neon
