@@ -49,6 +49,7 @@ class StorageFactoryTest extends TestCase
             ->withContent('<?php return '.var_export($features, true).';')
             ->at($this->root);
 
+        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory(new ArrayStorage($features)));
         self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
         self::assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
         self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
