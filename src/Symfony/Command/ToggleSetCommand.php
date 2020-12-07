@@ -15,6 +15,7 @@ namespace SolidWorx\Toggler\Symfony\Command;
 
 use SolidWorx\Toggler\Storage\PersistenStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
+use SolidWorx\Toggler\Util;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -68,29 +69,8 @@ HELP
 
         $feature = $input->getArgument('feature');
 
-        $this->storage->set($feature, $this->isTruthy($input->getArgument('value')));
+        $this->storage->set($feature, Util::isTruthy($input->getArgument('value')));
 
         $output->writeln(sprintf('<info>Feature %s updated</info>', $feature));
-    }
-
-    private function isTruthy($value): bool
-    {
-        if (is_bool($value)) {
-            return true === $value;
-        }
-
-        if (is_int($value)) {
-            return 1 === $value;
-        }
-
-        if (is_string($value)) {
-            if ((int) $value > 0) {
-                return 1 === (int) $value;
-            }
-
-            return in_array(strtolower($value), ['on', 'true'], true);
-        }
-
-        return false;
     }
 }
