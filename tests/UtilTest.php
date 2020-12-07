@@ -14,10 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler\Tests;
 
 use PHPUnit\Framework\TestCase;
-use SolidWorx\Toggler\Storage\StorageFactory;
-use SolidWorx\Toggler\Toggle;
 use SolidWorx\Toggler\Util;
-use Symfony\Component\ExpressionLanguage\Expression;
 
 class UtilTest extends TestCase
 {
@@ -62,7 +59,7 @@ class UtilTest extends TestCase
         yield ['NO'];
         yield ['N'];
         yield [null];
-        yield [new \stdClass];
+        yield [new \stdClass()];
         yield [[]];
     }
 }

@@ -115,8 +115,18 @@ class ToggleTest extends TestCase
     public function testIsActiveStringClass(): void
     {
         $features = [
-            'foo' => new class { public function __toString() { return '1'; }},
-            'bar' => new class { public function __toString() { return '0'; }},
+            'foo' => new class() {
+                public function __toString()
+                {
+                    return '1';
+                }
+            },
+            'bar' => new class() {
+                public function __toString()
+                {
+                    return '0';
+                }
+            },
         ];
 
         $instance = new Toggle(StorageFactory::factory($features));
