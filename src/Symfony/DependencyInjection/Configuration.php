@@ -24,14 +24,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('toggler');
+        $treeBuilder = new TreeBuilder('toggler');
+        $rootNode = $treeBuilder->getRootNode();
 
-        $node = $rootNode
+        $rootNode
             ->children()
                 ->arrayNode('config')
                     ->isRequired()
-                    ->cannotBeEmpty()
                     ->children()
                         ->scalarNode('storage')
                             ->info('Set the storage handler service')
