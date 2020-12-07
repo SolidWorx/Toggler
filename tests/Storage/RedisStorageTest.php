@@ -27,9 +27,17 @@ class RedisStorageTest extends TestCase
 
     public function setUp(): void
     {
-        $this->redis = $this->getMockBuilder(Client::class)
-            ->addMethods(['get', 'set'])
-            ->getMock();
+        $mockBuilder = $this->getMockBuilder(Client::class);
+
+        if (\method_exists($mockBuilder, 'addMethods')) {
+            $this->redis = $mockBuilder
+                ->addMethods(['get', 'set'])
+                ->getMock();
+        } else {
+            $this->redis = $mockBuilder
+                ->setMethods(['get', 'set'])
+                ->getMock();
+        }
     }
 
     public function testConstructorException(): void
