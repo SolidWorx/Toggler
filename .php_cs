@@ -14,6 +14,12 @@ return PhpCsFixer\Config::create()
             'phpdoc_summary' => false,
             'declare_strict_types' => true,
             'strict_param' => true,
+            'global_namespace_import' => [
+                'import_classes' => true,
+                'import_constants' => true,
+                'import_functions' => true,
+            ],
+            'ordered_imports' => true,
         ]
     )
     ->setFinder($finder)

@@ -19,12 +19,10 @@ use Twig\Node\Node;
 class ToggleNode extends Node
 {
     /**
-     * @param Node<string>        $feature
+     * @param Node<string>            $feature
      * @param Node<string>            $body
      * @param Node<string>|null       $else
      * @param Node<array<mixed>>|null $variables
-     * @param int                     $lineNo
-     * @param string|null             $tag
      */
     public function __construct(Node $feature, Node $body, ?Node $else, ?Node $variables, int $lineNo, string $tag = null)
     {

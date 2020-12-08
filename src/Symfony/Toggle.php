@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony;
 
+use function array_merge;
 use SolidWorx\Toggler\Toggle as BaseToggle;
 use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -90,7 +91,6 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
     public function isActive(string $feature, array $context = []): bool
     {
         if ([] === self::$variables) {
-
             $token = $this->tokenStorage->getToken();
 
             $roles = [];

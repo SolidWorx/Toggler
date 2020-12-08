@@ -13,6 +13,13 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
+use Exception;
+use function file_get_contents;
+use function file_put_contents;
+use InvalidArgumentException;
+use function is_file;
+use function is_readable;
+use function sprintf;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlFileStorage extends ArrayStorage implements PersistenStorageInterface
@@ -25,11 +32,11 @@ class YamlFileStorage extends ArrayStorage implements PersistenStorageInterface
     public function __construct(string $filePath)
     {
         if (!class_exists(Yaml::class)) {
-            throw new \Exception('The symfony/yaml component is needed in order to load config from yaml file');
+            throw new Exception('The symfony/yaml component is needed in order to load config from yaml file');
         }
 
         if (!is_file($filePath) || !is_readable($filePath)) {
-            throw new \InvalidArgumentException(sprintf('The file %s either does not exist, or is not readable', $filePath));
+            throw new InvalidArgumentException(sprintf('The file %s either does not exist, or is not readable', $filePath));
         }
 
         $this->filePath = $filePath;
