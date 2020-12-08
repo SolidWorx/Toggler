@@ -81,7 +81,7 @@ class StorageFactoryTest extends TestCase
     public function testInvalidConfigType(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The 1st argument for '.StorageFactory::class.'::factory expects an array, string or instance of StorageInterface, boolean given');
+        $this->expectExceptionMessage('The 1st argument for '.StorageFactory::class.'::factory expects an array, string or instance of StorageInterface, bool given');
 
         StorageFactory::factory(true);
     }
