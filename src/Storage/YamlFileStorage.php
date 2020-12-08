@@ -22,7 +22,7 @@ use function is_readable;
 use function sprintf;
 use Symfony\Component\Yaml\Yaml;
 
-class YamlFileStorage extends ArrayStorage implements PersistenStorageInterface
+class YamlFileStorage extends ArrayStorage implements PersistentStorageInterface
 {
     /**
      * @var string

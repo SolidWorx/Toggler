@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
-interface PersistenStorageInterface extends StorageInterface
+interface PersistentStorageInterface extends StorageInterface
 {
     /**
      * Update a value in the storage.

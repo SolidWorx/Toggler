@@ -15,7 +15,7 @@ namespace SolidWorx\Toggler\Symfony\Command;
 
 use Exception;
 use function get_class;
-use SolidWorx\Toggler\Storage\PersistenStorageInterface;
+use SolidWorx\Toggler\Storage\PersistentStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Util;
 use function sprintf;
@@ -63,7 +63,7 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->storage instanceof PersistenStorageInterface) {
+        if (!$this->storage instanceof PersistentStorageInterface) {
             throw new Exception(sprintf('The storage class %s does not support updating a value.', get_class($this->storage)));
         }
 
