@@ -30,7 +30,7 @@ class RedisStorageTest extends TestCase
     {
         $mockBuilder = $this->getMockBuilder(Client::class);
 
-        if (\version_compare('8.3', PHPUnitVersion::series(), '>=')) {
+        if (\version_compare(PHPUnitVersion::series(), '8.3', '>=')) {
             $this->redis = $mockBuilder
                 ->addMethods(['get', 'set'])
                 ->getMock();
