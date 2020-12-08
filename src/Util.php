@@ -13,6 +13,13 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler;
 
+use function in_array;
+use function is_bool;
+use function is_int;
+use function is_numeric;
+use function is_string;
+use function strtolower;
+
 final class Util
 {
     /**
@@ -22,20 +29,20 @@ final class Util
      */
     public static function isTruthy($value): bool
     {
-        if (\is_bool($value)) {
+        if (is_bool($value)) {
             return true === $value;
         }
 
-        if (\is_int($value)) {
+        if (is_int($value)) {
             return 1 === $value;
         }
 
-        if (\is_string($value)) {
-            if (\is_numeric($value) && (int) $value > 0) {
+        if (is_string($value)) {
+            if (is_numeric($value) && (int) $value > 0) {
                 return 1 === (int) $value;
             }
 
-            return \in_array(\strtolower($value), ['on', 'true', 'yes', 'y'], true);
+            return in_array(strtolower($value), ['on', 'true', 'yes', 'y'], true);
         }
 
         return false;

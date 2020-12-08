@@ -13,9 +13,12 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony\Command;
 
+use Exception;
+use function get_class;
 use SolidWorx\Toggler\Storage\PersistenStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Util;
+use function sprintf;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,7 +64,7 @@ HELP
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->storage instanceof PersistenStorageInterface) {
-            throw new \Exception(sprintf('The storage class %s does not support updating a value.', get_class($this->storage)));
+            throw new Exception(sprintf('The storage class %s does not support updating a value.', get_class($this->storage)));
         }
 
         $feature = ((array) $input->getArgument('feature'))[0];

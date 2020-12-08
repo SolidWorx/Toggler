@@ -13,7 +13,11 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony\Command;
 
+use Exception;
+use function explode;
 use SolidWorx\Toggler\ToggleInterface;
+use function sprintf;
+use function strpos;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -69,7 +73,7 @@ HELP
 
         foreach ((array) $input->getOption('context') as $parameter) {
             if (false === strpos((string) $parameter, '=')) {
-                throw new \Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
+                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
             }
 
             [$key, $value] = explode('=', (string) $parameter);
@@ -96,7 +100,7 @@ HELP
             ];
 
             if ([] !== $context) {
-                $row[] = json_encode($context);
+                $row[] = json_encode($context, JSON_THROW_ON_ERROR);
             }
 
             $table->addRow($row);

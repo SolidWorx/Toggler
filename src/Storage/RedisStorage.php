@@ -13,10 +13,15 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
+use InvalidArgumentException;
+use Redis;
+use RedisArray;
+use RedisCluster;
+
 class RedisStorage implements PersistenStorageInterface
 {
     /**
-     * @var \Predis\Client<string>|\Redis|\RedisArray|\RedisCluster
+     * @var \Predis\Client<string>|Redis|RedisArray|RedisCluster
      */
     private $redis;
 
@@ -30,8 +35,8 @@ class RedisStorage implements PersistenStorageInterface
      */
     public function __construct($redis, string $namespace = '')
     {
-        if (!$redis instanceof \Redis && !$redis instanceof \RedisArray && !$redis instanceof \RedisCluster && !$redis instanceof \Predis\Client) {
-            throw new \InvalidArgumentException(sprintf('%s() expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\Client, %s given', __METHOD__, is_object($redis) ? get_class($redis) : gettype($redis)));
+        if (!$redis instanceof Redis && !$redis instanceof RedisArray && !$redis instanceof RedisCluster && !$redis instanceof \Predis\Client) {
+            throw new InvalidArgumentException(sprintf('%s() expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\Client, %s given', __METHOD__, is_object($redis) ? get_class($redis) : gettype($redis)));
         }
 
         $this->redis = $redis;

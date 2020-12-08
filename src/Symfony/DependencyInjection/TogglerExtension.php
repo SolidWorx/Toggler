@@ -13,9 +13,16 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony\DependencyInjection;
 
+use function class_exists;
+use function explode;
+use InvalidArgumentException;
+use function is_string;
 use SolidWorx\Toggler\Storage\StorageFactory;
 use SolidWorx\Toggler\Symfony\Command\ToggleSetCommand;
 use SolidWorx\Toggler\Toggle;
+use function str_contains;
+use function str_starts_with;
+use function substr;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -62,15 +69,15 @@ class TogglerExtension extends Extension
             }
 
             switch (true) {
-                case \str_contains($value, '::') && '@' === $value[0]:
+                case str_contains($value, '::') && '@' === $value[0]:
                     $parts = explode('::', $value);
 
                     $value = [new Reference(substr($parts[0], 1)), $parts[1]];
                     break;
 
-                case \str_starts_with($value, '@='):
+                case str_starts_with($value, '@='):
                     if (!class_exists(Expression::class)) {
-                        throw new \InvalidArgumentException('The symfony/expression-language component is required in order to use expressions.');
+                        throw new InvalidArgumentException('The symfony/expression-language component is required in order to use expressions.');
                     }
 
                     $value = new Definition(Expression::class, [substr($value, 2)]);

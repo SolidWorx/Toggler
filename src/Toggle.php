@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler;
 
+use function class_exists;
+use function is_callable;
+use function is_object;
+use function method_exists;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -33,7 +37,7 @@ final class Toggle implements ToggleInterface
     {
         $this->config = $config;
 
-        if (\class_exists(ExpressionLanguage::class)) {
+        if (class_exists(ExpressionLanguage::class)) {
             $this->expressionLanguage = $expressionLanguage ?? new ExpressionLanguage();
         }
     }
@@ -46,10 +50,10 @@ final class Toggle implements ToggleInterface
             case $value instanceof Expression:
                 $value = $this->evaluateExpression($value, $context);
                 break;
-            case \is_callable($value):
+            case is_callable($value):
                 $value = $this->evaluateCallback($value, $context);
                 break;
-            case \is_object($value) && \method_exists($value, '__toString'):
+            case is_object($value) && method_exists($value, '__toString'):
                 $value = (string) $value;
                 break;
         }
@@ -58,7 +62,7 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param mixed $value
+     * @param mixed        $value
      * @param array<mixed> $context
      *
      * @return mixed
