@@ -24,8 +24,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('toggler');
+        $treeBuilder = new TreeBuilder('toggler');
+        $rootNode = $treeBuilder->getRootNode();
 
         // @phpstan-ignore-next-line
         $rootNode
