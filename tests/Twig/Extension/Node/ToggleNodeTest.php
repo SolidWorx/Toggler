@@ -42,6 +42,9 @@ class ToggleNodeTest extends NodeTestCase
         self::assertEquals($else, $node->getNode('else'));
     }
 
+    /**
+     * @return array<array{Node,string}>
+     */
     public function getTests(): array
     {
         $tests = [];
@@ -53,6 +56,9 @@ class ToggleNodeTest extends NodeTestCase
         return $tests;
     }
 
+    /**
+     * @return array{Node,string}
+     */
     private function getToggleTest(): array
     {
         $t = new Node([
@@ -73,6 +79,9 @@ EOF
         ];
     }
 
+    /**
+     * @return array{Node,string}
+     */
     private function getToggleWithElseTest(): array
     {
         $t = new Node([
@@ -95,6 +104,9 @@ EOF
         ];
     }
 
+    /**
+     * @return array{Node,string}
+     */
     private function getToggleWithContextTest(): array
     {
         $t = new Node([

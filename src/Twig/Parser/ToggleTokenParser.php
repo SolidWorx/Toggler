@@ -15,13 +15,14 @@ namespace SolidWorx\Toggler\Twig\Parser;
 
 use SolidWorx\Toggler\Twig\Node\ToggleNode;
 use Twig\Error\SyntaxError;
+use Twig\Node\Node;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
 
 class ToggleTokenParser extends AbstractTokenParser
 {
     /**
-     * {@inheritdoc}
+     * @return ToggleNode<Node>
      */
     public function parse(Token $token): ToggleNode
     {
@@ -30,7 +31,7 @@ class ToggleTokenParser extends AbstractTokenParser
         $stream = $this->parser->getStream();
 
         $variables = null;
-        if ($stream->nextIf(Token::NAME_TYPE, 'with')) {
+        if (null !== $stream->nextIf(Token::NAME_TYPE, 'with')) {
             $variables = $this->parser->getExpressionParser()->parseExpression();
         }
 

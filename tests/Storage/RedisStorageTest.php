@@ -15,13 +15,14 @@ namespace SolidWorx\Toggler\Tests\Storage;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Runner\Version as PHPUnitVersion;
 use Predis\Client;
 use SolidWorx\Toggler\Storage\RedisStorage;
 
 class RedisStorageTest extends TestCase
 {
     /**
-     * @var MockObject&Client
+     * @var MockObject&Client<string>
      */
     private $redis;
 
@@ -29,11 +30,12 @@ class RedisStorageTest extends TestCase
     {
         $mockBuilder = $this->getMockBuilder(Client::class);
 
-        if (\method_exists($mockBuilder, 'addMethods')) {
+        if (\version_compare('8.3', PHPUnitVersion::series(), '>=')) {
             $this->redis = $mockBuilder
                 ->addMethods(['get', 'set'])
                 ->getMock();
         } else {
+            // @phpstan-ignore-next-line
             $this->redis = $mockBuilder
                 ->setMethods(['get', 'set'])
                 ->getMock();

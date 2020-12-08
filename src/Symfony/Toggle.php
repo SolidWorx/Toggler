@@ -17,49 +17,95 @@ use SolidWorx\Toggler\Toggle as BaseToggle;
 use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 final class Toggle implements ToggleInterface, ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    /**
+     * @var array<mixed>
+     */
     private static $variables;
 
+    /**
+     * @var BaseToggle
+     */
     private $toggle;
 
-    public function __construct(BaseToggle $toggle)
-    {
-        $this->toggle = $toggle;
-    }
+    /**
+     * @var SessionInterface
+     */
+    private $session;
 
     /**
-     * {@inheritdoc}
+     * @var TokenStorageInterface
      */
+    private $tokenStorage;
+
+    /**
+     * @var RoleHierarchyInterface
+     */
+    private $roleHierarchy;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
+     * @var AuthenticationTrustResolverInterface
+     */
+    private $trustResolver;
+
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
+
+    public function __construct(
+        BaseToggle $toggle,
+        SessionInterface $session,
+        TokenStorageInterface $tokenStorage,
+        RoleHierarchyInterface $roleHierarchy,
+        RequestStack $requestStack,
+        AuthenticationTrustResolverInterface $trustResolver,
+        AuthorizationCheckerInterface $authorizationChecker
+    ) {
+        $this->toggle = $toggle;
+        $this->session = $session;
+        $this->tokenStorage = $tokenStorage;
+        $this->roleHierarchy = $roleHierarchy;
+        $this->requestStack = $requestStack;
+        $this->trustResolver = $trustResolver;
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
     public function isActive(string $feature, array $context = []): bool
     {
-        if (!self::$variables) {
-            $session = $this->container->get('session');
+        if ([] === self::$variables) {
 
-            $token = $this->container->get('security.token_storage')->getToken();
+            $token = $this->tokenStorage->getToken();
 
             $roles = [];
 
-            if (null !== $token) {
-                $roleHierarchy = $this->container->get('security.role_hierarchy');
-                $roles = $roleHierarchy->getReachableRoles($token->getRoles());
+            if ($token instanceof TokenInterface) {
+                $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
             }
-
-            $request = $this->container->get('request_stack')->getCurrentRequest();
 
             self::$variables = [
                 'token' => $token,
-                'request' => $request,
-                'roles' => array_map(static function (Role $role) {
-                    return $role->getRole();
-                }, $roles),
-                'trust_resolver' => $this->container->get('security.authentication.trust_resolver'),
-                'auth_checker' => $this->container->get('security.authorization_checker'),
-                'container' => $this->container,
+                'request' => $this->requestStack->getCurrentRequest(),
+                'roles' => $roles,
+                'session' => $this->session,
+                'trust_resolver' => $this->trustResolver,
+                'auth_checker' => $this->authorizationChecker,
                 'user' => null !== $token ? $token->getUser() : null,
             ];
         }

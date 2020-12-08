@@ -34,16 +34,19 @@ class YamlFileStorage extends ArrayStorage implements PersistenStorageInterface
 
         $this->filePath = $filePath;
 
-        parent::__construct(Yaml::parse(file_get_contents($this->filePath)));
+        $content = file_get_contents($this->filePath);
+
+        if (false !== $content) {
+            parent::__construct(Yaml::parse($content));
+        }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set(string $key, bool $value)
+    public function set(string $key, bool $value): bool
     {
         $this->config[$key] = $value;
 
         file_put_contents($this->filePath, Yaml::dump($this->config));
+
+        return $value;
     }
 }

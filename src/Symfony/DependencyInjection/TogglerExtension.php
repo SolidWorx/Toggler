@@ -41,7 +41,7 @@ class TogglerExtension extends Extension
         $definition = $container->getDefinition(Toggle::class);
         $commandDefinition = $container->getDefinition(ToggleSetCommand::class);
 
-        if (!empty($config['config']['storage'])) {
+        if (null !== $config['config']['storage']) {
             $service = $config['config']['storage'];
 
             if ('@' !== $service[0]) {
@@ -62,13 +62,13 @@ class TogglerExtension extends Extension
             }
 
             switch (true) {
-                case false !== strpos($value, '::') && '@' === $value[0]:
+                case \str_contains($value, '::') && '@' === $value[0]:
                     $parts = explode('::', $value);
 
                     $value = [new Reference(substr($parts[0], 1)), $parts[1]];
                     break;
 
-                case '@=' === substr($value, 0, 2):
+                case \str_starts_with($value, '@='):
                     if (!class_exists(Expression::class)) {
                         throw new \InvalidArgumentException('The symfony/expression-language component is required in order to use expressions.');
                     }
