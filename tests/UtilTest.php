@@ -20,6 +20,8 @@ class UtilTest extends TestCase
 {
     /**
      * @dataProvider isTruthyProvider
+     *
+     * @param mixed $value
      */
     public function testTruthy($value): void
     {
@@ -28,12 +30,17 @@ class UtilTest extends TestCase
 
     /**
      * @dataProvider isNotTruthyProvider
+     *
+     * @param mixed $value
      */
     public function testNotTruthy($value): void
     {
         self::assertFalse(Util::isTruthy($value));
     }
 
+    /**
+     * @return iterable<mixed>
+     */
     public function isTruthyProvider(): iterable
     {
         yield [true];
@@ -47,6 +54,9 @@ class UtilTest extends TestCase
         yield ['Y'];
     }
 
+    /**
+     * @return iterable<mixed>
+     */
     public function isNotTruthyProvider(): iterable
     {
         yield [false];

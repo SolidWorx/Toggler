@@ -37,10 +37,7 @@ class ToggleGetCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Get the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The feature to get the status')
@@ -64,21 +61,18 @@ HELP
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $features = $input->getArgument('feature');
+        $features = (array) $input->getArgument('feature');
 
         $context = [];
 
-        foreach ($input->getOption('context') as $parameter) {
-            if (false === strpos($parameter, '=')) {
+        foreach ((array) $input->getOption('context') as $parameter) {
+            if (false === strpos((string) $parameter, '=')) {
                 throw new \Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
             }
 
-            [$key, $value] = explode('=', $parameter);
+            [$key, $value] = explode('=', (string) $parameter);
 
             $context[$key] = $value;
         }
@@ -87,7 +81,7 @@ HELP
 
         $headers = ['Feature', 'Status'];
 
-        if (!empty($context)) {
+        if ([] !== $context) {
             $headers[] = 'Context';
         }
 
@@ -101,7 +95,7 @@ HELP
                 sprintf('<%1$s>%2$s</%1$s>', $active ? 'info' : 'error', $active ? 'Active' : 'Not-Active'),
             ];
 
-            if (!empty($context)) {
+            if ([] !== $context) {
                 $row[] = json_encode($context);
             }
 
@@ -109,5 +103,7 @@ HELP
         }
 
         $table->render();
+
+        return 0;
     }
 }

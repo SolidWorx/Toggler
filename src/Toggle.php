@@ -59,6 +59,7 @@ final class Toggle implements ToggleInterface
 
     /**
      * @param mixed $value
+     * @param array<mixed> $context
      *
      * @return mixed
      */
@@ -68,6 +69,8 @@ final class Toggle implements ToggleInterface
     }
 
     /**
+     * @param array<mixed> $context
+     *
      * @return mixed
      */
     private function evaluateCallback(callable $value, array $context)

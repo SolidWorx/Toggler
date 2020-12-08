@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
+use Symfony\Component\ExpressionLanguage\Expression;
+
 interface StorageInterface
 {
     /**
      * Reads a key from the storage.
      *
-     * @return bool|string|int
+     * @return bool|string|int|Expression|object|callable|null
      */
     public function get(string $key);
 }

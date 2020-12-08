@@ -16,10 +16,13 @@ namespace SolidWorx\Toggler\Storage;
 class ArrayStorage implements StorageInterface
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(array $config)
     {
         $this->config = $config;

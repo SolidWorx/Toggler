@@ -25,6 +25,9 @@ class ToggleSetCommand extends Command
 {
     protected static $defaultName = 'toggler:set';
 
+    /**
+     * @var StorageInterface
+     */
     private $storage;
 
     public function __construct(StorageInterface $storage)
@@ -34,10 +37,7 @@ class ToggleSetCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Change the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED, 'The feature to change the status')
@@ -58,19 +58,18 @@ HELP
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->storage instanceof PersistenStorageInterface) {
             throw new \Exception(sprintf('The storage class %s does not support updating a value.', get_class($this->storage)));
         }
 
-        $feature = $input->getArgument('feature');
+        $feature = ((array) $input->getArgument('feature'))[0];
 
         $this->storage->set($feature, Util::isTruthy($input->getArgument('value')));
 
         $output->writeln(sprintf('<info>Feature %s updated</info>', $feature));
+
+        return 0;
     }
 }
