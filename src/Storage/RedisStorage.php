@@ -18,7 +18,7 @@ use Redis;
 use RedisArray;
 use RedisCluster;
 
-class RedisStorage implements PersistenStorageInterface
+class RedisStorage implements PersistentStorageInterface
 {
     /**
      * @var \Predis\Client<string>|Redis|RedisArray|RedisCluster
