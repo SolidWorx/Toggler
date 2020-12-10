@@ -33,7 +33,7 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
     /**
      * @var array<mixed>
      */
-    private static $variables;
+    private static $variables = [];
 
     /**
      * @var BaseToggle
@@ -96,7 +96,10 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
             $roles = [];
 
             if ($token instanceof TokenInterface) {
-                $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
+                $rolesArray = method_exists($token, 'getRoles') ? $token->getRoles() : $token->getRoleNames();
+                $roles = method_exists($this->roleHierarchy, 'getReachableRoles')
+                    ? $this->roleHierarchy->getReachableRoles($rolesArray)
+                    : $this->roleHierarchy->getReachableRoleNames($rolesArray);
             }
 
             self::$variables = [
