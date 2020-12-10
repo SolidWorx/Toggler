@@ -96,11 +96,10 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
             $roles = [];
 
             if ($token instanceof TokenInterface) {
-                if (method_exists($this->roleHierarchy, 'getReachableRoleNames')) {
-                $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
-                } else {
-                    $roles = $this->roleHierarchy->getReachableRoles($token->getRoles());
-                }
+                $rolesArray = method_exists($token, 'getRoles') ? $token->getRoles() : $token->getRoleNames();
+                $roles = method_exists($this->roleHierarchy, 'getReachableRoles')
+                    ? $this->roleHierarchy->getReachableRoles($rolesArray)
+                    : $this->roleHierarchy->getReachableRoleNames($rolesArray);
             }
 
             self::$variables = [
