@@ -1,3 +1,12 @@
+2.0.0 Alpha 4
+=============
+
+  * Explicitly add injected service name in service definition, and set default value for variables
+  * Fix check for features in Symfony configuration
+  * Fix typo on interface name
+  * Fix PHPStan errors
+  * Fix incorrect expression service definitions, and fixed typo in twig extension service definition argument
+
 2.0.0 Alpha 3
 =============
 
