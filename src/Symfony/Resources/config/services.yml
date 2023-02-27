@@ -45,6 +45,8 @@ services:
     SolidWorx\Toggler\Toggle:
         arguments: ['?', '@toggler.expression.language']
 
+    SolidWorx\Toggler\ToggleInterface: '@SolidWorx\Toggler\Toggle'
+
     SolidWorx\Toggler\Symfony\Toggle:
         decorates: 'SolidWorx\Toggler\Toggle'
         public: false
