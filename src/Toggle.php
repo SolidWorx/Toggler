@@ -62,7 +62,7 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param string|Expression $value
+     * @param string|Expression    $value
      * @param array<string, mixed> $context
      *
      * @return mixed
