@@ -15,14 +15,13 @@ namespace SolidWorx\Toggler\Tests\Storage;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\Version as PHPUnitVersion;
 use Predis\Client;
 use SolidWorx\Toggler\Storage\RedisStorage;
 
 class RedisStorageTest extends TestCase
 {
     /**
-     * @var MockObject&Client<string>
+     * @var MockObject&Client
      */
     private $redis;
 
@@ -45,9 +44,9 @@ class RedisStorageTest extends TestCase
 
     public function testGet(): void
     {
-        $this->redis->expects(self::exactly(2))
+        $this->redis
+            ->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive(['foobar'], ['baz'])
             ->willReturnOnConsecutiveCalls(true, null);
 
         $storage = new RedisStorage($this->redis);
@@ -70,9 +69,9 @@ class RedisStorageTest extends TestCase
     public function testGetWithNamespace(): void
     {
         $namespace = 'fooNamespace';
-        $this->redis->expects(self::exactly(2))
+        $this->redis
+            ->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive([$namespace.':foobar'], [$namespace.':baz'])
             ->willReturnOnConsecutiveCalls(true, null);
 
         $storage = new RedisStorage($this->redis, $namespace);

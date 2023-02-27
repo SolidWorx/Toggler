@@ -13,15 +13,17 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Storage;
 
+use Symfony\Component\ExpressionLanguage\Expression;
+
 class ArrayStorage implements StorageInterface
 {
     /**
-     * @var array<string, mixed>
+     * @var array<string, bool|string|int|Expression|object|callable|null>
      */
     protected $config;
 
     /**
-     * @param array<string, mixed> $config
+     * @param array<string, bool|string|int|Expression|object|callable|null> $config
      */
     public function __construct(array $config)
     {
