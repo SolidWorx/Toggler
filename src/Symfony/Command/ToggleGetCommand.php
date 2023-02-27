@@ -72,11 +72,11 @@ HELP
         $context = [];
 
         foreach ((array) $input->getOption('context') as $parameter) {
-            if (false === strpos((string) $parameter, '=')) {
-                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
+            if (false === strpos(strval($parameter), '=')) {
+                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', strval($parameter)));
             }
 
-            [$key, $value] = explode('=', (string) $parameter);
+            [$key, $value] = explode('=', strval($parameter));
 
             $context[$key] = $value;
         }
@@ -92,7 +92,7 @@ HELP
         $table->setHeaders($headers);
 
         foreach ($features as $feature) {
-            $active = $this->toggle->isActive($feature, $context);
+            $active = $this->toggle->isActive(strval($feature), $context);
 
             $row = [
                 $feature,

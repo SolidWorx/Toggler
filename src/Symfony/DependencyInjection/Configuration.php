@@ -27,7 +27,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('toggler');
         $rootNode = $treeBuilder->getRootNode();
 
-        // @phpstan-ignore-next-line
         $rootNode
             ->children()
                 ->arrayNode('config')
@@ -67,7 +66,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->validate()
                         ->ifTrue(function ($config): bool {
-                            return null === $config['storage'] && [] == $config['features'];
+                            return null === $config['storage'] && [] === $config['features'];
                         })
                         ->thenInvalid('At least one of "storage" or "features" must be set.')
                     ->end()

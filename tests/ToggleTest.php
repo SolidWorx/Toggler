@@ -62,7 +62,7 @@ class ToggleTest extends TestCase
             'baz' => '0',
             'foobar' => 'off',
             'foobaz' => [],
-            'bazbar' => new \StdClass(),
+            'bazbar' => new \stdClass(),
         ];
 
         $instance = new Toggle(StorageFactory::factory($features));

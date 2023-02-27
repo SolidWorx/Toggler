@@ -1,0 +1,4 @@
+toggler:
+    config:
+        features:
+            foo: false

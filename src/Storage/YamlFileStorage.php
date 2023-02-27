@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler\Storage;
 
 use Exception;
+use Symfony\Component\ExpressionLanguage\Expression;
 use function file_get_contents;
 use function file_put_contents;
 use InvalidArgumentException;
@@ -44,7 +45,9 @@ class YamlFileStorage extends ArrayStorage implements PersistentStorageInterface
         $content = file_get_contents($this->filePath);
 
         if (false !== $content) {
-            parent::__construct(Yaml::parse($content));
+            /** @var array<string, bool|string|int|Expression|object|callable|null> $config */
+            $config = Yaml::parse($content);
+            parent::__construct($config);
         }
     }
 

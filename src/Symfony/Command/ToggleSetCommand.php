@@ -67,7 +67,7 @@ HELP
             throw new Exception(sprintf('The storage class %s does not support updating a value.', get_class($this->storage)));
         }
 
-        $feature = ((array) $input->getArgument('feature'))[0];
+        $feature = strval($input->getArgument('feature'));
 
         $this->storage->set($feature, Util::isTruthy($input->getArgument('value')));
 
