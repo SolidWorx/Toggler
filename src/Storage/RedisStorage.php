@@ -58,4 +58,13 @@ class RedisStorage implements PersistentStorageInterface
     {
         return '' !== $this->namespace ? "{$this->namespace}:$key" : $key;
     }
+
+    public function all(): array
+    {
+        $keys = $this->redis->keys($this->generateKey('*'));
+
+        return array_map(function (string $key) {
+            return str_replace($this->generateKey(''), '', $key);
+        }, $keys);
+    }
 }

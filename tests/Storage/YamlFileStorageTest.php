@@ -79,4 +79,20 @@ foobar: false';
         self::assertFalse($storage->get('foo'));
         self::assertTrue($storage->get('foobarbaz'));
     }
+
+    public function testAll(): void
+    {
+        $features = 'foo: true
+bar: true
+baz: false
+foobar: false';
+
+        $largeFile = vfsStream::newFile('large.txt')
+            ->withContent($features)
+            ->at($this->root);
+
+        $storage = new YamlFileStorage($largeFile->url());
+
+        self::assertSame(['foo', 'bar', 'baz', 'foobar'], $storage->all());
+    }
 }
