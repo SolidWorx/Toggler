@@ -1,5 +1,15 @@
 <?php
+
 declare(strict_types=1);
+
+/*
+ * This file is part of the Toggler package.
+ *
+ * (c) SolidWorx <open-source@solidworx.co>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SolidWorx\Toggler\Storage;
 
@@ -77,23 +87,23 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
         switch ($this->driver) {
             case 'sqlite':
-                $sql = /** @lang SQLite */ "INSERT OR REPLACE INTO $this->tableName (feature, enabled) SELECT :feature, :enabled";
+                $sql = /* @lang SQLite */ "INSERT OR REPLACE INTO $this->tableName (feature, enabled) SELECT :feature, :enabled";
                 break;
 
             case 'pgsql':
-                $sql = /** @lang PostgreSQL */ "INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled) ON CONFLICT (feature) DO UPDATE SET enabled = :enabled";
+                $sql = /* @lang PostgreSQL */ "INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled) ON CONFLICT (feature) DO UPDATE SET enabled = :enabled";
                 break;
 
             case 'oci':
-                $sql = /** @lang SQL */ "MERGE INTO $this->tableName USING DUAL ON (feature = :feature) WHEN MATCHED THEN UPDATE SET enabled = :enabled WHEN NOT MATCHED THEN INSERT (feature, enabled) VALUES (:feature, :enabled)";
+                $sql = /* @lang SQL */ "MERGE INTO $this->tableName USING DUAL ON (feature = :feature) WHEN MATCHED THEN UPDATE SET enabled = :enabled WHEN NOT MATCHED THEN INSERT (feature, enabled) VALUES (:feature, :enabled)";
                 break;
 
             case 'mysql':
-                $sql = /** @lang MySQL */ "INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled) ON DUPLICATE KEY UPDATE enabled = :enabled";
+                $sql = /* @lang MySQL */ "INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled) ON DUPLICATE KEY UPDATE enabled = :enabled";
                 break;
 
             case 'sqlsrv':
-                $sql = /** @lang SQL */ "IF EXISTS (SELECT * FROM $this->tableName WHERE feature = :feature) UPDATE $this->tableName SET enabled = :enabled WHERE feature = :feature ELSE INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled)";
+                $sql = /* @lang SQL */ "IF EXISTS (SELECT * FROM $this->tableName WHERE feature = :feature) UPDATE $this->tableName SET enabled = :enabled WHERE feature = :feature ELSE INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled)";
                 break;
 
             default:
@@ -133,19 +143,19 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
         switch ($this->driver) {
             case 'mysql':
-                $sql = /** @lang MySQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled TINYINT(1) NOT NULL) COLLATE utf8mb4_bin, ENGINE = InnoDB";
+                $sql = /* @lang MySQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled TINYINT(1) NOT NULL) COLLATE utf8mb4_bin, ENGINE = InnoDB";
                 break;
             case 'sqlite':
-                $sql = /** @lang SQLite */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature TEXT NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)";
+                $sql = /* @lang SQLite */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature TEXT NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)";
                 break;
             case 'pgsql':
-                $sql = /** @lang PostgreSQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)";
+                $sql = /* @lang PostgreSQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)";
                 break;
             case 'oci':
-                $sql = /** @lang SQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR2(255) NOT NULL PRIMARY KEY, enabled NUMBER(1) NOT NULL)";
+                $sql = /* @lang SQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR2(255) NOT NULL PRIMARY KEY, enabled NUMBER(1) NOT NULL)";
                 break;
             case 'sqlsrv':
-                $sql = /** @lang SQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BIT NOT NULL)";
+                $sql = /* @lang SQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BIT NOT NULL)";
                 break;
             default:
                 throw new \DomainException(sprintf('Creating the cache table is currently not implemented for PDO driver "%s".', $this->driver));
@@ -153,7 +163,6 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
         $conn->exec($sql);
     }
-
 
     private function getConnection(): PDO
     {
