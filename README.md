@@ -221,6 +221,21 @@ $redis = new \Redis();
 $toggle = new Toggle(new RedisStorage($redis));
 ```
 
+### Database
+
+You can use a database to store the configs.
+
+Toggler comes with a `PDOStorage` adapter, which can be used with any database that supports PDO.
+
+```php
+<?php
+
+use SolidWorx\Toggler\Storage\PDOStorage;
+use SolidWorx\Toggler\Toggle;
+
+$toggle = new Toggle(new PDOStorage('mysql:host=localhost', 'username', 'password', 'my_feature_table_name'));
+```
+
 ## Persistent Storage
 
 Toggler supports persisting config values if a storage adapter implements the ` SolidWorx\Toggler\Storage\PersistenStorageInterface`.
@@ -229,6 +244,7 @@ The following storage adapters currently supports persisting config values:
 
 * YamlFileStorage
 * RedisStorage
+* PDOStorage
 
 To update a feature, use the `set` method:
 
@@ -336,7 +352,7 @@ Then you can use the `toggle` tag in twig templates:
 {% endtoggle %}
 ```
 
-To add an alternaltive if a feature is not available, use the `else` tag
+To add an alternative if a feature is not available, use the `else` tag
 
 ```twig
 {% toggle 'foo' %}
@@ -367,16 +383,16 @@ Toggler comes with integration with the [Symfony](http://symfony.com/) framework
 To enable toggler inside symfony, register the bundle
 
 ```php
-// AppKernel.php
+// config/bundles.php
 
-$bundles = array(
+return array(
    ...
-   new SolidWorx\Toggler\Symfony\TogglerBundle(),
+   SolidWorx\Toggler\Symfony\TogglerBundle::class => ['all' => true],
    ...
 );
 ```
 
-Then inside your `app/config/config.yml` or `app/config/config_dev.yml`, you can enable features using the following config
+Then create a `config/packages/toggler.yaml` config file, to enable features
 
 ```yaml
 toggler:
@@ -466,6 +482,16 @@ $ php bin/console toggler:set foo true
 ```
 
 This will enable the `foo` feature.
+
+#### List all available features
+
+You can list all available features using the `toggler:list` command.
+
+```bash
+$ php bin/console toggler:list
+```
+
+This will display all available features and their status.
 
 # Testing
 
