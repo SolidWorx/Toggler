@@ -23,4 +23,11 @@ interface StorageInterface
      * @return bool|string|int|Expression|object|callable|null
      */
     public function get(string $key);
+
+    /**
+     * Returns a list of all the configured features
+     *
+     * @return list<string>
+     */
+    public function all(): array;
 }

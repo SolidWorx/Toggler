@@ -37,4 +37,9 @@ class ArrayStorage implements StorageInterface
     {
         return $this->config[$key] ?? null;
     }
+
+    public function all(): array
+    {
+        return array_keys($this->config);
+    }
 }

@@ -30,7 +30,7 @@ class RedisStorageTest extends TestCase
         $mockBuilder = $this->getMockBuilder(Client::class);
 
         $this->redis = $mockBuilder
-            ->addMethods(['get', 'set'])
+            ->addMethods(['get', 'set', 'keys'])
             ->getMock();
     }
 
@@ -97,5 +97,21 @@ class RedisStorageTest extends TestCase
         $storage->set('foobar', false);
 
         self::assertFalse($storage->get('foobar'));
+    }
+
+    public function testAll(): void
+    {
+        $namespace = 'fooNamespace';
+
+        $this->redis->expects(self::once())
+            ->method('keys')
+            ->with($namespace.':*')
+            ->willReturn([$namespace.':foo', $namespace.':bar', $namespace.':baz']);
+
+        $storage = new RedisStorage($this->redis, $namespace);
+
+        $storage->set('foobar', false);
+
+        self::assertSame(['foo', 'bar', 'baz'], $storage->all());
     }
 }

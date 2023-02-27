@@ -22,6 +22,11 @@ services:
         arguments:
             $toggle: '@SolidWorx\Toggler\Toggle'
 
+    SolidWorx\Toggler\Symfony\Command\ToggleListCommand:
+        arguments:
+            $toggle: '@SolidWorx\Toggler\Toggle'
+            $toggleStorage: '@toggler.storage'
+
     toggler.expression.language.provider.dependency_injection:
         class: Symfony\Component\DependencyInjection\ExpressionLanguageProvider
         public: false

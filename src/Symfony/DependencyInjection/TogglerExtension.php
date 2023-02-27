@@ -88,7 +88,10 @@ class TogglerExtension extends Extension
         $storageDefinition = new Definition(StorageFactory::class, [$config['config']['features']]);
         $storageDefinition->setPublic(false);
         $storageDefinition->setFactory(StorageFactory::class.'::factory');
-        $storageDefinition->setLazy(true);
+
+        $container->addDefinitions([
+            'toggler.storage' => $storageDefinition,
+        ]);
 
         $definition->replaceArgument(0, $storageDefinition);
         $commandDefinition->replaceArgument(0, $storageDefinition);
