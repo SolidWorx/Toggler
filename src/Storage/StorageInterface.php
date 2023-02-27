@@ -25,7 +25,7 @@ interface StorageInterface
     public function get(string $key);
 
     /**
-     * Returns a list of all the configured features
+     * Returns a list of all the configured features.
      *
      * @return list<string>
      */
