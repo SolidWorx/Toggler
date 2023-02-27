@@ -30,16 +30,9 @@ class RedisStorageTest extends TestCase
     {
         $mockBuilder = $this->getMockBuilder(Client::class);
 
-        if (\version_compare(PHPUnitVersion::series(), '8.3', '>=')) {
-            $this->redis = $mockBuilder
-                ->addMethods(['get', 'set'])
-                ->getMock();
-        } else {
-            // @phpstan-ignore-next-line
-            $this->redis = $mockBuilder
-                ->setMethods(['get', 'set'])
-                ->getMock();
-        }
+        $this->redis = $mockBuilder
+            ->addMethods(['get', 'set'])
+            ->getMock();
     }
 
     public function testConstructorException(): void
@@ -52,10 +45,10 @@ class RedisStorageTest extends TestCase
 
     public function testGet(): void
     {
-        $this->redis->expects(self::at(0))
+        $this->redis->expects(self::exactly(2))
             ->method('get')
-            ->with('foobar')
-            ->willReturn(true);
+            ->withConsecutive(['foobar'], ['baz'])
+            ->willReturnOnConsecutiveCalls(true, null);
 
         $storage = new RedisStorage($this->redis);
 
@@ -65,7 +58,7 @@ class RedisStorageTest extends TestCase
 
     public function testSet(): void
     {
-        $this->redis->expects(self::at(0))
+        $this->redis->expects(self::once())
             ->method('set')
             ->with('foobar', false);
 
@@ -77,14 +70,10 @@ class RedisStorageTest extends TestCase
     public function testGetWithNamespace(): void
     {
         $namespace = 'fooNamespace';
-        $this->redis->expects(self::at(0))
+        $this->redis->expects(self::exactly(2))
             ->method('get')
-            ->with($namespace.':foobar')
-            ->willReturn(true);
-
-        $this->redis->expects(self::at(1))
-            ->method('get')
-            ->with($namespace.':baz');
+            ->withConsecutive([$namespace.':foobar'], [$namespace.':baz'])
+            ->willReturnOnConsecutiveCalls(true, null);
 
         $storage = new RedisStorage($this->redis, $namespace);
 
@@ -95,11 +84,11 @@ class RedisStorageTest extends TestCase
     public function testSetWithNamespace(): void
     {
         $namespace = 'fooNamespace';
-        $this->redis->expects(self::at(0))
+        $this->redis->expects(self::once())
             ->method('set')
             ->with($namespace.':foobar', false);
 
-        $this->redis->expects(self::at(1))
+        $this->redis->expects(self::once())
             ->method('get')
             ->with($namespace.':foobar')
             ->willReturn(false);
