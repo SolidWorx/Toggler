@@ -29,6 +29,7 @@
         "phpstan/phpstan-phpunit": "^0.12.16",
         "phpstan/phpstan-strict-rules": "^0.12.5",
         "phpstan/phpstan-symfony": "^0.12.11",
+        "phpunit/phpunit": "^9.5",
         "predis/predis": "^1.1",
         "symfony/console": "^4.4 || ^5.0",
         "symfony/expression-language": "^4.4 || ^5.0",
@@ -56,6 +57,7 @@
         }
     },
     "config": {
+        "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true
         }
