@@ -25,7 +25,7 @@ This is useful in a continues deployment environment, where you can deploy not-y
 
 ## Requirements
 
-Toggler requires PHP 7.1+ and Symfony 4.0+
+Toggler requires PHP 7.3+ and Symfony 4.0+
 
 ## Installation
 
