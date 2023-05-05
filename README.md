@@ -137,6 +137,21 @@ $toggle = new Toggle(new ArrayStorage($features));
 $toggle = new Toggle(StorageFactory::factory($features));
 ```
 
+### ENV
+
+Reads values from environment variables.
+
+```php
+<?php
+
+use SolidWorx\Toggler\Storage\EnvStorage;
+use SolidWorx\Toggler\Toggle;
+
+$toggle = new Toggle(new EnvStorage());
+
+$toggle->isActive('MY_AWESOME_FEATURE'); // true if the environment variable MY_AWESOME_FEATURE is set to a truthy value
+```
+
 ### YAML
 
 In order to use yml files for config, you need to include the [Symfony Yaml Component](http://symfony.com/doc/current/components/yaml/index.html)
