@@ -20,7 +20,7 @@ class EnvStorage implements StorageInterface
      */
     public function get(string $key)
     {
-        return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?? null;
+        return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
     }
 
     /**

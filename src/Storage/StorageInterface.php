@@ -27,7 +27,7 @@ interface StorageInterface
     /**
      * Returns a list of all the configured features.
      *
-     * @return list<string>
+     * @return array<int|string, mixed>
      */
     public function all(): array;
 }

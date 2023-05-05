@@ -79,7 +79,7 @@ class ToggleListCommand extends Command
         $table->setHeaders($headers);
 
         foreach ($this->toggleStorage->all() as $feature) {
-            $active = $this->toggle->isActive($feature, $context);
+            $active = $this->toggle->isActive(strval($feature), $context);
 
             $row = [
                 $feature,
