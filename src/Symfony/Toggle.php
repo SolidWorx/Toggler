@@ -19,7 +19,6 @@ use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -39,11 +38,6 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
      * @var BaseToggle
      */
     private $toggle;
-
-    /**
-     * @var SessionInterface
-     */
-    private $session;
 
     /**
      * @var TokenStorageInterface
@@ -72,7 +66,6 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
 
     public function __construct(
         BaseToggle $toggle,
-        SessionInterface $session,
         TokenStorageInterface $tokenStorage,
         RoleHierarchyInterface $roleHierarchy,
         RequestStack $requestStack,
@@ -80,7 +73,6 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
         AuthorizationCheckerInterface $authorizationChecker
     ) {
         $this->toggle = $toggle;
-        $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->roleHierarchy = $roleHierarchy;
         $this->requestStack = $requestStack;
@@ -106,7 +98,7 @@ final class Toggle implements ToggleInterface, ContainerAwareInterface
                 'token' => $token,
                 'request' => $this->requestStack->getCurrentRequest(),
                 'roles' => $roles,
-                'session' => $this->session,
+                'session' => $this->requestStack->getCurrentRequest()->getSession(),
                 'trust_resolver' => $this->trustResolver,
                 'auth_checker' => $this->authorizationChecker,
                 'user' => null !== $token ? $token->getUser() : null,
