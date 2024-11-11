@@ -16,8 +16,6 @@ namespace SolidWorx\Toggler\Symfony;
 use function array_merge;
 use SolidWorx\Toggler\Toggle as BaseToggle;
 use SolidWorx\Toggler\ToggleInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -25,10 +23,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
-final class Toggle implements ToggleInterface, ContainerAwareInterface
+final class Toggle implements ToggleInterface
 {
-    use ContainerAwareTrait;
-
     /**
      * @var array<mixed>
      */
