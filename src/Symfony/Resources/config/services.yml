@@ -54,8 +54,6 @@ services:
             $toggle: '@SolidWorx\Toggler\Symfony\Toggle.inner'
             $roleHierarchy: '@security.role_hierarchy'
             $trustResolver: '@security.authentication.trust_resolver'
-        calls:
-            - ['setContainer', ['@service_container']]
 
     SolidWorx\Toggler\Twig\Extension\ToggleExtension:
         arguments: ['@SolidWorx\Toggler\Toggle']
