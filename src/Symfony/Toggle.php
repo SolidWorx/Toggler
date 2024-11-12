@@ -90,11 +90,13 @@ final class Toggle implements ToggleInterface
                     : $this->roleHierarchy->getReachableRoleNames($rolesArray);
             }
 
+            $request = $this->requestStack->getCurrentRequest();
+
             self::$variables = [
                 'token' => $token,
-                'request' => $this->requestStack->getCurrentRequest(),
+                'request' => $request,
                 'roles' => $roles,
-                'session' => $this->requestStack->getCurrentRequest()->getSession(),
+                'session' => $request ? $request->getSession() : $request,
                 'trust_resolver' => $this->trustResolver,
                 'auth_checker' => $this->authorizationChecker,
                 'user' => null !== $token ? $token->getUser() : null,
