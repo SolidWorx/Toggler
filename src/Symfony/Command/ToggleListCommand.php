@@ -19,12 +19,14 @@ use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\Console\Input\InputOption;
 use function explode;
 use function sprintf;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use function strpos;
 
+#[AsCommand(name: 'toggler:list', description: 'List all the configured features')]
 class ToggleListCommand extends Command
 {
     protected static $defaultName = 'toggler:list';

@@ -19,11 +19,13 @@ use SolidWorx\Toggler\Storage\PersistentStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Util;
 use function sprintf;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'toggler:set', description: 'Change the status of a specific feature')]
 class ToggleSetCommand extends Command
 {
     protected static $defaultName = 'toggler:set';
