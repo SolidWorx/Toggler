@@ -53,6 +53,8 @@ services:
             $toggle: '@SolidWorx\Toggler\Symfony\Toggle.inner'
             $roleHierarchy: '@security.role_hierarchy'
             $trustResolver: '@security.authentication.trust_resolver'
+        tags:
+            - { name: 'kernel.reset', method: 'reset' }
 
     SolidWorx\Toggler\Twig\Extension\ToggleExtension:
         arguments: ['@SolidWorx\Toggler\Toggle']
