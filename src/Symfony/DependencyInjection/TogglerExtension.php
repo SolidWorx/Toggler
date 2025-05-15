@@ -80,7 +80,7 @@ class TogglerExtension extends Extension
                         throw new InvalidArgumentException('The symfony/expression-language component is required in order to use expressions.');
                     }
 
-                    $value = new Definition(Expression::class, [substr($value, 2)]);
+                    $value = new Expression(substr($value, 2));
                     break;
             }
         }

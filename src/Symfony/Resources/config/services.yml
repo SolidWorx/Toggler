@@ -39,7 +39,6 @@ services:
         class: Symfony\Component\ExpressionLanguage\ExpressionLanguage
         public: false
         calls:
-            - ['registerProvider', ['@toggler.expression.language.provider.dependency_injection']]
             - ['registerProvider', ['@toggler.expression.language.provider.security']]
 
     SolidWorx\Toggler\Toggle:
