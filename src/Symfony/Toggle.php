@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony;
 
+use Symfony\Component\HttpKernel\DependencyInjection\ResettableServicePass;
+use Symfony\Contracts\Service\ResetInterface;
 use function array_merge;
 use SolidWorx\Toggler\Toggle as BaseToggle;
 use SolidWorx\Toggler\ToggleInterface;
@@ -23,7 +25,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
-final class Toggle implements ToggleInterface
+final class Toggle implements ToggleInterface, ResetInterface
 {
     /**
      * @var array<mixed>
@@ -104,5 +106,10 @@ final class Toggle implements ToggleInterface
         }
 
         return $this->toggle->isActive($feature, array_merge(self::$variables, $context));
+    }
+
+    public function reset(): void
+    {
+        self::$variables = [];
     }
 }
