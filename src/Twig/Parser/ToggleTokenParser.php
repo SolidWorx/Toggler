@@ -18,6 +18,7 @@ use Twig\Error\SyntaxError;
 use Twig\Node\Node;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
+use function method_exists;
 
 class ToggleTokenParser extends AbstractTokenParser
 {
@@ -27,13 +28,15 @@ class ToggleTokenParser extends AbstractTokenParser
      */
     public function parse(Token $token): ToggleNode
     {
+        $parser = method_exists($this->parser, 'parseExpression') ? $this->parser : $this->parser->getExpressionParser();
+
         $lineNo = $token->getLine();
-        $feature = $this->parser->parseExpression();
+        $feature = $parser->parseExpression();
         $stream = $this->parser->getStream();
 
         $variables = null;
         if ($stream->nextIf(Token::NAME_TYPE, 'with') !== null) {
-            $variables = $this->parser->parseExpression();
+            $variables = $parser->parseExpression();
         }
 
         $stream->expect(Token::BLOCK_END_TYPE);
