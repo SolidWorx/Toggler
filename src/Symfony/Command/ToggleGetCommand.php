@@ -3,21 +3,18 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Symfony\Command;
 
 use Exception;
-use function explode;
 use SolidWorx\Toggler\ToggleInterface;
-use function sprintf;
-use function strpos;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -25,6 +22,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use function explode;
+use function sprintf;
+use function strpos;
 
 #[AsCommand(name: 'toggler:get', description: 'Get the status of a specific feature')]
 class ToggleGetCommand extends Command
@@ -45,7 +45,8 @@ class ToggleGetCommand extends Command
         $this->setDescription('Get the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The feature to get the status')
             ->addOption('context', 'c', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Add context to the feature check')
-            ->setHelp(<<<'HELP'
+            ->setHelp(
+                <<<'HELP'
 Get the status of a specific feature:
 
     <info>$ bin/console %command.name% feature</info>
@@ -71,7 +72,7 @@ HELP
         $context = [];
 
         foreach ((array) $input->getOption('context') as $parameter) {
-            if (false === strpos(strval($parameter), '=')) {
+            if (strpos(strval($parameter), '=') === false) {
                 throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', strval($parameter)));
             }
 
@@ -84,7 +85,7 @@ HELP
 
         $headers = ['Feature', 'Status'];
 
-        if ([] !== $context) {
+        if ($context !== []) {
             $headers[] = 'Context';
         }
 
@@ -98,7 +99,7 @@ HELP
                 sprintf('<%1$s>%2$s</%1$s>', $active ? 'info' : 'error', $active ? 'Active' : 'Not-Active'),
             ];
 
-            if ([] !== $context) {
+            if ($context !== []) {
                 $row[] = json_encode($context, JSON_THROW_ON_ERROR);
             }
 

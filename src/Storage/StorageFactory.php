@@ -3,19 +3,19 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Storage;
 
 use Exception;
-use function get_debug_type;
 use InvalidArgumentException;
+use function get_debug_type;
 use function is_array;
 use function is_file;
 use function is_string;
@@ -42,11 +42,11 @@ final class StorageFactory
             case is_string($config) && is_file($config):
                 $extension = strtolower(pathinfo($config, PATHINFO_EXTENSION));
 
-                if ('yml' === $extension) {
+                if ($extension === 'yml') {
                     return new YamlFileStorage($config);
                 }
 
-                if ('php' === $extension) {
+                if ($extension === 'php') {
                     return new ArrayStorage(require $config);
                 }
 

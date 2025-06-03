@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Symfony\Command;
@@ -16,14 +16,14 @@ namespace SolidWorx\Toggler\Symfony\Command;
 use Exception;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\ToggleInterface;
-use Symfony\Component\Console\Input\InputOption;
-use function explode;
-use function sprintf;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use function explode;
+use function sprintf;
 use function strpos;
 
 #[AsCommand(name: 'toggler:list', description: 'List all the configured features')]
@@ -55,7 +55,7 @@ class ToggleListCommand extends Command
         $context = [];
 
         foreach ((array) $input->getOption('context') as $parameter) {
-            if (false === strpos(strval($parameter), '=')) {
+            if (strpos(strval($parameter), '=') === false) {
                 throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', strval($parameter)));
             }
 
@@ -68,7 +68,7 @@ class ToggleListCommand extends Command
 
         $headers = ['Feature', 'Status'];
 
-        if ([] !== $context) {
+        if ($context !== []) {
             $headers[] = 'Context';
         }
 
@@ -82,7 +82,7 @@ class ToggleListCommand extends Command
                 sprintf('<%1$s>%2$s</%1$s>', $active ? 'info' : 'error', $active ? 'Active' : 'Not-Active'),
             ];
 
-            if ([] !== $context) {
+            if ($context !== []) {
                 $row[] = json_encode($context, JSON_THROW_ON_ERROR);
             }
 

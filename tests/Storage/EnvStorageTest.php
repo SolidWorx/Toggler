@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Tests\Storage;
@@ -48,19 +48,31 @@ class EnvStorageTest extends TestCase
 
         $_ENV['foo'] = 'bar';
 
-        $this->assertSame(['foo' => 'bar'] + $_SERVER, $storage->all());
+        $this->assertSame([
+            'foo' => 'bar',
+        ] + $_SERVER, $storage->all());
 
         $_SERVER['bar'] = 'baz';
 
-        $this->assertSame(['foo' => 'bar'] + $_SERVER, $storage->all());
+        $this->assertSame([
+            'foo' => 'bar',
+        ] + $_SERVER, $storage->all());
 
         putenv('baz=baz');
 
-        $this->assertSame(['foo' => 'bar'] + $_SERVER + ['baz' => 'baz'], $storage->all());
+        $this->assertSame([
+            'foo' => 'bar',
+        ] + $_SERVER + [
+            'baz' => 'baz',
+        ], $storage->all());
 
         putenv('baz');
 
-        $this->assertSame(['foo' => 'bar'] + $_SERVER + ['bar' => 'baz'], $storage->all());
+        $this->assertSame([
+            'foo' => 'bar',
+        ] + $_SERVER + [
+            'bar' => 'baz',
+        ], $storage->all());
 
         unset($_ENV['foo'], $_SERVER['bar']);
 

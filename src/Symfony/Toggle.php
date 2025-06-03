@@ -3,28 +3,27 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Symfony;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\DependencyInjection\ResettableServicePass;
-use Symfony\Contracts\Service\ResetInterface;
-use function array_merge;
 use SolidWorx\Toggler\Toggle as BaseToggle;
 use SolidWorx\Toggler\ToggleInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
+use Symfony\Contracts\Service\ResetInterface;
+use function array_merge;
 
 final class Toggle implements ToggleInterface, ResetInterface
 {
@@ -63,7 +62,7 @@ final class Toggle implements ToggleInterface, ResetInterface
 
     public function isActive(string $feature, array $context = []): bool
     {
-        if ([] === self::$variables) {
+        if (self::$variables === []) {
             $token = $this->tokenStorage->getToken();
 
             $roles = [];
@@ -84,7 +83,7 @@ final class Toggle implements ToggleInterface, ResetInterface
                 'session' => $request instanceof Request ? $request->getSession() : $request,
                 'trust_resolver' => $this->trustResolver,
                 'auth_checker' => $this->authorizationChecker,
-                'user' => null !== $token ? $token->getUser() : null,
+                'user' => $token !== null ? $token->getUser() : null,
             ];
         }
 

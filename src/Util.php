@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler;
@@ -34,12 +34,12 @@ final class Util
         }
 
         if (is_int($value)) {
-            return 1 === $value;
+            return $value === 1;
         }
 
         if (is_string($value)) {
             if (is_numeric($value) && (int) $value > 0) {
-                return 1 === (int) $value;
+                return (int) $value === 1;
             }
 
             return in_array(strtolower($value), ['on', 'true', 'yes', 'y'], true);

@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Storage;
 
-use SensitiveParameter;
-use RuntimeException;
 use DomainException;
 use PDO;
+use RuntimeException;
+use SensitiveParameter;
 
 class PdoStorage implements StorageInterface, PersistentStorageInterface
 {
@@ -54,12 +54,14 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
         $sql = sprintf('SELECT enabled FROM %s WHERE feature = :feature', $this->tableName);
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['feature' => $key]);
+        $stmt->execute([
+            'feature' => $key,
+        ]);
 
         /** @var false|array{enabled: bool|int} $result */
         $result = $stmt->fetch();
 
-        if (false !== $result) {
+        if ($result !== false) {
             return (bool) $result['enabled'];
         }
 
@@ -97,7 +99,10 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
         }
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['feature' => $key, 'enabled' => $value]);
+        $stmt->execute([
+            'feature' => $key,
+            'enabled' => $value,
+        ]);
 
         return $value;
     }
@@ -152,7 +157,7 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
     private function getConnection(): PDO
     {
-        if (!$this->conn instanceof PDO) {
+        if (! $this->conn instanceof PDO) {
             $this->conn = new PDO($this->dsn, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
