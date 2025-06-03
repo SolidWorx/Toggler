@@ -52,8 +52,8 @@ class RedisStorageTest extends TestCase
 
         $storage = new RedisStorage($this->redis);
 
-        $this->assertTrue($storage->get('foobar'));
-        $this->assertNull($storage->get('baz'));
+        self::assertTrue($storage->get('foobar'));
+        self::assertNull($storage->get('baz'));
     }
 
     public function testSet(): void
@@ -77,8 +77,8 @@ class RedisStorageTest extends TestCase
 
         $storage = new RedisStorage($this->redis, $namespace);
 
-        $this->assertTrue($storage->get('foobar'));
-        $this->assertNull($storage->get('baz'));
+        self::assertTrue($storage->get('foobar'));
+        self::assertNull($storage->get('baz'));
     }
 
     public function testSetWithNamespace(): void
@@ -97,7 +97,7 @@ class RedisStorageTest extends TestCase
 
         $storage->set('foobar', false);
 
-        $this->assertFalse($storage->get('foobar'));
+        self::assertFalse($storage->get('foobar'));
     }
 
     public function testAll(): void
@@ -113,6 +113,6 @@ class RedisStorageTest extends TestCase
 
         $storage->set('foobar', false);
 
-        $this->assertSame(['foo', 'bar', 'baz'], $storage->all());
+        self::assertSame(['foo', 'bar', 'baz'], $storage->all());
     }
 }

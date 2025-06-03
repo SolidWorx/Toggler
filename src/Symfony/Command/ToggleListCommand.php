@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler\Symfony\Command;
 
 use Exception;
+use JsonException;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -24,7 +25,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function explode;
 use function sprintf;
-use function strpos;
 
 #[AsCommand(name: 'toggler:list', description: 'List all the configured features')]
 class ToggleListCommand extends Command
@@ -50,16 +50,20 @@ class ToggleListCommand extends Command
         ;
     }
 
+    /**
+     * @throws JsonException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $context = [];
 
+        /** @var string $parameter */
         foreach ((array) $input->getOption('context') as $parameter) {
-            if (strpos(strval($parameter), '=') === false) {
-                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', strval($parameter)));
+            if (! str_contains($parameter, '=')) {
+                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
             }
 
-            [$key, $value] = explode('=', strval($parameter));
+            [$key, $value] = explode('=', $parameter);
 
             $context[$key] = $value;
         }
@@ -74,8 +78,9 @@ class ToggleListCommand extends Command
 
         $table->setHeaders($headers);
 
+        /** @var string $feature */
         foreach ($this->toggleStorage->all() as $feature) {
-            $active = $this->toggle->isActive(strval($feature), $context);
+            $active = $this->toggle->isActive($feature, $context);
 
             $row = [
                 $feature,

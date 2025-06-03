@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Tests\Twig\Extension\Node;
 
-use Iterator;
 use SolidWorx\Toggler\Twig\Node\ToggleNode;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\ConstantExpression;
-use Twig\Node\Expression\NameExpression;
+use Twig\Node\Expression\Variable\ContextVariable;
 use Twig\Node\Node;
 use Twig\Node\PrintNode;
 use Twig\Node\TextNode;
@@ -29,47 +28,48 @@ class ToggleNodeTest extends NodeTestCase
     {
         $t = new Node([
             new ConstantExpression(true, 1),
-            new PrintNode(new NameExpression('foo', 1), 1),
+            new PrintNode(new ContextVariable('foo', 1), 1),
         ], [], 1);
         $else = null;
         $node = new ToggleNode(new TextNode('foo', 1), $t, $else, null, 1, null);
 
-        $this->assertEquals($t, $node->getNode('body'));
-        $this->assertEquals(new TextNode('foo', 1), $node->getNode('feature'));
-        $this->assertFalse($node->hasNode('else'));
+        self::assertEquals($t, $node->getNode('body'));
+        self::assertEquals(new TextNode('foo', 1), $node->getNode('feature'));
+        self::assertFalse($node->hasNode('else'));
 
-        $else = new PrintNode(new NameExpression('bar', 1), 1);
+        $else = new PrintNode(new ContextVariable('bar', 1), 1);
         $node = new ToggleNode(new TextNode('bar', 1), $t, $else, null, 1, null);
-        $this->assertEquals($else, $node->getNode('else'));
+        self::assertEquals($else, $node->getNode('else'));
     }
 
     /**
      * @return array<array{Node,string}>
      */
-    public function getTests(): Iterator
+    public static function provideTests(): iterable
     {
-        yield $this->getToggleTest();
-        yield $this->getToggleWithElseTest();
-        yield $this->getToggleWithContextTest();
+        yield self::getToggleTest();
+        yield self::getToggleWithElseTest();
+        yield self::getToggleWithContextTest();
     }
 
     /**
      * @return array{Node,string}
      */
-    private function getToggleTest(): array
+    private static function getToggleTest(): array
     {
         $t = new Node([
-            new PrintNode(new NameExpression('foo', 1), 1),
+            new PrintNode(new ContextVariable('foo', 1), 1),
         ], [], 1, null);
         $else = null;
         $node = new ToggleNode(new Node([new ConstantExpression('foo', 1)]), $t, $else, null, 1);
 
+        $var = self::createVariableGetter('foo');
         return [
             $node,
             <<<EOF
 // line 1
 if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo")) {
-    echo {$this->getVariableGetter('foo')};
+    yield {$var};
 }
 EOF
             ,
@@ -79,22 +79,24 @@ EOF
     /**
      * @return array{Node,string}
      */
-    private function getToggleWithElseTest(): array
+    private static function getToggleWithElseTest(): array
     {
         $t = new Node([
-            new PrintNode(new NameExpression('foo', 1), 1),
+            new PrintNode(new ContextVariable('foo', 1), 1),
         ], [], 1, null);
-        $else = new PrintNode(new NameExpression('bar', 1), 1);
+        $else = new PrintNode(new ContextVariable('bar', 1), 1);
         $node = new ToggleNode(new Node([new ConstantExpression('foo', 1)]), $t, $else, null, 1);
 
+        $varFoo = self::createVariableGetter('foo');
+        $varBar = self::createVariableGetter('bar');
         return [
             $node,
             <<<EOF
 // line 1
 if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo")) {
-    echo {$this->getVariableGetter('foo')};
+    yield {$varFoo};
 } else {
-    echo {$this->getVariableGetter('bar')};
+    yield {$varBar};
 }
 EOF
             ,
@@ -104,10 +106,10 @@ EOF
     /**
      * @return array{Node,string}
      */
-    private function getToggleWithContextTest(): array
+    private static function getToggleWithContextTest(): array
     {
         $t = new Node([
-            new PrintNode(new NameExpression('foo', 1), 1),
+            new PrintNode(new ContextVariable('foo', 1), 1),
         ], [], 1, null);
 
         $node = new ToggleNode(
@@ -118,12 +120,13 @@ EOF
             1
         );
 
+        $var = self::createVariableGetter('foo');
         return [
             $node,
             <<<EOF
 // line 1
 if (\$this->env->getExtension('SolidWorx\Toggler\Twig\Extension\ToggleExtension')->getToggle()->isActive("foo", ["value1" => 12])) {
-    echo {$this->getVariableGetter('foo')};
+    yield {$var};
 }
 EOF
             ,

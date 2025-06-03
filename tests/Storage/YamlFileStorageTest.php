@@ -51,11 +51,11 @@ foobar: false';
 
         $storage = new YamlFileStorage($file->url());
 
-        $this->assertTrue($storage->get('foo'));
-        $this->assertTrue($storage->get('bar'));
-        $this->assertFalse($storage->get('baz'));
-        $this->assertFalse($storage->get('foobar'));
-        $this->assertNull($storage->get('foobarbaz'));
+        self::assertTrue($storage->get('foo'));
+        self::assertTrue($storage->get('bar'));
+        self::assertFalse($storage->get('baz'));
+        self::assertFalse($storage->get('foobar'));
+        self::assertNull($storage->get('foobarbaz'));
     }
 
     public function testSet(): void
@@ -71,14 +71,14 @@ foobar: false';
 
         $storage = new YamlFileStorage($largeFile->url());
 
-        $this->assertTrue($storage->get('foo'));
-        $this->assertNull($storage->get('foobarbaz'));
+        self::assertTrue($storage->get('foo'));
+        self::assertNull($storage->get('foobarbaz'));
 
         $storage->set('foo', false);
         $storage->set('foobarbaz', true);
 
-        $this->assertFalse($storage->get('foo'));
-        $this->assertTrue($storage->get('foobarbaz'));
+        self::assertFalse($storage->get('foo'));
+        self::assertTrue($storage->get('foobarbaz'));
     }
 
     public function testAll(): void
@@ -94,6 +94,6 @@ foobar: false';
 
         $storage = new YamlFileStorage($largeFile->url());
 
-        $this->assertSame(['foo', 'bar', 'baz', 'foobar'], $storage->all());
+        self::assertSame(['foo', 'bar', 'baz', 'foobar'], $storage->all());
     }
 }

@@ -22,20 +22,20 @@ class UtilTest extends TestCase
 {
     /**
      * @param mixed $value
+     * @dataProvider isTruthyProvider
      */
-    #[DataProvider('isTruthyProvider')]
-    public function testTruthy(bool|int|string $value): void
+    public function testTruthy($value): void
     {
-        $this->assertTrue(Util::isTruthy($value));
+        self::assertTrue(Util::isTruthy($value));
     }
 
     /**
      * @param mixed $value
+     * @dataProvider isNotTruthyProvider
      */
-    #[DataProvider('isNotTruthyProvider')]
-    public function testNotTruthy(bool|int|string|stdClass|array|null $value): void
+    public function testNotTruthy($value): void
     {
-        $this->assertFalse(Util::isTruthy($value));
+        self::assertFalse(Util::isTruthy($value));
     }
 
     /**

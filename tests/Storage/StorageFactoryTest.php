@@ -53,10 +53,10 @@ class StorageFactoryTest extends TestCase
             ->withContent('<?php return ' . var_export($features, true) . ';')
             ->at($this->root);
 
-        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory(new ArrayStorage($features)));
-        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
-        $this->assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
-        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
+        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory(new ArrayStorage($features)));
+        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
+        self::assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
+        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
     }
 
     public function testInvalidConfigFile(): void

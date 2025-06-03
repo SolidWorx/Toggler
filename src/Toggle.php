@@ -56,22 +56,17 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param string|Expression    $value
      * @param array<string, mixed> $context
-     *
-     * @return mixed
      */
-    private function evaluateExpression(Expression $value, array $context)
+    private function evaluateExpression(Expression | string $value, array $context): mixed
     {
-        return $this->expressionLanguage->evaluate($value, $context);
+        return $this->expressionLanguage?->evaluate($value, $context);
     }
 
     /**
      * @param array<string, mixed> $context
-     *
-     * @return mixed
      */
-    private function evaluateCallback(callable $value, array $context)
+    private function evaluateCallback(callable $value, array $context): mixed
     {
         return $value(...$context);
     }

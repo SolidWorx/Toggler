@@ -18,6 +18,8 @@ use Predis\Client;
 use Redis;
 use RedisArray;
 use RedisCluster;
+use Symfony\Component\ExpressionLanguage\Expression;
+use function is_array;
 
 class RedisStorage implements PersistentStorageInterface
 {
@@ -40,7 +42,10 @@ class RedisStorage implements PersistentStorageInterface
 
     public function get(string $key)
     {
-        return $this->redis->get($this->generateKey($key));
+        /** @var bool|string|int|Expression|object|callable|null $value */
+        $value = $this->redis->get($this->generateKey($key));
+
+        return $value;
     }
 
     public function set(string $key, bool $value): bool
@@ -52,7 +57,11 @@ class RedisStorage implements PersistentStorageInterface
     {
         $keys = $this->redis->keys($this->generateKey('*'));
 
-        return array_map(function (string $key): string|array {
+        if (! is_array($keys)) {
+            return [];
+        }
+
+        return array_map(function (string $key): string {
             return str_replace($this->generateKey(''), '', $key);
         }, $keys);
     }

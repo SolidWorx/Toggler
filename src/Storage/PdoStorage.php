@@ -164,7 +164,9 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
         }
 
         if ($this->driver === null) {
-            $this->driver = strval($this->conn->getAttribute(PDO::ATTR_DRIVER_NAME));
+            /** @var string $driver */
+            $driver = $this->conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+            $this->driver = $driver;
         }
 
         return $this->conn;

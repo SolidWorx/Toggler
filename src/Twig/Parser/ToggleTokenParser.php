@@ -23,16 +23,17 @@ class ToggleTokenParser extends AbstractTokenParser
 {
     /**
      * @return ToggleNode<Node>
+     * @throws SyntaxError
      */
     public function parse(Token $token): ToggleNode
     {
         $lineNo = $token->getLine();
-        $feature = $this->parser->getExpressionParser()->parseExpression();
+        $feature = $this->parser->parseExpression();
         $stream = $this->parser->getStream();
 
         $variables = null;
         if ($stream->nextIf(Token::NAME_TYPE, 'with') !== null) {
-            $variables = $this->parser->getExpressionParser()->parseExpression();
+            $variables = $this->parser->parseExpression();
         }
 
         $stream->expect(Token::BLOCK_END_TYPE);

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace SolidWorx\Toggler\Symfony\Command;
 
 use Exception;
+use JsonException;
 use SolidWorx\Toggler\ToggleInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +25,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function explode;
 use function sprintf;
-use function strpos;
 
 #[AsCommand(name: 'toggler:get', description: 'Get the status of a specific feature')]
 class ToggleGetCommand extends Command
@@ -65,18 +65,22 @@ HELP
             );
     }
 
+    /**
+     * @throws JsonException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $features = (array) $input->getArgument('feature');
 
         $context = [];
 
+        /** @var string $parameter $parameter */
         foreach ((array) $input->getOption('context') as $parameter) {
-            if (strpos(strval($parameter), '=') === false) {
-                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', strval($parameter)));
+            if (! str_contains($parameter, '=')) {
+                throw new Exception(sprintf('The context "%s" is invalid. The format needs to be key=value', $parameter));
             }
 
-            [$key, $value] = explode('=', strval($parameter));
+            [$key, $value] = explode('=', $parameter);
 
             $context[$key] = $value;
         }
@@ -91,8 +95,9 @@ HELP
 
         $table->setHeaders($headers);
 
+        /** @var string $feature */
         foreach ($features as $feature) {
-            $active = $this->toggle->isActive(strval($feature), $context);
+            $active = $this->toggle->isActive($feature, $context);
 
             $row = [
                 $feature,
