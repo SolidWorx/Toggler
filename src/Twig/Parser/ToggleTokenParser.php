@@ -28,7 +28,12 @@ class ToggleTokenParser extends AbstractTokenParser
      */
     public function parse(Token $token): ToggleNode
     {
-        $parser = method_exists($this->parser, 'parseExpression') ? $this->parser : $this->parser->getExpressionParser();
+        if (method_exists($this->parser, 'parseExpression')) {
+            $parser = $this->parser;
+        } else {
+            /** @phpstan-ignore-next-line */
+            $parser = $this->parser->getExpressionParser();
+        }
 
         $lineNo = $token->getLine();
         $feature = $parser->parseExpression();
