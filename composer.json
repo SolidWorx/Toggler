@@ -31,11 +31,13 @@
         "phpstan/phpstan-symfony": "^1.2",
         "phpunit/phpunit": "^9.5",
         "predis/predis": "^1.1 || ^2.0",
+        "rector/rector": "^1.2",
         "symfony/console": "^4.4 || ^5.0",
         "symfony/expression-language": "^4.4 || ^5.0",
         "symfony/framework-bundle": "^4.1 || ^5.0",
         "symfony/security-core": "^4.4 || ^5.0",
         "symfony/yaml": "^4.4 || ^5.0",
+        "symplify/easy-coding-standard": "^12.5",
         "twig/twig": "^2.7 || ^3.0"
     },
     "suggest": {

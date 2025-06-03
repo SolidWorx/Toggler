@@ -59,13 +59,13 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->validate()
-                        ->ifTrue(function ($config): bool {
+                        ->ifTrue(function (array $config): bool {
                             return null !== $config['storage'] && [] !== $config['features'];
                         })
                         ->thenInvalid('You should only specify one of "storage" or "features" values, not both.')
                     ->end()
                     ->validate()
-                        ->ifTrue(function ($config): bool {
+                        ->ifTrue(function (array $config): bool {
                             return null === $config['storage'] && [] === $config['features'];
                         })
                         ->thenInvalid('At least one of "storage" or "features" must be set.')

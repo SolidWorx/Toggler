@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\DependencyInjection\ResettableServicePass;
 use Symfony\Contracts\Service\ResetInterface;
 use function array_merge;
@@ -30,37 +31,19 @@ final class Toggle implements ToggleInterface, ResetInterface
     /**
      * @var array<mixed>
      */
-    private static $variables = [];
+    private static array $variables = [];
 
-    /**
-     * @var BaseToggle
-     */
-    private $toggle;
+    private BaseToggle $toggle;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var RoleHierarchyInterface
-     */
-    private $roleHierarchy;
+    private RoleHierarchyInterface $roleHierarchy;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /**
-     * @var AuthenticationTrustResolverInterface
-     */
-    private $trustResolver;
+    private AuthenticationTrustResolverInterface $trustResolver;
 
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
     public function __construct(
         BaseToggle $toggle,
@@ -98,7 +81,7 @@ final class Toggle implements ToggleInterface, ResetInterface
                 'token' => $token,
                 'request' => $request,
                 'roles' => $roles,
-                'session' => $request ? $request->getSession() : $request,
+                'session' => $request instanceof Request ? $request->getSession() : $request,
                 'trust_resolver' => $this->trustResolver,
                 'auth_checker' => $this->authorizationChecker,
                 'user' => null !== $token ? $token->getUser() : null,

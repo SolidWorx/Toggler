@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Tests\Storage;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;
@@ -23,9 +24,9 @@ class RedisStorageTest extends TestCase
     /**
      * @var MockObject&Client
      */
-    private $redis;
+    private MockObject $redis;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $mockBuilder = $this->getMockBuilder(Client::class);
 
@@ -36,8 +37,8 @@ class RedisStorageTest extends TestCase
 
     public function testConstructorException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('SolidWorx\Toggler\Storage\RedisStorage::__construct() expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\Client, NULL given');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(RedisStorage::class . '::__construct() expects parameter 1 to be Redis, RedisArray, RedisCluster or Predis\Client, NULL given');
 
         new RedisStorage(null);
     }
@@ -51,8 +52,8 @@ class RedisStorageTest extends TestCase
 
         $storage = new RedisStorage($this->redis);
 
-        self::assertTrue($storage->get('foobar'));
-        self::assertNull($storage->get('baz'));
+        $this->assertTrue($storage->get('foobar'));
+        $this->assertNull($storage->get('baz'));
     }
 
     public function testSet(): void
@@ -76,8 +77,8 @@ class RedisStorageTest extends TestCase
 
         $storage = new RedisStorage($this->redis, $namespace);
 
-        self::assertTrue($storage->get('foobar'));
-        self::assertNull($storage->get('baz'));
+        $this->assertTrue($storage->get('foobar'));
+        $this->assertNull($storage->get('baz'));
     }
 
     public function testSetWithNamespace(): void
@@ -96,7 +97,7 @@ class RedisStorageTest extends TestCase
 
         $storage->set('foobar', false);
 
-        self::assertFalse($storage->get('foobar'));
+        $this->assertFalse($storage->get('foobar'));
     }
 
     public function testAll(): void
@@ -112,6 +113,6 @@ class RedisStorageTest extends TestCase
 
         $storage->set('foobar', false);
 
-        self::assertSame(['foo', 'bar', 'baz'], $storage->all());
+        $this->assertSame(['foo', 'bar', 'baz'], $storage->all());
     }
 }

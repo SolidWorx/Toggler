@@ -22,48 +22,48 @@ class EnvStorageTest extends TestCase
     {
         $storage = new EnvStorage();
 
-        self::assertFalse($storage->get('baz'));
+        $this->assertFalse($storage->get('baz'));
 
         $_ENV['baz'] = 'foo';
 
-        self::assertSame('foo', $storage->get('baz'));
+        $this->assertSame('foo', $storage->get('baz'));
 
         unset($_ENV['baz']);
 
         $_SERVER['baz'] = 'bar';
 
-        self::assertSame('bar', $storage->get('baz'));
+        $this->assertSame('bar', $storage->get('baz'));
 
         unset($_SERVER['baz']);
 
         putenv('baz=baz');
 
-        self::assertSame('baz', $storage->get('baz'));
+        $this->assertSame('baz', $storage->get('baz'));
 
         putenv('baz');
 
-        self::assertFalse($storage->get('baz'));
+        $this->assertFalse($storage->get('baz'));
 
-        self::assertSame($_SERVER, $storage->all());
+        $this->assertSame($_SERVER, $storage->all());
 
         $_ENV['foo'] = 'bar';
 
-        self::assertSame(['foo' => 'bar'] + $_SERVER, $storage->all());
+        $this->assertSame(['foo' => 'bar'] + $_SERVER, $storage->all());
 
         $_SERVER['bar'] = 'baz';
 
-        self::assertSame(['foo' => 'bar'] + $_SERVER, $storage->all());
+        $this->assertSame(['foo' => 'bar'] + $_SERVER, $storage->all());
 
         putenv('baz=baz');
 
-        self::assertSame(['foo' => 'bar'] + $_SERVER + ['baz' => 'baz'], $storage->all());
+        $this->assertSame(['foo' => 'bar'] + $_SERVER + ['baz' => 'baz'], $storage->all());
 
         putenv('baz');
 
-        self::assertSame(['foo' => 'bar'] + $_SERVER + ['bar' => 'baz'], $storage->all());
+        $this->assertSame(['foo' => 'bar'] + $_SERVER + ['bar' => 'baz'], $storage->all());
 
         unset($_ENV['foo'], $_SERVER['bar']);
 
-        self::assertSame($_SERVER, $storage->all());
+        $this->assertSame($_SERVER, $storage->all());
     }
 }

@@ -20,7 +20,7 @@ class ArrayStorage implements StorageInterface
     /**
      * @var array<string, bool|string|int|Expression|object|callable|null>
      */
-    protected $config;
+    protected array $config;
 
     /**
      * @param array<string, bool|string|int|Expression|object|callable|null> $config

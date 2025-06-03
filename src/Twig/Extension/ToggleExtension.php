@@ -20,10 +20,7 @@ use Twig\TwigFunction;
 
 class ToggleExtension extends AbstractExtension
 {
-    /**
-     * @var ToggleInterface
-     */
-    private $toggle;
+    private ToggleInterface $toggle;
 
     public function __construct(ToggleInterface $toggle)
     {

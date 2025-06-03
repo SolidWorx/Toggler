@@ -22,7 +22,7 @@ class PDOStorageTest extends TestCase
     {
         $storage = new PdoStorage('sqlite::memory:');
 
-        self::assertFalse($storage->get('foobar'));
+        $this->assertFalse($storage->get('foobar'));
     }
 
     public function testSet(): void
@@ -32,8 +32,8 @@ class PDOStorageTest extends TestCase
         $storage->set('foo', true);
         $storage->set('bar', false);
 
-        self::assertTrue($storage->get('foo'));
-        self::assertFalse($storage->get('bar'));
+        $this->assertTrue($storage->get('foo'));
+        $this->assertFalse($storage->get('bar'));
     }
 
     public function testUpdateExistingValue(): void
@@ -42,10 +42,10 @@ class PDOStorageTest extends TestCase
 
         $storage->set('foo', true);
 
-        self::assertTrue($storage->get('foo'));
+        $this->assertTrue($storage->get('foo'));
 
         $storage->set('foo', false);
-        self::assertFalse($storage->get('foo'));
+        $this->assertFalse($storage->get('foo'));
     }
 
     public function testGetAll(): void
@@ -55,6 +55,6 @@ class PDOStorageTest extends TestCase
         $storage->set('foo', true);
         $storage->set('bar', false);
 
-        self::assertEquals(['bar', 'foo'], $storage->all());
+        $this->assertSame(['bar', 'foo'], $storage->all());
     }
 }

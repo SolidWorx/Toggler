@@ -18,18 +18,18 @@ use Twig\Node\Node;
 
 class ToggleNode extends Node
 {
-    public function __construct(Node $feature, Node $body, ?Node $else, ?Node $variables, int $lineNo, string $tag = null)
+    public function __construct(Node $feature, Node $body, ?Node $else, ?Node $variables, int $lineNo, ?string $tag = null)
     {
         $nodes = [
             'feature' => $feature,
             'body' => $body,
         ];
 
-        if (null !== $else) {
+        if ($else instanceof Node) {
             $nodes['else'] = $else;
         }
 
-        if (null !== $variables) {
+        if ($variables instanceof Node) {
             $nodes['variables'] = $variables;
         }
 

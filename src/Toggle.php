@@ -23,17 +23,11 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class Toggle implements ToggleInterface
 {
-    /**
-     * @var StorageInterface
-     */
-    private $config;
+    private StorageInterface $config;
 
-    /**
-     * @var ExpressionLanguage
-     */
-    private $expressionLanguage;
+    private ?ExpressionLanguage $expressionLanguage = null;
 
-    public function __construct(StorageInterface $config, ExpressionLanguage $expressionLanguage = null)
+    public function __construct(StorageInterface $config, ?ExpressionLanguage $expressionLanguage = null)
     {
         $this->config = $config;
 
@@ -67,7 +61,7 @@ final class Toggle implements ToggleInterface
      *
      * @return mixed
      */
-    private function evaluateExpression($value, array $context)
+    private function evaluateExpression(Expression $value, array $context)
     {
         return $this->expressionLanguage->evaluate($value, $context);
     }

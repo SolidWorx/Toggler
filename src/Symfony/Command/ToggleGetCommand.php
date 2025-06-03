@@ -31,10 +31,7 @@ class ToggleGetCommand extends Command
 {
     protected static $defaultName = 'toggler:get';
 
-    /**
-     * @var ToggleInterface
-     */
-    private $toggle;
+    private ToggleInterface $toggle;
 
     public function __construct(ToggleInterface $toggle)
     {

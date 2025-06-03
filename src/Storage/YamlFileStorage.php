@@ -25,10 +25,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class YamlFileStorage extends ArrayStorage implements PersistentStorageInterface
 {
-    /**
-     * @var string
-     */
-    private $filePath;
+    private string $filePath;
 
     public function __construct(string $filePath)
     {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Symfony\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use function class_exists;
 use function explode;
 use InvalidArgumentException;
@@ -42,7 +43,7 @@ class TogglerExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
         $definition = $container->getDefinition(Toggle::class);
@@ -63,7 +64,7 @@ class TogglerExtension extends Extension
             return;
         }
 
-        foreach ($config['config']['features'] as $key => &$value) {
+        foreach ($config['config']['features'] as &$value) {
             if (!is_string($value)) {
                 continue;
             }

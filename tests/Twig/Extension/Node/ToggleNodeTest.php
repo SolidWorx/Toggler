@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Tests\Twig\Extension\Node;
 
+use Iterator;
 use SolidWorx\Toggler\Twig\Node\ToggleNode;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\ConstantExpression;
@@ -33,27 +34,23 @@ class ToggleNodeTest extends NodeTestCase
         $else = null;
         $node = new ToggleNode(new TextNode('foo', 1), $t, $else, null, 1, null);
 
-        self::assertEquals($t, $node->getNode('body'));
-        self::assertEquals(new TextNode('foo', 1), $node->getNode('feature'));
-        self::assertFalse($node->hasNode('else'));
+        $this->assertEquals($t, $node->getNode('body'));
+        $this->assertEquals(new TextNode('foo', 1), $node->getNode('feature'));
+        $this->assertFalse($node->hasNode('else'));
 
         $else = new PrintNode(new NameExpression('bar', 1), 1);
         $node = new ToggleNode(new TextNode('bar', 1), $t, $else, null, 1, null);
-        self::assertEquals($else, $node->getNode('else'));
+        $this->assertEquals($else, $node->getNode('else'));
     }
 
     /**
      * @return array<array{Node,string}>
      */
-    public function getTests(): array
+    public function getTests(): Iterator
     {
-        $tests = [];
-
-        $tests[] = $this->getToggleTest();
-        $tests[] = $this->getToggleWithElseTest();
-        $tests[] = $this->getToggleWithContextTest();
-
-        return $tests;
+        yield $this->getToggleTest();
+        yield $this->getToggleWithElseTest();
+        yield $this->getToggleWithContextTest();
     }
 
     /**

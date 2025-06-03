@@ -31,15 +31,9 @@ class ToggleListCommand extends Command
 {
     protected static $defaultName = 'toggler:list';
 
-    /**
-     * @var ToggleInterface
-     */
-    private $toggle;
+    private ToggleInterface $toggle;
 
-    /**
-     * @var StorageInterface
-     */
-    private $toggleStorage;
+    private StorageInterface $toggleStorage;
 
     public function __construct(ToggleInterface $toggle, StorageInterface $toggleStorage)
     {

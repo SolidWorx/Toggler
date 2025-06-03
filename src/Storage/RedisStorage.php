@@ -21,15 +21,9 @@ use RedisCluster;
 
 class RedisStorage implements PersistentStorageInterface
 {
-    /**
-     * @var Client|Redis|RedisArray|RedisCluster
-     */
-    private $redis;
+    private Redis|RedisArray|RedisCluster|Client $redis;
 
-    /**
-     * @var string
-     */
-    private $namespace;
+    private string $namespace;
 
     /**
      * @param mixed $redis
@@ -56,14 +50,14 @@ class RedisStorage implements PersistentStorageInterface
 
     private function generateKey(string $key): string
     {
-        return '' !== $this->namespace ? "{$this->namespace}:$key" : $key;
+        return '' !== $this->namespace ? sprintf('%s:%s', $this->namespace, $key) : $key;
     }
 
     public function all(): array
     {
         $keys = $this->redis->keys($this->generateKey('*'));
 
-        return array_map(function (string $key) {
+        return array_map(function (string $key): string|array {
             return str_replace($this->generateKey(''), '', $key);
         }, $keys);
     }

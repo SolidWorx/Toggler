@@ -30,7 +30,7 @@ final class Util
     public static function isTruthy($value): bool
     {
         if (is_bool($value)) {
-            return true === $value;
+            return $value;
         }
 
         if (is_int($value)) {

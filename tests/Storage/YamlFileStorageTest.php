@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Tests\Storage;
 
+use InvalidArgumentException;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +33,7 @@ class YamlFileStorageTest extends TestCase
 
     public function testInvalidFile(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The file /non/existent/file.yml either does not exist, or is not readable');
         new YamlFileStorage('/non/existent/file.yml');
     }
@@ -50,11 +51,11 @@ foobar: false';
 
         $storage = new YamlFileStorage($file->url());
 
-        self::assertTrue($storage->get('foo'));
-        self::assertTrue($storage->get('bar'));
-        self::assertFalse($storage->get('baz'));
-        self::assertFalse($storage->get('foobar'));
-        self::assertNull($storage->get('foobarbaz'));
+        $this->assertTrue($storage->get('foo'));
+        $this->assertTrue($storage->get('bar'));
+        $this->assertFalse($storage->get('baz'));
+        $this->assertFalse($storage->get('foobar'));
+        $this->assertNull($storage->get('foobarbaz'));
     }
 
     public function testSet(): void
@@ -70,14 +71,14 @@ foobar: false';
 
         $storage = new YamlFileStorage($largeFile->url());
 
-        self::assertTrue($storage->get('foo'));
-        self::assertNull($storage->get('foobarbaz'));
+        $this->assertTrue($storage->get('foo'));
+        $this->assertNull($storage->get('foobarbaz'));
 
         $storage->set('foo', false);
         $storage->set('foobarbaz', true);
 
-        self::assertFalse($storage->get('foo'));
-        self::assertTrue($storage->get('foobarbaz'));
+        $this->assertFalse($storage->get('foo'));
+        $this->assertTrue($storage->get('foobarbaz'));
     }
 
     public function testAll(): void
@@ -93,6 +94,6 @@ foobar: false';
 
         $storage = new YamlFileStorage($largeFile->url());
 
-        self::assertSame(['foo', 'bar', 'baz', 'foobar'], $storage->all());
+        $this->assertSame(['foo', 'bar', 'baz', 'foobar'], $storage->all());
     }
 }

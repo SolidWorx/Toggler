@@ -30,10 +30,7 @@ class ToggleSetCommand extends Command
 {
     protected static $defaultName = 'toggler:set';
 
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
+    private StorageInterface $storage;
 
     public function __construct(StorageInterface $storage)
     {

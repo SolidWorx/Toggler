@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Tests\Storage;
 
+use InvalidArgumentException;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -53,10 +54,10 @@ class StorageFactoryTest extends TestCase
             ->withContent('<?php return '.var_export($features, true).';')
             ->at($this->root);
 
-        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory(new ArrayStorage($features)));
-        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
-        self::assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
-        self::assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
+        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory(new ArrayStorage($features)));
+        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory($features));
+        $this->assertInstanceOf(YamlFileStorage::class, StorageFactory::factory($yamlFile->url()));
+        $this->assertInstanceOf(ArrayStorage::class, StorageFactory::factory($phpFile->url()));
     }
 
     public function testInvalidConfigFile(): void
@@ -72,7 +73,7 @@ class StorageFactoryTest extends TestCase
             ->withContent(Yaml::dump($features))
             ->at($this->root);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('File with extension txt is not supported');
 
         StorageFactory::factory($file->url());
@@ -80,7 +81,7 @@ class StorageFactoryTest extends TestCase
 
     public function testInvalidConfigType(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The 1st argument for '.StorageFactory::class.'::factory expects an array, string or instance of StorageInterface, bool given');
 
         StorageFactory::factory(true);

@@ -13,35 +13,35 @@ declare(strict_types=1);
 
 namespace SolidWorx\Toggler\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use stdClass;
 use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Util;
 
 class UtilTest extends TestCase
 {
     /**
-     * @dataProvider isTruthyProvider
-     *
      * @param mixed $value
      */
-    public function testTruthy($value): void
+    #[DataProvider('isTruthyProvider')]
+    public function testTruthy(bool|int|string $value): void
     {
-        self::assertTrue(Util::isTruthy($value));
+        $this->assertTrue(Util::isTruthy($value));
     }
 
     /**
-     * @dataProvider isNotTruthyProvider
-     *
      * @param mixed $value
      */
-    public function testNotTruthy($value): void
+    #[DataProvider('isNotTruthyProvider')]
+    public function testNotTruthy(bool|int|string|stdClass|array|null $value): void
     {
-        self::assertFalse(Util::isTruthy($value));
+        $this->assertFalse(Util::isTruthy($value));
     }
 
     /**
      * @return iterable<mixed>
      */
-    public function isTruthyProvider(): iterable
+    public static function isTruthyProvider(): iterable
     {
         yield [true];
         yield [1];
@@ -57,7 +57,7 @@ class UtilTest extends TestCase
     /**
      * @return iterable<mixed>
      */
-    public function isNotTruthyProvider(): iterable
+    public static function isNotTruthyProvider(): iterable
     {
         yield [false];
         yield [0];
@@ -69,7 +69,7 @@ class UtilTest extends TestCase
         yield ['NO'];
         yield ['N'];
         yield [null];
-        yield [new \stdClass()];
+        yield [new stdClass()];
         yield [[]];
     }
 }
