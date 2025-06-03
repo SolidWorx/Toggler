@@ -28,7 +28,7 @@ jobs:
           coverage: ${ matrix.coverage && 'xdebug' || 'none' }
 
       - name: Install dependencies
-        use: ramsey/composer-install@v
+        uses: ramsey/composer-install@v
         with:
             dependency-versions: "${{ matrix.dependencies }}"
 
