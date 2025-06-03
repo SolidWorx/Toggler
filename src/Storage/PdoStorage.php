@@ -3,55 +3,41 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Storage;
 
+use DomainException;
 use PDO;
+use RuntimeException;
+use SensitiveParameter;
 
 class PdoStorage implements StorageInterface, PersistentStorageInterface
 {
-    /**
-     * @var string
-     */
-    private $dsn;
+    private string $dsn;
 
-    /**
-     * @var string
-     */
-    private $username;
+    private string $username;
 
-    /**
-     * @var string
-     */
-    private $password;
-    /**
-     * @var string
-     */
-    private $tableName;
+    private string $password;
 
-    /**
-     * @var string|null
-     */
-    private $driver;
+    private string $tableName;
 
-    /**
-     * @var PDO|null
-     */
-    private $conn;
+    private ?string $driver = null;
+
+    private ?PDO $conn = null;
 
     public function __construct(
-        #[\SensitiveParameter]
+        #[SensitiveParameter]
         string $dsn,
-        #[\SensitiveParameter]
+        #[SensitiveParameter]
         string $username = '',
-        #[\SensitiveParameter]
+        #[SensitiveParameter]
         string $password = '',
         string $tableName = 'features'
     ) {
@@ -66,14 +52,16 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
         $conn = $this->getConnection();
         $this->createTable();
 
-        $sql = "SELECT enabled FROM $this->tableName WHERE feature = :feature";
+        $sql = sprintf('SELECT enabled FROM %s WHERE feature = :feature', $this->tableName);
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['feature' => $key]);
+        $stmt->execute([
+            'feature' => $key,
+        ]);
 
         /** @var false|array{enabled: bool|int} $result */
         $result = $stmt->fetch();
 
-        if (false !== $result) {
+        if ($result !== false) {
             return (bool) $result['enabled'];
         }
 
@@ -87,31 +75,34 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
         switch ($this->driver) {
             case 'sqlite':
-                $sql = /* @lang SQLite */ "INSERT OR REPLACE INTO $this->tableName (feature, enabled) SELECT :feature, :enabled";
+                $sql = /* @lang SQLite */ sprintf('INSERT OR REPLACE INTO %s (feature, enabled) SELECT :feature, :enabled', $this->tableName);
                 break;
 
             case 'pgsql':
-                $sql = /* @lang PostgreSQL */ "INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled) ON CONFLICT (feature) DO UPDATE SET enabled = :enabled";
+                $sql = /* @lang PostgreSQL */ sprintf('INSERT INTO %s (feature, enabled) VALUES (:feature, :enabled) ON CONFLICT (feature) DO UPDATE SET enabled = :enabled', $this->tableName);
                 break;
 
             case 'oci':
-                $sql = /* @lang SQL */ "MERGE INTO $this->tableName USING DUAL ON (feature = :feature) WHEN MATCHED THEN UPDATE SET enabled = :enabled WHEN NOT MATCHED THEN INSERT (feature, enabled) VALUES (:feature, :enabled)";
+                $sql = /* @lang SQL */ sprintf('MERGE INTO %s USING DUAL ON (feature = :feature) WHEN MATCHED THEN UPDATE SET enabled = :enabled WHEN NOT MATCHED THEN INSERT (feature, enabled) VALUES (:feature, :enabled)', $this->tableName);
                 break;
 
             case 'mysql':
-                $sql = /* @lang MySQL */ "INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled) ON DUPLICATE KEY UPDATE enabled = :enabled";
+                $sql = /* @lang MySQL */ sprintf('INSERT INTO %s (feature, enabled) VALUES (:feature, :enabled) ON DUPLICATE KEY UPDATE enabled = :enabled', $this->tableName);
                 break;
 
             case 'sqlsrv':
-                $sql = /* @lang SQL */ "IF EXISTS (SELECT * FROM $this->tableName WHERE feature = :feature) UPDATE $this->tableName SET enabled = :enabled WHERE feature = :feature ELSE INSERT INTO $this->tableName (feature, enabled) VALUES (:feature, :enabled)";
+                $sql = /* @lang SQL */ sprintf('IF EXISTS (SELECT * FROM %s WHERE feature = :feature) UPDATE %s SET enabled = :enabled WHERE feature = :feature ELSE INSERT INTO %s (feature, enabled) VALUES (:feature, :enabled)', $this->tableName, $this->tableName, $this->tableName);
                 break;
 
             default:
-                throw new \RuntimeException('Unsupported driver');
+                throw new RuntimeException('Unsupported driver');
         }
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['feature' => $key, 'enabled' => $value]);
+        $stmt->execute([
+            'feature' => $key,
+            'enabled' => $value,
+        ]);
 
         return $value;
     }
@@ -121,7 +112,7 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
         $conn = $this->getConnection();
         $this->createTable();
 
-        $sql = "SELECT feature FROM $this->tableName";
+        $sql = 'SELECT feature FROM ' . $this->tableName;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
@@ -143,22 +134,22 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
         switch ($this->driver) {
             case 'mysql':
-                $sql = /* @lang MySQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled TINYINT(1) NOT NULL) COLLATE utf8mb4_bin, ENGINE = InnoDB";
+                $sql = /* @lang MySQL */ sprintf('CREATE TABLE IF NOT EXISTS %s (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled TINYINT(1) NOT NULL) COLLATE utf8mb4_bin, ENGINE = InnoDB', $this->tableName);
                 break;
             case 'sqlite':
-                $sql = /* @lang SQLite */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature TEXT NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)";
+                $sql = /* @lang SQLite */ sprintf('CREATE TABLE IF NOT EXISTS %s (feature TEXT NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)', $this->tableName);
                 break;
             case 'pgsql':
-                $sql = /* @lang PostgreSQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)";
+                $sql = /* @lang PostgreSQL */ sprintf('CREATE TABLE IF NOT EXISTS %s (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL)', $this->tableName);
                 break;
             case 'oci':
-                $sql = /* @lang SQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR2(255) NOT NULL PRIMARY KEY, enabled NUMBER(1) NOT NULL)";
+                $sql = /* @lang SQL */ sprintf('CREATE TABLE IF NOT EXISTS %s (feature VARCHAR2(255) NOT NULL PRIMARY KEY, enabled NUMBER(1) NOT NULL)', $this->tableName);
                 break;
             case 'sqlsrv':
-                $sql = /* @lang SQL */ "CREATE TABLE IF NOT EXISTS $this->tableName (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BIT NOT NULL)";
+                $sql = /* @lang SQL */ sprintf('CREATE TABLE IF NOT EXISTS %s (feature VARCHAR(255) NOT NULL PRIMARY KEY, enabled BIT NOT NULL)', $this->tableName);
                 break;
             default:
-                throw new \DomainException(sprintf('Creating the cache table is currently not implemented for PDO driver "%s".', $this->driver));
+                throw new DomainException(sprintf('Creating the cache table is currently not implemented for PDO driver "%s".', $this->driver));
         }
 
         $conn->exec($sql);
@@ -166,14 +157,16 @@ class PdoStorage implements StorageInterface, PersistentStorageInterface
 
     private function getConnection(): PDO
     {
-        if (!isset($this->conn)) {
+        if (! $this->conn instanceof PDO) {
             $this->conn = new PDO($this->dsn, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         }
 
-        if (!isset($this->driver)) {
-            $this->driver = strval($this->conn->getAttribute(PDO::ATTR_DRIVER_NAME));
+        if ($this->driver === null) {
+            /** @var string $driver */
+            $driver = $this->conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+            $this->driver = $driver;
         }
 
         return $this->conn;

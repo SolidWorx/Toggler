@@ -3,37 +3,31 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler;
 
+use SolidWorx\Toggler\Storage\StorageInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use function class_exists;
 use function is_callable;
 use function is_object;
 use function method_exists;
-use SolidWorx\Toggler\Storage\StorageInterface;
-use Symfony\Component\ExpressionLanguage\Expression;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class Toggle implements ToggleInterface
 {
-    /**
-     * @var StorageInterface
-     */
-    private $config;
+    private StorageInterface $config;
 
-    /**
-     * @var ExpressionLanguage
-     */
-    private $expressionLanguage;
+    private ?ExpressionLanguage $expressionLanguage = null;
 
-    public function __construct(StorageInterface $config, ExpressionLanguage $expressionLanguage = null)
+    public function __construct(StorageInterface $config, ?ExpressionLanguage $expressionLanguage = null)
     {
         $this->config = $config;
 
@@ -62,22 +56,17 @@ final class Toggle implements ToggleInterface
     }
 
     /**
-     * @param string|Expression    $value
      * @param array<string, mixed> $context
-     *
-     * @return mixed
      */
-    private function evaluateExpression($value, array $context)
+    private function evaluateExpression(Expression | string $value, array $context): mixed
     {
-        return $this->expressionLanguage->evaluate($value, $context);
+        return $this->expressionLanguage?->evaluate($value, $context);
     }
 
     /**
      * @param array<string, mixed> $context
-     *
-     * @return mixed
      */
-    private function evaluateCallback(callable $value, array $context)
+    private function evaluateCallback(callable $value, array $context): mixed
     {
         return $value(...$context);
     }

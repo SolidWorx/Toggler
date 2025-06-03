@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Storage;
@@ -20,7 +20,7 @@ class ArrayStorage implements StorageInterface
     /**
      * @var array<string, bool|string|int|Expression|object|callable|null>
      */
-    protected $config;
+    protected array $config;
 
     /**
      * @param array<string, bool|string|int|Expression|object|callable|null> $config
@@ -30,9 +30,6 @@ class ArrayStorage implements StorageInterface
         $this->config = $config;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $key)
     {
         return $this->config[$key] ?? null;

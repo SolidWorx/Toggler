@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Symfony\DependencyInjection;
@@ -19,9 +19,6 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('toggler');
@@ -43,12 +40,15 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('features')
                             ->useAttributeAsKey('name')
                             ->info('An array containing available features. The feature name is the key, and the status of the feature is the value')
-                            ->example(['foo' => 'true', 'bar' => 'false'])
+                            ->example([
+                                'foo' => 'true',
+                                'bar' => 'false',
+                            ])
                             ->prototype('scalar')
                                 ->beforeNormalization()
                                     ->ifArray()
                                         ->then(function (array $value): string {
-                                            if (2 !== count($value)) {
+                                            if (count($value) !== 2) {
                                                 throw new InvalidConfigurationException('Callbacks should contain exactly two keys');
                                             }
 
@@ -59,14 +59,14 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->validate()
-                        ->ifTrue(function ($config): bool {
-                            return null !== $config['storage'] && [] !== $config['features'];
+                        ->ifTrue(function (array $config): bool {
+                            return $config['storage'] !== null && $config['features'] !== [];
                         })
                         ->thenInvalid('You should only specify one of "storage" or "features" values, not both.')
                     ->end()
                     ->validate()
-                        ->ifTrue(function ($config): bool {
-                            return null === $config['storage'] && [] === $config['features'];
+                        ->ifTrue(function (array $config): bool {
+                            return $config['storage'] === null && $config['features'] === [];
                         })
                         ->thenInvalid('At least one of "storage" or "features" must be set.')
                     ->end()

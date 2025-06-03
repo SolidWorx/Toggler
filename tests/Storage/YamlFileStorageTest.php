@@ -3,16 +3,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Tests\Storage;
 
+use InvalidArgumentException;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +33,7 @@ class YamlFileStorageTest extends TestCase
 
     public function testInvalidFile(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The file /non/existent/file.yml either does not exist, or is not readable');
         new YamlFileStorage('/non/existent/file.yml');
     }

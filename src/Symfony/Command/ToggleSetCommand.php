@@ -3,37 +3,34 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Symfony\Command;
 
 use Exception;
-use function get_class;
 use SolidWorx\Toggler\Storage\PersistentStorageInterface;
 use SolidWorx\Toggler\Storage\StorageInterface;
 use SolidWorx\Toggler\Util;
-use function sprintf;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use function get_class;
+use function sprintf;
 
 #[AsCommand(name: 'toggler:set', description: 'Change the status of a specific feature')]
 class ToggleSetCommand extends Command
 {
     protected static $defaultName = 'toggler:set';
 
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
+    private StorageInterface $storage;
 
     public function __construct(StorageInterface $storage)
     {
@@ -47,7 +44,8 @@ class ToggleSetCommand extends Command
         $this->setDescription('Change the status of a specific feature')
             ->addArgument('feature', InputArgument::REQUIRED, 'The feature to change the status')
             ->addArgument('value', InputArgument::REQUIRED, 'The status to set the feature to (can be either true|false or 1|0)')
-            ->setHelp(<<<'HELP'
+            ->setHelp(
+                <<<'HELP'
 Set the status of a specific feature:
 
     <info>$ bin/console %command.name% feature on</info>
@@ -65,11 +63,12 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->storage instanceof PersistentStorageInterface) {
+        if (! $this->storage instanceof PersistentStorageInterface) {
             throw new Exception(sprintf('The storage class %s does not support updating a value.', get_class($this->storage)));
         }
 
-        $feature = strval($input->getArgument('feature'));
+        /** @var string $feature */
+        $feature = $input->getArgument('feature');
 
         $this->storage->set($feature, Util::isTruthy($input->getArgument('value')));
 

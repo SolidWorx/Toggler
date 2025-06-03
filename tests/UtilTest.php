@@ -3,25 +3,26 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SolidWorx\Toggler\Util;
+use stdClass;
 
 class UtilTest extends TestCase
 {
     /**
-     * @dataProvider isTruthyProvider
-     *
      * @param mixed $value
+     * @dataProvider isTruthyProvider
      */
     public function testTruthy($value): void
     {
@@ -29,9 +30,8 @@ class UtilTest extends TestCase
     }
 
     /**
-     * @dataProvider isNotTruthyProvider
-     *
      * @param mixed $value
+     * @dataProvider isNotTruthyProvider
      */
     public function testNotTruthy($value): void
     {
@@ -41,7 +41,7 @@ class UtilTest extends TestCase
     /**
      * @return iterable<mixed>
      */
-    public function isTruthyProvider(): iterable
+    public static function isTruthyProvider(): iterable
     {
         yield [true];
         yield [1];
@@ -57,7 +57,7 @@ class UtilTest extends TestCase
     /**
      * @return iterable<mixed>
      */
-    public function isNotTruthyProvider(): iterable
+    public static function isNotTruthyProvider(): iterable
     {
         yield [false];
         yield [0];
@@ -69,7 +69,7 @@ class UtilTest extends TestCase
         yield ['NO'];
         yield ['N'];
         yield [null];
-        yield [new \stdClass()];
+        yield [new stdClass()];
         yield [[]];
     }
 }

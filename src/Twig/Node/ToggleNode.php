@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Toggler package.
+ * This file is part of SolidWorx Toggler project.
  *
  * (c) SolidWorx <open-source@solidworx.co>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace SolidWorx\Toggler\Twig\Node;
@@ -18,18 +18,18 @@ use Twig\Node\Node;
 
 class ToggleNode extends Node
 {
-    public function __construct(Node $feature, Node $body, ?Node $else, ?Node $variables, int $lineNo, string $tag = null)
+    public function __construct(Node $feature, Node $body, ?Node $else, ?Node $variables, int $lineNo, ?string $tag = null)
     {
         $nodes = [
             'feature' => $feature,
             'body' => $body,
         ];
 
-        if (null !== $else) {
+        if ($else instanceof Node) {
             $nodes['else'] = $else;
         }
 
-        if (null !== $variables) {
+        if ($variables instanceof Node) {
             $nodes['variables'] = $variables;
         }
 
