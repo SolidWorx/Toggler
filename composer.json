@@ -36,7 +36,7 @@
         "symfony/framework-bundle": "^6.1 || ^7.0",
         "symfony/security-core": "^6.1 || ^7.0",
         "symfony/yaml": "^6.1 || ^7.0",
-        "symplify/easy-coding-standard": "^12.5",
+        "symplify/easy-coding-standard": "^12.5 || ^13.0",
         "twig/twig": "^3.15"
     },
     "suggest": {
